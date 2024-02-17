@@ -4,6 +4,7 @@
 
 class SpeakerShooterSubsystem : public frc2::SubsystemBase {
     public:
+        SpeakerShooterSubsystem();
 
     private:
 };

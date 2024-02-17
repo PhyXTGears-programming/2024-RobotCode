@@ -4,6 +4,7 @@
 
 class ClimbSubsystem : public frc2::SubsystemBase {
     public:
+        ClimbSubsystem();
 
     private:
 };

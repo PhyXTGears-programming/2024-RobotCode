@@ -4,6 +4,7 @@
 
 class IntakeSubsystem : public frc2::SubsystemBase {
     public:
+        IntakeSubsystem();
 
     private:
 };
