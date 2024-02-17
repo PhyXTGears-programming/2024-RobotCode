@@ -4,6 +4,7 @@
 
 class AmpShooterSubsystem : public frc2::SubsystemBase {
     public:
+        AmpShooterSubsystem();
 
     private:
 };
