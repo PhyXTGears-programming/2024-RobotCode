@@ -4,6 +4,9 @@
 
 class ClimbSubsystem : public frc2::SubsystemBase {
     public:
+
+        ClimbSubsystem();
+
         // Tells arm to go up | speed is a placeholder
         void ClimbUp(double speed);
 
@@ -33,5 +36,5 @@ class ClimbSubsystem : public frc2::SubsystemBase {
 
     private:
         // The arm position
-        double m_armPosition = 2 //2 just for now
+        double m_armPosition = 2; //2 just for now
 };

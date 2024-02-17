@@ -4,20 +4,32 @@
 
 #include <frc2/command/SubsystemBase.h>
 
-ClimbSubsystem::ClimbUp() {}
+ClimbSubsystem::ClimbSubsystem() {}
 
-ClimbSubsystem::ClimbDown() {}
+void ClimbSubsystem::ClimbUp(double speed) {}
 
-ClimbSubsystem::GetArmPosition() {}
+void ClimbSubsystem::ClimbDown(double speed) {}
 
-ClimbSubsystem::IsArmUp() {}
+double ClimbSubsystem::GetArmPosition() {
+    return 0.0;
+}
 
-ClimbSubsystem::IsArmDown() {}
+bool ClimbSubsystem::IsArmUp() {
+    return false;
+}
 
-ClimbSubsystem::IsArmHome() {}
+bool ClimbSubsystem::IsArmDown() {
+    return false;
+}
 
-ClimbSubsystem::Lock() {}
+bool ClimbSubsystem::IsArmHome() {
+    return false;
+}
 
-ClimbSubsystem::Unlock() {}
+void ClimbSubsystem::Lock() {}
 
-ClimbSubsystem::IsLockEngaged() {}
+void ClimbSubsystem::Unlock() {}
+
+bool ClimbSubsystem::IsLockEngaged() {
+    return false;
+}
