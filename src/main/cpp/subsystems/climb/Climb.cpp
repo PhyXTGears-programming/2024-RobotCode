@@ -4,4 +4,20 @@
 
 #include <frc2/command/SubsystemBase.h>
 
-ClimbSubsystem::ClimbSubsystem() {}
+ClimbSubsystem::ClimbUp() {}
+
+ClimbSubsystem::ClimbDown() {}
+
+ClimbSubsystem::GetArmPosition() {}
+
+ClimbSubsystem::IsArmUp() {}
+
+ClimbSubsystem::IsArmDown() {}
+
+ClimbSubsystem::IsArmHome() {}
+
+ClimbSubsystem::Lock() {}
+
+ClimbSubsystem::Unlock() {}
+
+ClimbSubsystem::IsLockEngaged() {}
