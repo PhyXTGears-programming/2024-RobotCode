@@ -4,10 +4,12 @@
 
 #pragma once
 
+#include "subsystems/drivetrain/Drivetrain.h"
+
 #include <string>
 
-#include <frc/TimedRobot.h>
 #include <frc/smartdashboard/SendableChooser.h>
+#include <frc/TimedRobot.h>
 
 class Robot : public frc::TimedRobot {
     public:
@@ -29,4 +31,6 @@ class Robot : public frc::TimedRobot {
         const std::string kAutoNameDefault = "Default";
         const std::string kAutoNameCustom = "My Auto";
         std::string m_autoSelected;
+
+        Drivetrain * c_drivetrain = nullptr;
 };
