@@ -4,6 +4,11 @@ plugins {
     id "edu.wpi.first.GradleRIO" version "2024.2.1"
 }
 
+nativeUtils.platformConfigs.named('linuxathena').configure {
+    it.cppCompiler.args.add('-Wno-deprecated')
+    it.cppCompiler.args.add('-Wno-deprecated-declarations')
+}
+
 // Define my targets (RoboRIO) and artifacts (deployable files)
 // This is added by GradleRIO's backing project DeployUtils.
 deploy {
