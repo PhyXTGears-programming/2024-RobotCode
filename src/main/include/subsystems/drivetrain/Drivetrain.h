@@ -4,6 +4,11 @@
 
 #pragma once
 
+#include "Interface.h"
+#include "external/cpptoml.h"
+#include "subsystems/drivetrain/SwerveModule.h"
+#include "util/point.h"
+
 #include <numbers>
 
 #include <frc/AnalogGyro.h>
@@ -13,11 +18,6 @@
 #include <frc2/command/SubsystemBase.h>
 
 #include <AHRS.h>
-
-#include "Interface.h"
-#include "external/cpptoml.h"
-#include "subsystems/drivetrain/SwerveModule.h"
-#include "util/point.h"
 
 
 /**
