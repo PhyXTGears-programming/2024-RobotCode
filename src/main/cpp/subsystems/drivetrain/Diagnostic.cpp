@@ -132,30 +132,217 @@ void diagnostic::TestDrivetrain::Test02MeasureDriveConversionFactor() {
 }
 
 void diagnostic::TestDrivetrain::Test03MeasureTurnAlignment() {
-    static nt::GenericEntry * dashTurnPosition =
-        frc::Shuffleboard::GetTab(DASHBOARD_TAB)
-        .Add("diag/front-left-turn-position-deg", 0.0)
+    // Show relative encoder position.
+
+    static nt::GenericEntry & dashFrontLeftTurnPositionRel =
+        *frc::Shuffleboard::GetTab(DASHBOARD_TAB)
+        .GetLayout("diag/FL-turn-pos-deg", frc::BuiltInLayouts::kList)
+        .Add("diag/FL-turn-pos-rel-deg", 0.0)
         .GetEntry();
 
-    static nt::GenericEntry * dashSetTurnPositionDeg =
-        frc::Shuffleboard::GetTab(DASHBOARD_TAB)
-        .Add("diag/set/front-left-turn-position-deg", 0.0)
+    static nt::GenericEntry & dashFrontRightTurnPositionRel =
+        *frc::Shuffleboard::GetTab(DASHBOARD_TAB)
+        .GetLayout("diag/FR-turn-pos-deg", frc::BuiltInLayouts::kList)
+        .Add("diag/FR-turn-pos-rel-deg", 0.0)
         .GetEntry();
+
+    static nt::GenericEntry & dashBackLeftTurnPositionRel =
+        *frc::Shuffleboard::GetTab(DASHBOARD_TAB)
+        .GetLayout("diag/BL-turn-pos-deg", frc::BuiltInLayouts::kList)
+        .Add("diag/BL-turn-pos-rel-deg", 0.0)
+        .GetEntry();
+
+    static nt::GenericEntry & dashBackRightTurnPositionRel =
+        *frc::Shuffleboard::GetTab(DASHBOARD_TAB)
+        .GetLayout("diag/BR-turn-pos-deg", frc::BuiltInLayouts::kList)
+        .Add("diag/BR-turn-pos-rel-deg", 0.0)
+        .GetEntry();
+
+    // Show absolute encoder position.
+
+    static nt::GenericEntry & dashFrontLeftTurnPositionAbs =
+        *frc::Shuffleboard::GetTab(DASHBOARD_TAB)
+        .GetLayout("diag/FL-turn-pos-deg", frc::BuiltInLayouts::kList)
+        .Add("diag/FL-turn-pos-abs-deg", 0.0)
+        .GetEntry();
+
+    static nt::GenericEntry & dashFrontRightTurnPositionAbs =
+        *frc::Shuffleboard::GetTab(DASHBOARD_TAB)
+        .GetLayout("diag/FR-turn-pos-deg", frc::BuiltInLayouts::kList)
+        .Add("diag/FR-turn-pos-abs-deg", 0.0)
+        .GetEntry();
+
+    static nt::GenericEntry & dashBackLeftTurnPositionAbs =
+        *frc::Shuffleboard::GetTab(DASHBOARD_TAB)
+        .GetLayout("diag/BL-turn-pos-deg", frc::BuiltInLayouts::kList)
+        .Add("diag/BL-turn-pos-abs-deg", 0.0)
+        .GetEntry();
+
+    static nt::GenericEntry & dashBackRightTurnPositionAbs =
+        *frc::Shuffleboard::GetTab(DASHBOARD_TAB)
+        .GetLayout("diag/BR-turn-pos-deg", frc::BuiltInLayouts::kList)
+        .Add("diag/BR-turn-pos-abs-deg", 0.0)
+        .GetEntry();
+
+    // Set absolute encoder zero offset.
+
+    static nt::GenericEntry & dashFrontLeftTurnOffset =
+        *frc::Shuffleboard::GetTab(DASHBOARD_TAB)
+        .GetLayout("diag/FL-turn-pos-deg", frc::BuiltInLayouts::kList)
+        .Add("diag/FL-turn-pos-offset-deg", 0.0)
+        .GetEntry();
+
+    static nt::GenericEntry & dashFrontRightTurnOffset =
+        *frc::Shuffleboard::GetTab(DASHBOARD_TAB)
+        .GetLayout("diag/FR-turn-pos-deg", frc::BuiltInLayouts::kList)
+        .Add("diag/FR-turn-pos-offset-deg", 0.0)
+        .GetEntry();
+
+    static nt::GenericEntry & dashBackLeftTurnOffset =
+        *frc::Shuffleboard::GetTab(DASHBOARD_TAB)
+        .GetLayout("diag/BL-turn-pos-deg", frc::BuiltInLayouts::kList)
+        .Add("diag/BL-turn-pos-offset-deg", 0.0)
+        .GetEntry();
+
+    static nt::GenericEntry & dashBackRightTurnOffset =
+        *frc::Shuffleboard::GetTab(DASHBOARD_TAB)
+        .GetLayout("diag/BR-turn-pos-deg", frc::BuiltInLayouts::kList)
+        .Add("diag/BR-turn-pos-offset-deg", 0.0)
+        .GetEntry();
+
+    // Toggle button to set zero positions.
+
+    static nt::GenericEntry & dashToggleSetZero =
+        *frc::Shuffleboard::GetTab(DASHBOARD_TAB)
+        .Add("diag/set-turn-zeroes", false)
+        .GetEntry();
+
+    // Toggle button to drive forward at 10%.
+
+    static nt::GenericEntry & dashDriveForward =
+        *frc::Shuffleboard::GetTab(DASHBOARD_TAB)
+        .Add("diag/drive-forward", false)
+        .GetEntry();
+
+    static double flOffset, frOffset, blOffset, brOffset;
 
     static frc2::CommandPtr command = frc2::FunctionalCommand(
-        [] () {
-            dashSetTurnPositionDeg->SetDouble(0.0);
+        [this] () {
+            flOffset = m_drivetrain->m_frontLeft->m_absEncoderOffset;
+            frOffset = m_drivetrain->m_frontRight->m_absEncoderOffset;
+            blOffset = m_drivetrain->m_backLeft->m_absEncoderOffset;
+            brOffset = m_drivetrain->m_backRight->m_absEncoderOffset;
         },
         [this] () {
-            double position = dashSetTurnPositionDeg->GetDouble(0.0);
+            double offset;
 
-            m_drivetrain->m_frontLeft->m_turningPid.SetReference(
-                position * (std::numbers::pi / 180.0),
-                rev::ControlType::kPosition
+            // Show relative positions.
+
+            dashFrontLeftTurnPositionRel.SetDouble(
+                m_drivetrain->m_frontLeft->GetTurnPosition().convert<units::degree>().value()
             );
+
+            dashFrontRightTurnPositionRel.SetDouble(
+                m_drivetrain->m_frontRight->GetTurnPosition().convert<units::degree>().value()
+            );
+
+            dashBackLeftTurnPositionRel.SetDouble(
+                m_drivetrain->m_backLeft->GetTurnPosition().convert<units::degree>().value()
+            );
+
+            dashBackRightTurnPositionRel.SetDouble(
+                m_drivetrain->m_backRight->GetTurnPosition().convert<units::degree>().value()
+            );
+
+            // Show absolute positions.
+
+            dashFrontLeftTurnPositionAbs.SetDouble(
+                m_drivetrain->m_frontLeft->GetTurnAbsPosition().convert<units::degree>().value()
+            );
+
+            dashFrontRightTurnPositionAbs.SetDouble(
+                m_drivetrain->m_frontRight->GetTurnAbsPosition().convert<units::degree>().value()
+            );
+
+            dashBackLeftTurnPositionAbs.SetDouble(
+                m_drivetrain->m_backLeft->GetTurnAbsPosition().convert<units::degree>().value()
+            );
+
+            dashBackRightTurnPositionAbs.SetDouble(
+                m_drivetrain->m_backRight->GetTurnAbsPosition().convert<units::degree>().value()
+            );
+
+            // Update offsets.
+
+            offset = dashFrontLeftTurnOffset.GetDouble(-999.0);
+            if (offset != flOffset) {
+                flOffset = offset;
+                m_drivetrain->m_frontLeft->m_absEncoderOffset = flOffset;
+                m_drivetrain->m_frontLeft->ResetTurnPosition();
+            }
+
+            offset = dashFrontRightTurnOffset.GetDouble(-999.0);
+            if (offset != frOffset) {
+                frOffset = offset;
+                m_drivetrain->m_frontRight->m_absEncoderOffset = frOffset;
+                m_drivetrain->m_frontRight->ResetTurnPosition();
+            }
+
+            offset = dashBackLeftTurnOffset.GetDouble(-999.0);
+            if (offset != blOffset) {
+                blOffset = offset;
+                m_drivetrain->m_backLeft->m_absEncoderOffset = blOffset;
+                m_drivetrain->m_backLeft->ResetTurnPosition();
+            }
+
+            offset = dashBackRightTurnOffset.GetDouble(-999.0);
+            if (offset != brOffset) {
+                brOffset = offset;
+                m_drivetrain->m_backRight->m_absEncoderOffset = brOffset;
+            }
+
+            // Set zeroes.
+
+            if (dashToggleSetZero.GetBoolean(false)) {
+                flOffset = -m_drivetrain->m_frontLeft->GetTurnAbsPositionRaw().value();
+                m_drivetrain->m_frontLeft->m_absEncoderOffset = flOffset;
+                m_drivetrain->m_frontLeft->ResetTurnPosition();
+
+                frOffset = -m_drivetrain->m_frontRight->GetTurnAbsPositionRaw().value();
+                m_drivetrain->m_frontRight->m_absEncoderOffset = flOffset;
+                m_drivetrain->m_frontRight->ResetTurnPosition();
+
+                blOffset = -m_drivetrain->m_backLeft->GetTurnAbsPositionRaw().value();
+                m_drivetrain->m_backLeft->m_absEncoderOffset = flOffset;
+                m_drivetrain->m_backLeft->ResetTurnPosition();
+
+                brOffset = -m_drivetrain->m_backRight->GetTurnAbsPositionRaw().value();
+                m_drivetrain->m_backRight->m_absEncoderOffset = flOffset;
+                m_drivetrain->m_backRight->ResetTurnPosition();
+
+                // Reset toggle to prevent repeat without user interaction.
+                dashToggleSetZero.SetBoolean(false);
+            }
+
+            // Drive motor
+
+            if (dashDriveForward.GetBoolean(false)) {
+                m_drivetrain->m_frontLeft->m_driveMotor.Set(0.1);
+                m_drivetrain->m_frontRight->m_driveMotor.Set(0.1);
+                m_drivetrain->m_backLeft->m_driveMotor.Set(0.1);
+                m_drivetrain->m_backRight->m_driveMotor.Set(0.1);
+            } else {
+                m_drivetrain->m_frontLeft->m_driveMotor.StopMotor();
+                m_drivetrain->m_frontRight->m_driveMotor.StopMotor();
+                m_drivetrain->m_backLeft->m_driveMotor.StopMotor();
+                m_drivetrain->m_backRight->m_driveMotor.StopMotor();
+            }
         },
         [this] (bool interrupted) {
-            m_drivetrain->m_frontLeft->m_turningMotor.Set(0.0);
+            m_drivetrain->m_frontLeft->m_driveMotor.StopMotor();
+            m_drivetrain->m_frontRight->m_driveMotor.StopMotor();
+            m_drivetrain->m_backLeft->m_driveMotor.StopMotor();
+            m_drivetrain->m_backRight->m_driveMotor.StopMotor();
         },
         [this] () -> bool {
             return m_controller->GetStartButtonPressed();
