@@ -40,8 +40,8 @@ diagnostic::TestDrivetrain::TestDrivetrain(
 void diagnostic::TestDrivetrain::Test01MeasureTurnConversionFactor() {
     static int speedFactor = 0;
 
-    static nt::GenericEntry * dashTurnVelocity =
-        frc::Shuffleboard::GetTab(DASHBOARD_TAB)
+    static nt::GenericEntry & dashTurnVelocity =
+        *frc::Shuffleboard::GetTab(DASHBOARD_TAB)
         .Add("diag/front-left-turn-velocity-rpm", 0.0)
         .GetEntry();
 
@@ -62,7 +62,7 @@ void diagnostic::TestDrivetrain::Test01MeasureTurnConversionFactor() {
                 m_drivetrain->m_frontLeft->m_turningMotor.Set(speedFactor * 0.10);
             }
 
-            dashTurnVelocity->SetDouble(
+            dashTurnVelocity.SetDouble(
                 m_drivetrain->m_frontLeft->m_turningEncoder.GetVelocity()
                 * (1.0 / 2.0 * std::numbers::pi)    // rev per radian
                 * (60.0 / 1.0)                      // second per minute
@@ -86,8 +86,8 @@ void diagnostic::TestDrivetrain::Test01MeasureTurnConversionFactor() {
 void diagnostic::TestDrivetrain::Test02MeasureDriveConversionFactor() {
     static int speedFactor = 0;
 
-    static nt::GenericEntry * dashDriveVelocity =
-        frc::Shuffleboard::GetTab(DASHBOARD_TAB)
+    static nt::GenericEntry & dashDriveVelocity =
+        *frc::Shuffleboard::GetTab(DASHBOARD_TAB)
         .Add("diag/front-left-drive-velocity-rpm", 0.0)
         .GetEntry();
 
@@ -108,7 +108,7 @@ void diagnostic::TestDrivetrain::Test02MeasureDriveConversionFactor() {
                 m_drivetrain->m_frontLeft->m_driveMotor.Set(speedFactor * 0.10);
             }
 
-            dashDriveVelocity->SetDouble(
+            dashDriveVelocity.SetDouble(
                 m_drivetrain->m_frontLeft->m_driveEncoder.GetVelocity()
                 * (1.0 / 2.0 * std::numbers::pi)    // rev per radian
                 * (60.0 / 1.0)                      // second per minute
