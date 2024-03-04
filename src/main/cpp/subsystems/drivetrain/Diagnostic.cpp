@@ -1,6 +1,8 @@
 #include "subsystems/drivetrain/Diagnostic.h"
 #include "subsystems/drivetrain/Drivetrain.h"
+#include "util/math.h"
 
+#include <frc/controller/PIDController.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc/shuffleboard/Shuffleboard.h>
 #include <frc/XboxController.h>
@@ -168,6 +170,82 @@ void diagnostic::TestDrivetrain::Test03MeasureTurnAlignment() {
 }
 
 void diagnostic::TestDrivetrain::Test04TuneTurnPid() {
+    static double kP = 0.01, kI = 0.0, kD = 0.0;
+
+    // Used to create dashboard widget and retrieve values.
+    static frc::PIDController pid(kP, kI, kD);
+
+    frc::Shuffleboard::GetTab(DASHBOARD_TAB)
+        .Add("diag/tune-turn-pid", pid);
+
+    static nt::GenericEntry & dashTurnPosition =
+        *frc::Shuffleboard::GetTab(DASHBOARD_TAB)
+        .Add("diag/front-left-turn-position-deg", 0.0)
+        .GetEntry();
+
+    static nt::GenericEntry & dashTurnEnable =
+        *frc::Shuffleboard::GetTab(DASHBOARD_TAB)
+        .Add("diag/front-left-turn-enable", false)
+        .GetEntry();
+
+    static frc2::CommandPtr command = frc2::FunctionalCommand(
+        [this] () {
+            dashTurnEnable.SetBoolean(false);
+
+            rev::SparkPIDController & turnPid =
+                m_drivetrain->m_frontLeft->m_turningPid;
+
+            turnPid.SetP(pid.GetP());
+            turnPid.SetI(pid.GetI());
+            turnPid.SetD(pid.GetD());
+            turnPid.SetFF(0.0);
+        },
+        [this] () {
+            dashTurnPosition.SetDouble(
+                m_drivetrain->m_frontLeft->m_turningEncoder.GetPosition()
+            );
+
+            if (kP != pid.GetP()) {
+                kP = pid.GetP();
+                m_drivetrain->m_frontLeft->m_turningPid.SetP(kP);
+            }
+
+            if (kI != pid.GetI()) {
+                kI = pid.GetI();
+                m_drivetrain->m_frontLeft->m_turningPid.SetI(kI);
+            }
+
+            if (kD != pid.GetD()) {
+                kD = pid.GetD();
+                m_drivetrain->m_frontLeft->m_turningPid.SetD(kD);
+            }
+
+            if (dashTurnEnable.GetBoolean(false)) {
+                m_drivetrain->m_frontLeft->m_turningPid.SetReference(
+                    DEG_2_RAD(pid.GetSetpoint()),
+                    rev::ControlType::kPosition
+                );
+            } else {
+                m_drivetrain->m_frontLeft->m_turningMotor.StopMotor();
+            }
+
+            dashTurnPosition.SetDouble(
+                RAD_2_DEG(m_drivetrain->m_frontLeft->m_turningEncoder.GetPosition())
+            );
+        },
+        [this] (bool interrupted) {
+            m_drivetrain->m_frontLeft->m_turningMotor.Set(0.0);
+        },
+        [this] () -> bool {
+            return m_controller->GetStartButtonPressed();
+        },
+        { m_drivetrain }
+    ).ToPtr();
+
+    frc::SmartDashboard::PutData(
+        "diag/04-measure-turn-tune-pid",
+        command.get()
+    );
 }
 
 void diagnostic::TestDrivetrain::Test05TuneDrivePid() {
