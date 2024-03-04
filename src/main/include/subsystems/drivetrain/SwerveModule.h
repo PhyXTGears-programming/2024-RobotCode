@@ -41,7 +41,11 @@ public:
 
     void SetDesiredState(const frc::SwerveModuleState& state);
 
-    void ResetZeroTurn();
+    void ResetTurnPosition();
+
+    units::radian_t GetTurnPosition();
+    units::radian_t GetTurnAbsPosition();
+    units::radian_t GetTurnAbsPositionRaw();
 
     void UpdateDashboard();
 private:

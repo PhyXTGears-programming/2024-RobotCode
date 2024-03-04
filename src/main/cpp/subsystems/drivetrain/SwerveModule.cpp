@@ -2,15 +2,11 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
+#include "Constants.h"
 #include "subsystems/drivetrain/SwerveModule.h"
-#include <ctre/phoenix/motorcontrol/ControlMode.h>
-#include "ctre/phoenix/sensors/AbsoluteSensorRange.h"
-#include "rev/ControlType.h"
-#include "rev/SparkRelativeEncoder.h"
 #include "util/math.h"
 
 #include <numbers>
-#include <Constants.h>
 
 #include <frc/geometry/Rotation2d.h>
 #include <frc/smartdashboard/SmartDashboard.h>
@@ -20,8 +16,13 @@
 #include <units/length.h>
 #include <units/angle.h>
 #include <units/time.h>
+
+#include <rev/ControlType.h>
+
+#include <ctre/phoenix/motorcontrol/ControlMode.h>
 #include <ctre/phoenix/sensors/SensorInitializationStrategy.h>
 #include <ctre/phoenix/sensors/SensorTimeBase.h>
+#include <ctre/phoenix/sensors/AbsoluteSensorRange.h>
 
 using meters_per_turn = units::compound_unit<units::meters, units::inverse<units::turns>>;
 using meters_per_turn_t = units::unit_t<meters_per_turn>;
@@ -113,7 +114,7 @@ SwerveModule::SwerveModule(
     m_turningPid.SetPositionPIDWrappingMinInput(-std::numbers::pi);
     m_turningPid.SetPositionPIDWrappingMaxInput(std::numbers::pi);
 
-    m_turningEncoder.SetPosition(m_turningAbsEncoder.GetPosition());
+    ResetTurnPosition();
 
     // FIXME: confirm direction of drive motor on robot.
     m_driveMotor.SetInverted(false);
@@ -130,7 +131,6 @@ SwerveModule::SwerveModule(
         * (1.0 / 60.0)          //  minute per second
     );
 
-
     m_drivePid.SetFeedbackDevice(m_driveEncoder);
 
     // Drive pid parameters
@@ -146,22 +146,23 @@ SwerveModule::SwerveModule(
 frc::SwerveModuleState SwerveModule::GetState() {
     return {
         units::meters_per_second_t{ m_driveEncoder.GetVelocity() },
-        units::radian_t{ m_turningEncoder.GetPosition() }
+        GetTurnPosition()
     };
 }
 
 
 frc::SwerveModulePosition SwerveModule::GetPosition() {
-    return {units::meter_t{m_driveEncoder.GetPosition()},
-            units::radian_t{m_turningEncoder.GetPosition()}};
+    return {
+        units::meter_t{m_driveEncoder.GetPosition()},
+        GetTurnPosition()
+    };
 }
 
 void SwerveModule::SetDesiredState(
     const frc::SwerveModuleState& desiredState
 ) {
-    frc::Rotation2d encoderRotation {
-        units::radian_t{m_turningEncoder.GetPosition()}
-    };
+    frc::Rotation2d encoderRotation{ GetTurnPosition() };
+
     // optimize the reference state to avoid spinning further than 90 degrees
     auto targetState = frc::SwerveModuleState::Optimize(
         desiredState,
@@ -211,18 +212,35 @@ void SwerveModule::SetDesiredState(
     );
 }
 
-void SwerveModule::ResetZeroTurn() {
-    m_turningEncoder.SetPosition(m_turningAbsEncoder.GetPosition());
+void SwerveModule::ResetTurnPosition() {
+    m_turningEncoder.SetPosition(GetTurnAbsPosition().value());
+}
+
+units::radian_t SwerveModule::GetTurnPosition() {
+    return units::radian_t{ m_turningEncoder.GetPosition() };
+}
+
+units::radian_t SwerveModule::GetTurnAbsPosition() {
+    return units::radian_t{
+        std::remainder(
+            m_turningAbsEncoder.GetAbsolutePosition() + m_absEncoderOffset,
+            2.0 * std::numbers::pi
+        )
+    };
+}
+
+units::radian_t SwerveModule::GetTurnAbsPositionRaw() {
+    return units::radian_t{ m_turningAbsEncoder.GetAbsolutePosition() };
 }
 
 void SwerveModule::UpdateDashboard() {
     frc::SmartDashboard::PutNumber(
         std::string{m_name} + std::string{"/rel-heading"},
-        RAD_2_DEG(m_turningEncoder.GetPosition())
+        GetTurnPosition().convert<units::degree>().value()
     );
     frc::SmartDashboard::PutNumber(
         std::string{m_name} + std::string{"abs-heading"},
-        RAD_2_DEG(m_turningAbsEncoder.GetPosition())
+        GetTurnAbsPosition().convert<units::degree>().value()
     );
     frc::SmartDashboard::PutNumber(
         std::string{m_name} + std::string{"/drive-speed"},
