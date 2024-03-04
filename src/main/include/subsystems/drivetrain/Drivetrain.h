@@ -6,6 +6,7 @@
 
 #include "Interface.h"
 #include "external/cpptoml.h"
+#include "subsystems/drivetrain/Diagnostic.h"
 #include "subsystems/drivetrain/SwerveModule.h"
 #include "util/point.h"
 
@@ -84,4 +85,6 @@ class Drivetrain : public frc2::SubsystemBase {
             m_backRight->GetPosition()
             }
         };
+
+        friend diagnostic::TestDrivetrain;
 };
