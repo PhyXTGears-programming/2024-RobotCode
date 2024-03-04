@@ -131,7 +131,6 @@ SwerveModule::SwerveModule(
         * (1.0 / 60.0)          //  minute per second
     );
 
-
     m_drivePid.SetFeedbackDevice(m_driveEncoder);
 
     // Drive pid parameters
@@ -153,8 +152,10 @@ frc::SwerveModuleState SwerveModule::GetState() {
 
 
 frc::SwerveModulePosition SwerveModule::GetPosition() {
-    return {units::meter_t{m_driveEncoder.GetPosition()},
-            units::radian_t{m_turningEncoder.GetPosition()}};
+    return {
+        units::meter_t{m_driveEncoder.GetPosition()},
+        units::radian_t{m_turningEncoder.GetPosition()}
+    };
 }
 
 void SwerveModule::SetDesiredState(
