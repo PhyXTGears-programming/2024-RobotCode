@@ -114,7 +114,7 @@ SwerveModule::SwerveModule(
     m_turningPid.SetPositionPIDWrappingMinInput(-std::numbers::pi);
     m_turningPid.SetPositionPIDWrappingMaxInput(std::numbers::pi);
 
-    m_turningEncoder.SetPosition(m_turningAbsEncoder.GetPosition());
+    ResetZeroTurn();
 
     // FIXME: confirm direction of drive motor on robot.
     m_driveMotor.SetInverted(false);
@@ -146,7 +146,7 @@ SwerveModule::SwerveModule(
 frc::SwerveModuleState SwerveModule::GetState() {
     return {
         units::meters_per_second_t{ m_driveEncoder.GetVelocity() },
-        units::radian_t{ m_turningEncoder.GetPosition() }
+        GetTurnPosition()
     };
 }
 
@@ -154,16 +154,15 @@ frc::SwerveModuleState SwerveModule::GetState() {
 frc::SwerveModulePosition SwerveModule::GetPosition() {
     return {
         units::meter_t{m_driveEncoder.GetPosition()},
-        units::radian_t{m_turningEncoder.GetPosition()}
+        GetTurnPosition()
     };
 }
 
 void SwerveModule::SetDesiredState(
     const frc::SwerveModuleState& desiredState
 ) {
-    frc::Rotation2d encoderRotation {
-        units::radian_t{m_turningEncoder.GetPosition()}
-    };
+    frc::Rotation2d encoderRotation{ GetTurnPosition() };
+
     // optimize the reference state to avoid spinning further than 90 degrees
     auto targetState = frc::SwerveModuleState::Optimize(
         desiredState,
@@ -213,18 +212,35 @@ void SwerveModule::SetDesiredState(
     );
 }
 
-void SwerveModule::ResetZeroTurn() {
-    m_turningEncoder.SetPosition(m_turningAbsEncoder.GetPosition());
+void SwerveModule::ResetTurnPosition() {
+    m_turningEncoder.SetPosition(GetTurnAbsPosition().value());
+}
+
+units::radian_t SwerveModule::GetTurnPosition() {
+    return units::radian_t{ m_turningEncoder.GetPosition() };
+}
+
+units::radian_t SwerveModule::GetTurnAbsPosition() {
+    return units::radian_t{
+        std::remainder(
+            m_turningAbsEncoder.GetAbsolutePosition() + m_absEncoderOffset,
+            2.0 * std::numbers::pi
+        )
+    };
+}
+
+units::radian_t SwerveModule::GetTurnAbsPositionRaw() {
+    return units::radian_t{ m_turningAbsEncoder.GetAbsolutePosition() };
 }
 
 void SwerveModule::UpdateDashboard() {
     frc::SmartDashboard::PutNumber(
         std::string{m_name} + std::string{"/rel-heading"},
-        RAD_2_DEG(m_turningEncoder.GetPosition())
+        GetTurnPosition().convert<units::degree>().value()
     );
     frc::SmartDashboard::PutNumber(
         std::string{m_name} + std::string{"abs-heading"},
-        RAD_2_DEG(m_turningAbsEncoder.GetPosition())
+        GetTurnAbsPosition().convert<units::degree>().value()
     );
     frc::SmartDashboard::PutNumber(
         std::string{m_name} + std::string{"/drive-speed"},

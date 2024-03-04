@@ -42,6 +42,10 @@ public:
 
     void ResetZeroTurn();
 
+    units::radian_t GetTurnPosition();
+    units::radian_t GetTurnAbsPosition();
+    units::radian_t GetTurnAbsPositionRaw();
+
     void UpdateDashboard();
 private:
     static constexpr double kWheelRadius = 0.508;
