@@ -2,15 +2,11 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
+#include "Constants.h"
 #include "subsystems/drivetrain/SwerveModule.h"
-#include <ctre/phoenix/motorcontrol/ControlMode.h>
-#include "ctre/phoenix/sensors/AbsoluteSensorRange.h"
-#include "rev/ControlType.h"
-#include "rev/SparkRelativeEncoder.h"
 #include "util/math.h"
 
 #include <numbers>
-#include <Constants.h>
 
 #include <frc/geometry/Rotation2d.h>
 #include <frc/smartdashboard/SmartDashboard.h>
@@ -20,8 +16,13 @@
 #include <units/length.h>
 #include <units/angle.h>
 #include <units/time.h>
+
+#include <rev/ControlType.h>
+
+#include <ctre/phoenix/motorcontrol/ControlMode.h>
 #include <ctre/phoenix/sensors/SensorInitializationStrategy.h>
 #include <ctre/phoenix/sensors/SensorTimeBase.h>
+#include <ctre/phoenix/sensors/AbsoluteSensorRange.h>
 
 using meters_per_turn = units::compound_unit<units::meters, units::inverse<units::turns>>;
 using meters_per_turn_t = units::unit_t<meters_per_turn>;
