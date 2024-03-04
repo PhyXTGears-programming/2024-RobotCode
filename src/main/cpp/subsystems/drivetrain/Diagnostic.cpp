@@ -19,9 +19,9 @@ struct diagnostic::TestDrivetrain {
 
     void Test02MeasureDriveConversionFactor();
 
-    void Test03TuneTurnPid();
+    void Test03MeasureTurnAlignment();
 
-    void Test04MeasureTurnAlignment();
+    void Test04TuneTurnPid();
 
     void Test05TuneDrivePid();
 
@@ -129,10 +129,7 @@ void diagnostic::TestDrivetrain::Test02MeasureDriveConversionFactor() {
     );
 }
 
-void diagnostic::TestDrivetrain::Test03TuneTurnPid() {
-}
-
-void diagnostic::TestDrivetrain::Test04MeasureTurnAlignment() {
+void diagnostic::TestDrivetrain::Test03MeasureTurnAlignment() {
     static nt::GenericEntry * dashTurnPosition =
         frc::Shuffleboard::GetTab(DASHBOARD_TAB)
         .Add("diag/front-left-turn-position-deg", 0.0)
@@ -165,9 +162,12 @@ void diagnostic::TestDrivetrain::Test04MeasureTurnAlignment() {
     ).ToPtr();
 
     frc::SmartDashboard::PutData(
-        "diag/04-measure-turn-alignment",
+        "diag/03-measure-turn-alignment",
         command.get()
     );
+}
+
+void diagnostic::TestDrivetrain::Test04TuneTurnPid() {
 }
 
 void diagnostic::TestDrivetrain::Test05TuneDrivePid() {
