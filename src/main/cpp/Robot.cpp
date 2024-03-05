@@ -28,7 +28,7 @@ void Robot::RobotInit() {
     m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
     frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
 
-    c_drivetrain = new Drivetrain();
+    c_drivetrain = new Drivetrain(toml->get_table("drivetrain"));
 }
 
 /**
