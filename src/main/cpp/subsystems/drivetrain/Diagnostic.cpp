@@ -411,10 +411,6 @@ void diagnostic::TestDrivetrain::Test04TuneTurnPid() {
             turnPid.SetFF(0.0);
         },
         [this] () {
-            dashTurnPosition.SetDouble(
-                m_drivetrain->m_frontLeft->m_turningEncoder.GetPosition()
-            );
-
             if (kP != pid.GetP()) {
                 kP = pid.GetP();
                 m_drivetrain->m_frontLeft->m_turningPid.SetP(kP);
@@ -440,7 +436,7 @@ void diagnostic::TestDrivetrain::Test04TuneTurnPid() {
             }
 
             dashTurnPosition.SetDouble(
-                RAD_2_DEG(m_drivetrain->m_frontLeft->m_turningEncoder.GetPosition())
+                m_drivetrain->m_frontLeft->GetTurnPosition().convert<units::degrees>().value()
             );
         },
         [this] (bool interrupted) {
@@ -453,7 +449,7 @@ void diagnostic::TestDrivetrain::Test04TuneTurnPid() {
     ).ToPtr();
 
     frc::SmartDashboard::PutData(
-        "diag/04-measure-turn-tune-pid",
+        "diag/04-tune-turn-pid",
         command.get()
     );
 }
