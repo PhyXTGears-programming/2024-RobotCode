@@ -39,6 +39,9 @@ diagnostic::TestDrivetrain::TestDrivetrain(
     m_controller = controller;
 }
 
+// Purpose:
+// 1. Measure the turn motor rpm and the wheel turn rpm.
+// 2. Calculate the conversion factor from motor_rpm to wheel_rpm.
 void diagnostic::TestDrivetrain::Test01MeasureTurnConversionFactor() {
     static int speedFactor = 0;
 
