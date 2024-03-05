@@ -2,6 +2,8 @@
 #include "subsystems/drivetrain/Drivetrain.h"
 #include "util/math.h"
 
+#include <cmath>
+
 #include <frc/controller/PIDController.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc/shuffleboard/Shuffleboard.h>
@@ -455,4 +457,83 @@ void diagnostic::TestDrivetrain::Test04TuneTurnPid() {
 }
 
 void diagnostic::TestDrivetrain::Test05TuneDrivePid() {
+    static double kP = 0.01, kI = 0.0, kD = 0.0, kF = 0.0;
+
+    // used to create dashboard widget and retrieve values.
+    static frc::PIDController pid(kP, kI, kD);
+
+    frc::Shuffleboard::GetTab(DASHBOARD_TAB)
+        .Add("diag/tune-drive-pid", pid);
+
+    static nt::GenericEntry & dashDriveFF =
+        *frc::Shuffleboard::GetTab(DASHBOARD_TAB)
+        .Add("diag/front-left-drive-feed-forward", kF)
+        .GetEntry();
+
+    static nt::GenericEntry & dashDriveVelocity =
+        *frc::Shuffleboard::GetTab(DASHBOARD_TAB)
+        .Add("diag/front-left-drive-velocity-rpm", 0.0)
+        .GetEntry();
+
+    static nt::GenericEntry & dashDriveEnable =
+        *frc::Shuffleboard::GetTab(DASHBOARD_TAB)
+        .Add("diag/front-left-drive-enable", false)
+        .GetEntry();
+
+    static frc2::CommandPtr command = frc2::FunctionalCommand(
+        [this] () {
+            dashDriveEnable.SetBoolean(false);
+
+            rev::SparkPIDController & drivePid =
+                m_drivetrain->m_frontLeft->m_drivePid;
+
+            drivePid.SetP(pid.GetP());
+            drivePid.SetI(pid.GetI());
+            drivePid.SetD(pid.GetD());
+            drivePid.SetFF(0.0);    // Use arbFF.
+        },
+        [this] () {
+            if (kP != pid.GetP()) {
+                kP = pid.GetP();
+                m_drivetrain->m_frontLeft->m_drivePid.SetP(kP);
+            }
+
+            if (kI != pid.GetI()) {
+                kI = pid.GetI();
+                m_drivetrain->m_frontLeft->m_drivePid.SetI(kI);
+            }
+
+            if (kD != pid.GetD()) {
+                kD = pid.GetD();
+                m_drivetrain->m_frontLeft->m_drivePid.SetD(kD);
+            }
+
+            if (kF != dashDriveFF.GetDouble(0.0)) {
+                kF = dashDriveFF.GetDouble(0.0);
+            }
+
+            if (dashDriveEnable.GetBoolean(false)) {
+                m_drivetrain->m_frontLeft->m_drivePid.SetReference(
+                    pid.GetSetpoint()           // rev per minute
+                    * (std::numbers::pi / 1.0)  // radian per rev
+                    * (1.0 / 60.0),             // minute per second
+                    rev::ControlType::kVelocity,
+                    0,
+                    std::clamp(kF, -32.0, 32.0)
+                );
+            }
+        },
+        [this] (bool interrupted) {
+            m_drivetrain->m_frontLeft->m_driveMotor.StopMotor();
+        },
+        [this] () -> bool {
+            return m_controller->GetStartButtonPressed();
+        },
+        { m_drivetrain }
+    ).ToPtr();
+
+    frc::SmartDashboard::PutData(
+        "diag/05-tune-drive-pid",
+        command.get()
+    );
 }
