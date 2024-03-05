@@ -4,7 +4,8 @@
 
 #pragma once
 
-#include "rev/SparkMaxRelativeEncoder.h"
+#include "subsystems/drivetrain/Diagnostic.h"
+
 #include <numbers>
 #include <string_view>
 
@@ -64,12 +65,14 @@ private:
 public:
     rev::CANSparkMax m_driveMotor;
     rev::SparkPIDController m_drivePid;
-    rev::SparkMaxRelativeEncoder m_driveEncoder;
+    rev::SparkRelativeEncoder m_driveEncoder;
 
     rev::CANSparkMax m_turningMotor;
     rev::SparkPIDController m_turningPid;
-    rev::SparkMaxRelativeEncoder m_turningEncoder;
+    rev::SparkRelativeEncoder m_turningEncoder;
 
     ctre::phoenix::sensors::CANCoder m_turningAbsEncoder;
+
+    friend diagnostic::TestDrivetrain;
 };
 
