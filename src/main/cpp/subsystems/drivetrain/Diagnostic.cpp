@@ -85,12 +85,26 @@ void diagnostic::TestDrivetrain::Test01MeasureTurnConversionFactor() {
     );
 }
 
+// Purpose:
+// 1. Measure the rpm of the drive motor and the rpm of the drive wheel.
+// 2. Calculate the conversion factor from rpm_motor to rpm_wheel.
+// 3. Measure the rpm of the drive wheel vs the voltage of the motor.
+// 4. Calculate a best fit line to convert desired wheel speed to motor voltage.
+//
+// Note: best fit line will be measured with wheels off the ground, so expect
+// wheel speeds to drop when robot is placed on the ground and fighting friction
+// and inertia.
 void diagnostic::TestDrivetrain::Test02MeasureDriveConversionFactor() {
     static int speedFactor = 0;
 
     static nt::GenericEntry & dashDriveVelocity =
         *frc::Shuffleboard::GetTab(DASHBOARD_TAB)
         .Add("diag/front-left-drive-velocity-rpm", 0.0)
+        .GetEntry();
+
+    static nt::GenericEntry & dashDriveVoltage =
+        *frc::Shuffleboard::GetTab(DASHBOARD_TAB)
+        .Add("diag/front-left-drive-voltage", 0.0)
         .GetEntry();
 
     static frc2::CommandPtr command = frc2::FunctionalCommand(
@@ -114,6 +128,12 @@ void diagnostic::TestDrivetrain::Test02MeasureDriveConversionFactor() {
                 m_drivetrain->m_frontLeft->m_driveEncoder.GetVelocity()
                 * (1.0 / 2.0 * std::numbers::pi)    // rev per radian
                 * (60.0 / 1.0)                      // second per minute
+            );
+
+            // https://www.chiefdelphi.com/t/get-voltage-from-spark-max/344136/3
+            dashDriveVoltage.SetDouble(
+                m_drivetrain->m_frontLeft->m_driveMotor.GetAppliedOutput()
+                * m_drivetrain->m_frontLeft->m_driveMotor.GetBusVoltage()
             );
         },
         [this] (bool interrupted) {
