@@ -16,6 +16,10 @@
 
 using namespace std::literals::string_view_literals;
 
+using units::meters_per_second_t;
+using units::radians_per_second_t;
+using units::second_t;
+
 Drivetrain::Drivetrain(std::shared_ptr<cpptoml::table> table) {
     cpptoml::option<double> frontLeftAbsEncoderOffset =
         table->get_qualified_as<double>("frontLeftAbsEncoderOffset");
@@ -86,11 +90,11 @@ Drivetrain::Drivetrain(std::shared_ptr<cpptoml::table> table) {
 }
 
 void Drivetrain::Drive(
-    units::meters_per_second_t xSpeed,
-    units::meters_per_second_t ySpeed,
-    units::radians_per_second_t rot,
+    meters_per_second_t xSpeed,
+    meters_per_second_t ySpeed,
+    radians_per_second_t rot,
     bool fieldRelative,
-    units::second_t period = 20_ms
+    second_t period = 20_ms
 ) {
     auto chassisSpeeds =
         fieldRelative
