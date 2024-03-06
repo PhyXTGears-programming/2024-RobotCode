@@ -1,18 +1,18 @@
-//Copyright (c) FIRST and other WPILib contributors.
-//Open source Software; you can modify and/or share it under the terms of
+// Copyright (c) FIRST and other WPILib contributors.
+// Open source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory fo this project.
 
+#include "Constants.h"
+#include "Interface.h"
+#include "subsystems/drivetrain/Drivetrain.h"
+#include "util/point.h"
+
+#include <frc/geometry/Pose2d.h>
+#include <frc/geometry/Translation2d.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc/shuffleboard/Shuffleboard.h>
 #include <frc/shuffleboard/Shuffleboard.h>
 #include <frc/shuffleboard/ShuffleboardLayout.h>
-
-#include "Constants.h"
-#include "Interface.h"
-#include "frc/geometry/Pose2d.h"
-#include "frc/geometry/Translation2d.h"
-#include "subsystems/drivetrain/Drivetrain.h"
-#include "util/point.h"
 
 using namespace std::literals::string_view_literals;
 
@@ -107,7 +107,7 @@ void Drivetrain::Drive(
         : frc::ChassisSpeeds(xSpeed, ySpeed, rot);
 
     auto states = m_kinematics.ToSwerveModuleStates(
-            frc::ChassisSpeeds::Discretize(chassisSpeeds, period)
+        frc::ChassisSpeeds::Discretize(chassisSpeeds, period)
     );
 
     m_kinematics.DesaturateWheelSpeeds(&states, Constants::k_maxDriveSpeed);
@@ -121,10 +121,10 @@ void Drivetrain::Drive(
 }
 
 void Drivetrain::Periodic() {
-   m_frontLeft->UpdateDashboard();
-   m_frontRight->UpdateDashboard();
-   m_backLeft->UpdateDashboard();
-   m_backRight->UpdateDashboard();
+    m_frontLeft->UpdateDashboard();
+    m_frontRight->UpdateDashboard();
+    m_backLeft->UpdateDashboard();
+    m_backRight->UpdateDashboard();
 }
  
 void Drivetrain::ResetGyro() {
@@ -140,38 +140,40 @@ void Drivetrain::UpdateOdometry() {
     // TODO: import code from noodlebot
     m_odometry.Update(
         m_gyro.GetRotation2d(),
-        { m_frontLeft->GetPosition(),
+        {
+            m_frontLeft->GetPosition(),
             m_frontRight->GetPosition(),
             m_backLeft->GetPosition(),
             m_backRight->GetPosition()
         }
     );
 }
+
 void Drivetrain::resetPosition(){
     m_odometry.ResetPosition(
         m_gyro.GetRotation2d(),
         {
-          m_frontLeft->GetPosition(),
-          m_frontRight->GetPosition(),
-          m_backLeft->GetPosition(),
-          m_backRight->GetPosition(),
+            m_frontLeft->GetPosition(),
+            m_frontRight->GetPosition(),
+            m_backLeft->GetPosition(),
+            m_backRight->GetPosition(),
         },
-        frc::Pose2d(0_m,0_m, frc::Rotation2d(0_rad))
+        frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_rad))
     );
 }
 
- void Drivetrain::setPosition(frc::Pose2d toPose) {
-     m_odometry.ResetPosition(
+void Drivetrain::setPosition(frc::Pose2d toPose) {
+    m_odometry.ResetPosition(
         m_gyro.GetRotation2d(),
         {
-          m_frontLeft->GetPosition(),
-          m_frontRight->GetPosition(),
-          m_backLeft->GetPosition(),
-          m_backRight->GetPosition(),
+            m_frontLeft->GetPosition(),
+            m_frontRight->GetPosition(),
+            m_backLeft->GetPosition(),
+            m_backRight->GetPosition(),
         },
         toPose
     );
- }
+}
 
 Point Drivetrain::getChassisPosition() {
     frc::Translation2d translation = m_odometry.GetPose().Translation();

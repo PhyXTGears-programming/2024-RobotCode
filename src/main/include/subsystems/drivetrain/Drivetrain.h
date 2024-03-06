@@ -79,10 +79,11 @@ class Drivetrain : public frc2::SubsystemBase {
         frc::SwerveDriveOdometry<4> m_odometry{
             m_kinematics,
             m_gyro.GetRotation2d(),
-            { m_frontLeft->GetPosition(),
-            m_frontRight->GetPosition(),
-            m_backLeft->GetPosition(),
-            m_backRight->GetPosition()
+            {
+                m_frontLeft->GetPosition(),
+                m_frontRight->GetPosition(),
+                m_backLeft->GetPosition(),
+                m_backRight->GetPosition()
             }
         };
 
