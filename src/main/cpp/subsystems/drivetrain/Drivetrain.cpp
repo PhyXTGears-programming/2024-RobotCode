@@ -106,7 +106,7 @@ void Drivetrain::Drive(
             frc::ChassisSpeeds::Discretize(chassisSpeeds, period)
     );
 
-    m_kinematics.DesaturateWheelSpeeds(&states, units::meters_per_second_t(Constants::k_maxDriveSpeed));
+    m_kinematics.DesaturateWheelSpeeds(&states, Constants::k_maxDriveSpeed);
 
     auto [fl, fr, bl, br] = states;
 

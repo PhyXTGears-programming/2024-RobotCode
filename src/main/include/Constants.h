@@ -1,17 +1,23 @@
-#pragma once 
-#include "Interface.h"
-#include <cmath>
+#pragma once
+
 #include <numbers>
+
 #include <units/angular_velocity.h>
 #include <units/velocity.h>
 
+using units::meters_per_second_t;
+using units::radians_per_second_t;
+
 namespace Constants {
-    const int k_NumberOfSwerveModules = 4;
+    constexpr int k_NumberOfSwerveModules = 4;
 
-    constexpr double k_minDriveSpeed = 0.20;
-    constexpr double k_normalDriveSpeed = 0.50;
-    constexpr double k_maxDriveSpeed = 1.00;
-    constexpr double k_maxSpinSpeed = std::numbers::pi;
+    constexpr meters_per_second_t k_maxDriveSpeed = 3_mps;
 
-    const double k_kickstandServoleReleaseAngle = 120;
+    constexpr meters_per_second_t k_normalDriveSpeed = 1_mps;
+    constexpr meters_per_second_t k_slowDriveSpeed = k_normalDriveSpeed * (1.0 - 0.20); // 20% slower.
+    constexpr meters_per_second_t k_fastDriveSpeed = k_normalDriveSpeed * (1.0 + 0.25); // 25% faster.
+
+    constexpr radians_per_second_t k_maxTurnSpeed = std::numbers::pi * 1_rad_per_s;
+
+    constexpr radians_per_second_t k_slowTurnSpeed = k_maxTurnSpeed * (1.0 - 0.5);  // 50% slower.
 };
