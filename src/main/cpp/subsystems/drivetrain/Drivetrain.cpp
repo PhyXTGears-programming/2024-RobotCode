@@ -133,12 +133,10 @@ void Drivetrain::ResetGyro() {
 }
 
 radian_t Drivetrain::GetHeading() {
-    // TODO: import code from noodlebot
     return radian_t(m_gyro.GetYaw() + m_gyroOffset);
 }
 
 void Drivetrain::UpdateOdometry() {
-    // TODO: import code from noodlebot
     m_odometry.Update(
         frc::Rotation2d(GetHeading()),
         {
