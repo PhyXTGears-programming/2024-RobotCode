@@ -18,6 +18,7 @@ using namespace std::literals::string_view_literals;
 
 using units::meters_per_second_t;
 using units::radians_per_second_t;
+using units::radian_t;
 using units::second_t;
 
 Drivetrain::Drivetrain(std::shared_ptr<cpptoml::table> table) {
@@ -102,7 +103,7 @@ void Drivetrain::Drive(
                 xSpeed,
                 ySpeed,
                 rot,
-                m_gyro.GetRotation2d()
+                frc::Rotation2d(GetHeading())
             )
         : frc::ChassisSpeeds(xSpeed, ySpeed, rot);
 
@@ -131,15 +132,15 @@ void Drivetrain::ResetGyro() {
     m_gyroOffset = -m_gyro.GetYaw();
 }
 
-double Drivetrain::GetHeading() {
+radian_t Drivetrain::GetHeading() {
     // TODO: import code from noodlebot
-    return m_gyro.GetYaw() + m_gyroOffset;
+    return radian_t(m_gyro.GetYaw() + m_gyroOffset);
 }
 
 void Drivetrain::UpdateOdometry() {
     // TODO: import code from noodlebot
     m_odometry.Update(
-        m_gyro.GetRotation2d(),
+        frc::Rotation2d(GetHeading()),
         {
             m_frontLeft->GetPosition(),
             m_frontRight->GetPosition(),
@@ -151,7 +152,7 @@ void Drivetrain::UpdateOdometry() {
 
 void Drivetrain::ResetPosition(){
     m_odometry.ResetPosition(
-        m_gyro.GetRotation2d(),
+        frc::Rotation2d(GetHeading()),
         {
             m_frontLeft->GetPosition(),
             m_frontRight->GetPosition(),
@@ -164,7 +165,7 @@ void Drivetrain::ResetPosition(){
 
 void Drivetrain::SetPosition(frc::Pose2d toPose) {
     m_odometry.ResetPosition(
-        m_gyro.GetRotation2d(),
+        frc::Rotation2d(GetHeading()),
         {
             m_frontLeft->GetPosition(),
             m_frontRight->GetPosition(),

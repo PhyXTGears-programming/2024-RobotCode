@@ -42,7 +42,7 @@ class Drivetrain : public frc2::SubsystemBase {
 
         void ResetGyro();
 
-        double GetHeading();
+        units::radian_t GetHeading();
 
         void ResetPosition();
 
