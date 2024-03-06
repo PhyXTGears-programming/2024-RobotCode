@@ -26,9 +26,9 @@ class Drivetrain : public frc2::SubsystemBase {
         Drivetrain(std::shared_ptr<cpptoml::table> table);
 
         void Drive(
-            units::meters_per_second_t xSpeed,
-            units::meters_per_second_t ySpeed,
-            units::radians_per_second_t rot,
+            units::meters_per_second_t forwardSpeed,
+            units::meters_per_second_t strafeSpeed,
+            units::radians_per_second_t turnSpeed,
             bool fieldRelative,
             units::second_t period
         );

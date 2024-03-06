@@ -91,21 +91,21 @@ Drivetrain::Drivetrain(std::shared_ptr<cpptoml::table> table) {
 }
 
 void Drivetrain::Drive(
-    meters_per_second_t xSpeed,
-    meters_per_second_t ySpeed,
-    radians_per_second_t rot,
+    meters_per_second_t forwardSpeed,
+    meters_per_second_t strafeSpeed,
+    radians_per_second_t turnSpeed,
     bool fieldRelative,
     second_t period = 20_ms
 ) {
     auto chassisSpeeds =
         fieldRelative
         ? frc::ChassisSpeeds::FromFieldRelativeSpeeds(
-                xSpeed,
-                ySpeed,
-                rot,
+                forwardSpeed,
+                strafeSpeed,
+                turnSpeed,
                 frc::Rotation2d(GetHeading())
             )
-        : frc::ChassisSpeeds(xSpeed, ySpeed, rot);
+        : frc::ChassisSpeeds(forwardSpeed, strafeSpeed, turnSpeed);
 
     auto states = m_kinematics.ToSwerveModuleStates(
         frc::ChassisSpeeds::Discretize(chassisSpeeds, period)
