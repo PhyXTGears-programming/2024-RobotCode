@@ -43,7 +43,9 @@ class Drivetrain : public frc2::SubsystemBase {
 
         void ResetPosition();
 
-        void SetPosition(frc::Pose2d toPose);
+        void SetPosition(units::radian_t heading, frc::Pose2d toPose);
+
+        void SetPose(frc::Pose2d toPose);
 
         Point GetChassisPosition();
 

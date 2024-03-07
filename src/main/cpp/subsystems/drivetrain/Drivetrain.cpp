@@ -161,7 +161,20 @@ void Drivetrain::ResetPosition(){
     );
 }
 
-void Drivetrain::SetPosition(frc::Pose2d toPose) {
+void Drivetrain::SetPosition(radian_t heading, frc::Pose2d toPose) {
+    m_odometry.ResetPosition(
+        frc::Rotation2d(heading),
+        {
+            m_frontLeft->GetPosition(),
+            m_frontRight->GetPosition(),
+            m_backLeft->GetPosition(),
+            m_backRight->GetPosition(),
+        },
+        toPose
+    );
+}
+
+void Drivetrain::SetPose(frc::Pose2d toPose) {
     m_odometry.ResetPosition(
         frc::Rotation2d(GetHeading()),
         {
