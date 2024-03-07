@@ -149,7 +149,7 @@ void Drivetrain::UpdateOdometry() {
     );
 }
 
-void Drivetrain::resetPosition(){
+void Drivetrain::ResetPosition(){
     m_odometry.ResetPosition(
         m_gyro.GetRotation2d(),
         {
@@ -162,7 +162,7 @@ void Drivetrain::resetPosition(){
     );
 }
 
-void Drivetrain::setPosition(frc::Pose2d toPose) {
+void Drivetrain::SetPosition(frc::Pose2d toPose) {
     m_odometry.ResetPosition(
         m_gyro.GetRotation2d(),
         {
@@ -175,7 +175,7 @@ void Drivetrain::setPosition(frc::Pose2d toPose) {
     );
 }
 
-Point Drivetrain::getChassisPosition() {
+Point Drivetrain::GetChassisPosition() {
     frc::Translation2d translation = m_odometry.GetPose().Translation();
 
     return Point(translation.X().to<double>(), translation.Y().to<double>());

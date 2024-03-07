@@ -44,11 +44,11 @@ class Drivetrain : public frc2::SubsystemBase {
 
         double GetHeading();
 
-        void resetPosition();
+        void ResetPosition();
 
-        void setPosition(frc::Pose2d toPose);
+        void SetPosition(frc::Pose2d toPose);
 
-        Point getChassisPosition();
+        Point GetChassisPosition();
 
     private:
         // FIXME: measure dimensions between wheel axles and update.
