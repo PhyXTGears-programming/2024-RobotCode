@@ -189,7 +189,7 @@ void SwerveModule::SetDesiredState(
         targetState.speed
         / WHEEL_DISTANCE_CONVERSION_FACTOR /* wheel turn per meter */
         / DRIVE_WHEEL_TO_MOTOR_RATIO       /* motor turn per wheel turn */
-    ).to<double>();
+    ).value();
 
     // Set drive speed velocity.
     m_drivePid.SetReference(
@@ -202,12 +202,12 @@ void SwerveModule::SetDesiredState(
     /* TODO: compare performance of percent speed to pid velocity control.
     // Set drive speed percent.
     m_driveMotor.Set(
-        std::clamp((driveSpeed  / Constants::k_maxDriveSpeed).to<double>(), -1.0, 1.0)
+        std::clamp((driveSpeed  / Constants::k_maxDriveSpeed).value(), -1.0, 1.0)
     );
     */
 
     m_turningPid.SetReference(
-        targetState.angle.Radians().to<double>(),
+        targetState.angle.Radians().value(),
         rev::ControlType::kPosition
     );
 }

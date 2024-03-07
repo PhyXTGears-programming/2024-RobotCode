@@ -190,7 +190,7 @@ void Drivetrain::SetPose(frc::Pose2d toPose) {
 Point Drivetrain::GetChassisPosition() {
     frc::Translation2d translation = m_odometry.GetPose().Translation();
 
-    return Point(translation.X().to<double>(), translation.Y().to<double>());
+    return Point(translation.X().value(), translation.Y().value());
 }
 
 
