@@ -4,10 +4,14 @@ namespace Interface {
     namespace {
         const int k_can00 = 0;
 
+        const int k_can61 = 61;
+        const int k_can62 = 62;
+
         const int k_can70 = 70;
         const int k_can71 = 71;
 
         const int k_dio0 = 0;
+        const int k_dio1 = 1;
 
         const int k_pwm0 = 0;
     }
