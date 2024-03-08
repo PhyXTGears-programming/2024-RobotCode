@@ -16,4 +16,6 @@ namespace Interface {
     const int k_speakerShooterMotor2 = k_can71;
 
     const int k_speakerShooterNoteSensor = k_dio0;
+
+    const int k_gateServo = k_pwm0;
 }
