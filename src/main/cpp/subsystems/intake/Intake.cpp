@@ -42,3 +42,8 @@ void IntakeSubsystem::ReverseSpeakerShooter() {
     m_motorTop.Set(m_config.intakeSpeed);
     m_motorBottom.Set(-m_config.intakeSpeed);
 }
+
+void IntakeSubsystem::Stop() {
+    m_motorTop.StopMotor();
+    m_motorBottom.StopMotor();
+}

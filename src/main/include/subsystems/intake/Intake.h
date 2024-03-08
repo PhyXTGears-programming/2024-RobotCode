@@ -18,6 +18,8 @@ class IntakeSubsystem : public frc2::SubsystemBase {
 
         void ReverseSpeakerShooter();
 
+        void Stop();
+
     private:
         rev::CANSparkMax m_motorBottom;
         rev::CANSparkMax m_motorTop;
