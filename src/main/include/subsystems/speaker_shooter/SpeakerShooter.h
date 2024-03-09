@@ -28,13 +28,13 @@ class SpeakerShooterSubsystem : public frc2::SubsystemBase { //SubsystemBase is 
         void StopShooter();
 
         bool IsNoteDetected();
+        bool IsSpeakerNear();
 
         rpm_t GetShooterSpeed();
 
         void SetShooterSpeed(rpm_t speed);
 
         units::meter_t GetSpeakerDistance();
-        bool IsSpeakerNear();
 
     private:
     

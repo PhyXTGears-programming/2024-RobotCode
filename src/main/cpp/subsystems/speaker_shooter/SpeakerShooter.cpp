@@ -6,7 +6,7 @@
 #include <frc2/command/SubsystemBase.h>
 
 SpeakerShooterSubsystem::SpeakerShooterSubsystem(std::shared_ptr<cpptoml::table> table)
-    : m_shootMotor1(
+:   m_shootMotor1(
         interface::speaker::k_motor1,
         rev::CANSparkMaxLowLevel::MotorType::kBrushless
     ),
