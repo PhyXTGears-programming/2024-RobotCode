@@ -1,5 +1,7 @@
 #include "subsystems/speaker_shooter/SpeakerShooter.h"
 
+#include <cmath>
+
 #include <frc2/command/SubsystemBase.h>
 
 SpeakerShooterSubsystem::SpeakerShooterSubsystem(std::shared_ptr<cpptoml::table> table)
@@ -38,6 +40,16 @@ SpeakerShooterSubsystem::SpeakerShooterSubsystem(std::shared_ptr<cpptoml::table>
         m_config.reverseSpeed = rpm_t(*speed);
     }
 
+    {
+        cpptoml::option<double> distanceThreshold = table->get_qualified_as<double>("distanceThreshold");
+
+        if (!distanceThreshold) {
+            throw "Error: arm shooter cannot find toml property armShooter.distanceThreshold";
+        }
+
+        m_config.distanceThreshold = units::meter_t(*distanceThreshold);
+    }
+
     m_shootPid1.SetFeedbackDevice(m_shootEncoder1);
 
     // Shoot motor 2 shall follow motor 1 in reverse direction.
@@ -61,4 +73,18 @@ bool SpeakerShooterSubsystem::IsNoteDetected() {
     return m_noteSensor.Get();
 }
 
-bool SpeakerShooterSubsystem::IsSpeakerNear() {}
+units::meter_t SpeakerShooterSubsystem::GetSpeakerDistance(){
+    return units::meter_t(-1);
+}
+
+bool SpeakerShooterSubsystem::IsSpeakerNear() {
+    return std::abs((m_config.distanceThreshold - GetSpeakerDistance()).value()) < 0.1;
+}
+
+rpm_t SpeakerShooterSubsystem::GetShooterSpeed(){
+// idk how to that
+}
+
+void SpeakerShooterSubsystem::SetShooterSpeed(rpm_t speed){
+// if I could see my intake sub then I could
+}
