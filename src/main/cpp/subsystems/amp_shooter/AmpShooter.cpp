@@ -18,17 +18,17 @@ AmpShooterSubsystem::AmpShooterSubsystem(
     }
     m_config.liftCurrentThreshold = *liftCurrentThreshold;
 
-    cpptoml::option<double> servoExtendAngleDeg = table->get_qualified_as<double>("servo.extendAngleDeg");
-    if (!servoExtendAngleDeg) {
-        throw "Error: ampShooter cannot find toml property servo.extendAngleDeg";
+    cpptoml::option<double> servoExtendPulseMicro = table->get_qualified_as<double>("servo.extendPulseMicro");
+    if (!servoExtendPulseMicro) {
+        throw "Error: ampShooter cannot find toml property servo.extendPulseTime";
     }
-    m_config.servo.extendAngleDeg = *servoExtendAngleDeg;
+    m_config.servo.extendPulseTime = units::microsecond_t(*servoExtendPulseMicro);
 
-    cpptoml::option<double> servoRetractAngleDeg = table->get_qualified_as<double>("servo.retractAngleDeg");
-    if (!servoRetractAngleDeg) {
-        throw "Error: ampShooter cannot find toml property servo.retractAngleDeg";
+    cpptoml::option<double> servoRetractPulseMicro = table->get_qualified_as<double>("servo.retractPulseMicro");
+    if (!servoRetractPulseMicro) {
+        throw "Error: ampShooter cannot find toml property servo.retractPulseTime";
     }
-    m_config.servo.retractAngleDeg = *servoRetractAngleDeg;
+    m_config.servo.retractPulseTime = units::microsecond_t(*servoRetractPulseMicro);
 
     m_liftMotor.SetInverted(false);
     m_liftMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
@@ -66,11 +66,11 @@ void AmpShooterSubsystem::StopShoot() {
 }
 
 void AmpShooterSubsystem::Extend() {
-    m_servo.SetAngle(m_config.servo.extendAngleDeg);
+    m_servo.SetPulseTime(m_config.servo.extendPulseTime);
 }
 
 void AmpShooterSubsystem::Retract() {
-    m_servo.SetAngle(m_config.servo.retractAngleDeg);
+    m_servo.SetPulseTime(m_config.servo.retractPulseTime);
 }
 
 bool AmpShooterSubsystem::IsNoteDetected() {

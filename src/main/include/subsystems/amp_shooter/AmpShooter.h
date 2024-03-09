@@ -39,8 +39,8 @@ class AmpShooterSubsystem : public frc2::SubsystemBase {
         struct {
             double liftCurrentThreshold = 0.0;
             struct {
-                double extendAngleDeg = 0.0;
-                double retractAngleDeg = 0.0;
+                units::microsecond_t extendPulseTime = 0.0_us;
+                units::microsecond_t retractPulseTime = 0.0_us;
             } servo;
         } m_config;
 };
