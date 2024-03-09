@@ -1,6 +1,7 @@
 #include "Interface.h"
 #include "subsystems/speaker_shooter/SpeakerShooter.h"
 
+#include <cmath>
 #include <iostream>
 
 #include <frc2/command/SubsystemBase.h>
@@ -45,6 +46,17 @@ SpeakerShooterSubsystem::SpeakerShooterSubsystem(std::shared_ptr<cpptoml::table>
         }
     }
 
+    {
+        cpptoml::option<double> distanceThreshold = table->get_qualified_as<double>("distanceThreshold");
+
+        if (distanceThreshold) {
+            m_config.distanceThreshold = units::meter_t(*distanceThreshold);
+        } else {
+            std::cerr << "Error: arm shooter cannot find toml property armShooter.distanceThreshold" << std::endl;
+            hasError = true;
+        }
+    }
+
     if (hasError) {
         abort();
     }
@@ -72,4 +84,18 @@ bool SpeakerShooterSubsystem::IsNoteDetected() {
     return m_noteSensor.Get();
 }
 
-bool SpeakerShooterSubsystem::IsSpeakerNear() {}
+units::meter_t SpeakerShooterSubsystem::GetSpeakerDistance(){
+    return units::meter_t(-1);
+}
+
+bool SpeakerShooterSubsystem::IsSpeakerNear() {
+    return std::abs((m_config.distanceThreshold - GetSpeakerDistance()).value()) < 0.1;
+}
+
+rpm_t SpeakerShooterSubsystem::GetShooterSpeed(){
+// idk how to that
+}
+
+void SpeakerShooterSubsystem::SetShooterSpeed(rpm_t speed){
+// if I could see my intake sub then I could
+}

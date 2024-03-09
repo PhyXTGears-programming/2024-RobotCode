@@ -50,5 +50,6 @@ class SpeakerShooterSubsystem : public frc2::SubsystemBase { //SubsystemBase is 
         struct {
             rpm_t shootSpeed;
             rpm_t reverseSpeed;
+            units::meter_t  distanceThreshold;
         } m_config;
 };
