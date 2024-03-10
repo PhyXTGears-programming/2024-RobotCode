@@ -7,8 +7,8 @@
 
 
 IntakeSubsystem::IntakeSubsystem(std::shared_ptr<cpptoml::table> table)
-    : m_motorBottom(Interface::k_intakeMotorBottom, rev::CANSparkMax::MotorType::kBrushless), 
-    m_motorTop(Interface::k_intakeMotorTop, rev::CANSparkMax::MotorType::kBrushless)
+    : m_motorBottom(Interface::intake::k_motorBottom, rev::CANSparkMax::MotorType::kBrushless), 
+    m_motorTop(Interface::intake::k_motorTop, rev::CANSparkMax::MotorType::kBrushless)
 {
     {
         cpptoml::option<double> speed = table->get_qualified_as<double>("intakeSpeed");
