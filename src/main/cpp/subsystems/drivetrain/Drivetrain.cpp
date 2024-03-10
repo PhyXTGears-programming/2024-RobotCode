@@ -30,9 +30,9 @@ Drivetrain::Drivetrain(std::shared_ptr<cpptoml::table> table) {
     }
 
     m_frontLeft = new SwerveModule(
-        Interface::k_drivetrainFrontLeftDrive,
-        Interface::k_drivetrainFrontLeftSteer,
-        Interface::k_drivetrainFrontLeftEncoder,
+        Interface::drive::k_frontLeftDrive,
+        Interface::drive::k_frontLeftTurn,
+        Interface::drive::k_frontLeftEncoder,
         *frontLeftAbsEncoderOffset,
         "front-left"
     );
@@ -45,9 +45,9 @@ Drivetrain::Drivetrain(std::shared_ptr<cpptoml::table> table) {
     }
 
     m_frontRight = new SwerveModule(
-        Interface::k_drivetrainFrontRightDrive,
-        Interface::k_drivetrainFrontRightSteer,
-        Interface::k_drivetrainFrontRightEncoder,
+        Interface::drive::k_frontRightDrive,
+        Interface::drive::k_frontRightTurn,
+        Interface::drive::k_frontRightEncoder,
         *frontRightAbsEncoderOffset,
         "front-right"
     );
@@ -60,9 +60,9 @@ Drivetrain::Drivetrain(std::shared_ptr<cpptoml::table> table) {
     }
 
     m_backLeft = new SwerveModule(
-        Interface::k_drivetrainBackLeftDrive,
-        Interface::k_drivetrainBackLeftSteer,
-        Interface::k_drivetrainBackLeftEncoder,
+        Interface::drive::k_backLeftDrive,
+        Interface::drive::k_backLeftTurn,
+        Interface::drive::k_backLeftEncoder,
         *backLeftAbsEncoderOffset,
         "back-left"
     );
@@ -75,9 +75,9 @@ Drivetrain::Drivetrain(std::shared_ptr<cpptoml::table> table) {
     }
 
     m_backRight = new SwerveModule(
-        Interface::k_drivetrainBackRightDrive,
-        Interface::k_drivetrainBackRightSteer,
-        Interface::k_drivetrainBackRightEncoder,
+        Interface::drive::k_backRightDrive,
+        Interface::drive::k_backRightDrive,
+        Interface::drive::k_backRightEncoder,
         *backRightAbsEncoderOffset,
         "back-right"
     );
