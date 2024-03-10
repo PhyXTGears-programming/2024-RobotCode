@@ -32,7 +32,9 @@ DriveTeleopCommand::DriveTeleopCommand(
     m_robotPeriod = period;
 }
 
-void DriveTeleopCommand::Initialize() {
+void DriveTeleopCommand::Initialize() {}
+
+void DriveTeleopCommand::Execute() {
     m_drivetrain->UpdateOdometry();
     //compresses the range of the driving speed to be within the max speed and
     //the minimum. but have the normal speed be the default if no trigger is 
