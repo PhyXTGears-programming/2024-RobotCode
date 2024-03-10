@@ -7,10 +7,10 @@
 #include <frc/filter/SlewRateLimiter.h>
 #include <frc/XboxController.h>
 
-#include <frc2/command/CommandBase.h>
+#include <frc2/command/Command.h>
 #include <frc2/command/CommandHelper.h>
 
-class DriveTeleopCommand : public frc2::CommandHelper<frc2::CommandBase, DriveTeleopCommand> {
+class DriveTeleopCommand : public frc2::CommandHelper<frc2::Command, DriveTeleopCommand> {
     public:
         DriveTeleopCommand(
             Drivetrain * drivetrain,
