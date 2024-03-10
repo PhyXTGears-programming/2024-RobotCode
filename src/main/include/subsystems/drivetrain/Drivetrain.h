@@ -50,11 +50,10 @@ class Drivetrain : public frc2::SubsystemBase {
         Point GetChassisPosition();
 
     private:
-        // FIXME: measure dimensions between wheel axles and update.
-        frc::Translation2d m_frontLeftLocation { -0.222_m, +0.248_m };
-        frc::Translation2d m_frontRightLocation{ +0.222_m, +0.248_m };
-        frc::Translation2d m_backLeftLocation  { -0.222_m, -0.248_m };
-        frc::Translation2d m_backRightLocation { +0.222_m, -0.248_m };
+        frc::Translation2d m_frontLeftLocation { +0.287_m, +0.287_m };
+        frc::Translation2d m_frontRightLocation{ +0.287_m, -0.287_m };
+        frc::Translation2d m_backLeftLocation  { -0.287_m, +0.287_m };
+        frc::Translation2d m_backRightLocation { -0.287_m, -0.287_m };
 
     public:
         SwerveModule * m_frontLeft = nullptr;
