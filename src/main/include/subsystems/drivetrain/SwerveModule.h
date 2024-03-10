@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "subsystems/drivetrain/Diagnostic.h"
+#include "subsystems/drivetrain/DiagnosticDecl.h"
 
 #include <numbers>
 #include <string_view>
@@ -73,6 +73,6 @@ public:
 
     ctre::phoenix::sensors::CANCoder m_turningAbsEncoder;
 
-    friend diagnostic::TestDrivetrain;
+    friend class diagnostic::TestDrivetrain;
 };
 

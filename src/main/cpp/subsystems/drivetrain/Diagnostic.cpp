@@ -1,5 +1,4 @@
 #include "subsystems/drivetrain/Diagnostic.h"
-#include "subsystems/drivetrain/Drivetrain.h"
 #include "util/math.h"
 
 #include <cmath>
@@ -7,7 +6,6 @@
 #include <frc/controller/PIDController.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc/shuffleboard/Shuffleboard.h>
-#include <frc/XboxController.h>
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/CommandScheduler.h>
 #include <frc2/command/FunctionalCommand.h>
@@ -15,23 +13,6 @@
 #include <networktables/GenericEntry.h>
 
 #define DASHBOARD_TAB "Diagnostic"
-
-struct diagnostic::TestDrivetrain {
-    TestDrivetrain(Drivetrain * drivetrain, frc::XboxController * controller);
-
-    void Test01MeasureTurnConversionFactor();
-
-    void Test02MeasureDriveConversionFactor();
-
-    void Test03MeasureTurnAlignment();
-
-    void Test04TuneTurnPid();
-
-    void Test05TuneDrivePid();
-
-    Drivetrain * m_drivetrain = nullptr;
-    frc::XboxController * m_controller = nullptr;
-};
 
 diagnostic::TestDrivetrain::TestDrivetrain(
     Drivetrain * drivetrain,
