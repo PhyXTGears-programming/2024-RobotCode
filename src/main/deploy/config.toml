@@ -1,0 +1,5 @@
+[drivetrain]
+frontLeftAbsEncoderOffset = 0.0
+frontRightAbsEncoderOffset = 0.0
+backLeftAbsEncoderOffset = 0.0
+backRightAbsEncoderOffset = 0.0
