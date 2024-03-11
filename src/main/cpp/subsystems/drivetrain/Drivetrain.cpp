@@ -68,7 +68,7 @@ Drivetrain::Drivetrain(std::shared_ptr<cpptoml::table> table) {
     );
 
     cpptoml::option<double> backRightAbsEncoderOffset =
-        table->get_qualified_as<double>("backRightAbsEncoder");
+        table->get_qualified_as<double>("backRightAbsEncoderOffset");
 
     if (!backRightAbsEncoderOffset) {
         throw "Error: drivetrain cannot find toml property backRightAbsEncoderOffset";
