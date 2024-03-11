@@ -30,7 +30,7 @@ void Robot::RobotInit() {
 
     m_driverController = new frc::XboxController(0);
 
-    c_drivetrain = new Drivetrain(toml->get_table("drivetrain"));
+    m_drivetrain = new Drivetrain(toml->get_table("drivetrain"));
 }
 
 /**
@@ -98,4 +98,6 @@ int main() {
     return frc::StartRobot<Robot>();
 }
 #endif
+
+
 
