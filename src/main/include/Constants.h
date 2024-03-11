@@ -8,7 +8,7 @@
 using units::meters_per_second_t;
 using units::radians_per_second_t;
 
-namespace Constants {
+namespace constants {
     constexpr int k_NumberOfSwerveModules = 4;
 
     constexpr meters_per_second_t k_maxDriveSpeed = 3_mps;

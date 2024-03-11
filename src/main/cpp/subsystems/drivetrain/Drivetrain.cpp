@@ -30,9 +30,9 @@ Drivetrain::Drivetrain(std::shared_ptr<cpptoml::table> table) {
     }
 
     m_frontLeft = new SwerveModule(
-        Interface::drive::k_frontLeftDrive,
-        Interface::drive::k_frontLeftTurn,
-        Interface::drive::k_frontLeftEncoder,
+        interface::drive::k_frontLeftDrive,
+        interface::drive::k_frontLeftTurn,
+        interface::drive::k_frontLeftEncoder,
         *frontLeftAbsEncoderOffset,
         "front-left"
     );
@@ -45,9 +45,9 @@ Drivetrain::Drivetrain(std::shared_ptr<cpptoml::table> table) {
     }
 
     m_frontRight = new SwerveModule(
-        Interface::drive::k_frontRightDrive,
-        Interface::drive::k_frontRightTurn,
-        Interface::drive::k_frontRightEncoder,
+        interface::drive::k_frontRightDrive,
+        interface::drive::k_frontRightTurn,
+        interface::drive::k_frontRightEncoder,
         *frontRightAbsEncoderOffset,
         "front-right"
     );
@@ -60,9 +60,9 @@ Drivetrain::Drivetrain(std::shared_ptr<cpptoml::table> table) {
     }
 
     m_backLeft = new SwerveModule(
-        Interface::drive::k_backLeftDrive,
-        Interface::drive::k_backLeftTurn,
-        Interface::drive::k_backLeftEncoder,
+        interface::drive::k_backLeftDrive,
+        interface::drive::k_backLeftTurn,
+        interface::drive::k_backLeftEncoder,
         *backLeftAbsEncoderOffset,
         "back-left"
     );
@@ -75,9 +75,9 @@ Drivetrain::Drivetrain(std::shared_ptr<cpptoml::table> table) {
     }
 
     m_backRight = new SwerveModule(
-        Interface::drive::k_backRightDrive,
-        Interface::drive::k_backRightTurn,
-        Interface::drive::k_backRightEncoder,
+        interface::drive::k_backRightDrive,
+        interface::drive::k_backRightTurn,
+        interface::drive::k_backRightEncoder,
         *backRightAbsEncoderOffset,
         "back-right"
     );
@@ -121,7 +121,7 @@ void Drivetrain::Drive(
         frc::ChassisSpeeds::Discretize(chassisSpeeds, period)
     );
 
-    m_kinematics.DesaturateWheelSpeeds(&states, Constants::k_maxDriveSpeed);
+    m_kinematics.DesaturateWheelSpeeds(&states, constants::k_maxDriveSpeed);
 
     auto [fl, fr, bl, br] = states;
 

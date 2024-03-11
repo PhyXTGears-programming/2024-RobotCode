@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Interface {
+namespace interface {
     namespace {
         // Drivetrain Drive Motors
 

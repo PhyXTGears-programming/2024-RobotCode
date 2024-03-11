@@ -202,7 +202,7 @@ void SwerveModule::SetDesiredState(
     /* TODO: compare performance of percent speed to pid velocity control.
     // Set drive speed percent.
     m_driveMotor.Set(
-        std::clamp((driveSpeed  / Constants::k_maxDriveSpeed).value(), -1.0, 1.0)
+        std::clamp((driveSpeed  / constants::k_maxDriveSpeed).value(), -1.0, 1.0)
     );
     */
 
