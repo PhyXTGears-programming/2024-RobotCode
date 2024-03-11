@@ -238,6 +238,11 @@ void diagnostic::TestDrivetrain::Test03MeasureTurnAlignment() {
             frOffset = m_drivetrain->m_frontRight->m_absEncoderOffset;
             blOffset = m_drivetrain->m_backLeft->m_absEncoderOffset;
             brOffset = m_drivetrain->m_backRight->m_absEncoderOffset;
+
+            m_drivetrain->m_frontLeft->m_turningMotor.SetIdleMode(rev::CANSparkBase::IdleMode::kCoast);
+            m_drivetrain->m_frontRight->m_turningMotor.SetIdleMode(rev::CANSparkBase::IdleMode::kCoast);
+            m_drivetrain->m_backLeft->m_turningMotor.SetIdleMode(rev::CANSparkBase::IdleMode::kCoast);
+            m_drivetrain->m_backRight->m_turningMotor.SetIdleMode(rev::CANSparkBase::IdleMode::kCoast);
         },
         [this] () {
             units::radian_t offset;
@@ -333,6 +338,11 @@ void diagnostic::TestDrivetrain::Test03MeasureTurnAlignment() {
             // Drive motor
 
             if (dashDriveForward.GetBoolean(false)) {
+                m_drivetrain->m_frontLeft->m_turningMotor.SetIdleMode(rev::CANSparkBase::IdleMode::kBrake);
+                m_drivetrain->m_frontRight->m_turningMotor.SetIdleMode(rev::CANSparkBase::IdleMode::kBrake);
+                m_drivetrain->m_backLeft->m_turningMotor.SetIdleMode(rev::CANSparkBase::IdleMode::kBrake);
+                m_drivetrain->m_backRight->m_turningMotor.SetIdleMode(rev::CANSparkBase::IdleMode::kBrake);
+
                 m_drivetrain->m_frontLeft->m_driveMotor.Set(0.1);
                 m_drivetrain->m_frontRight->m_driveMotor.Set(0.1);
                 m_drivetrain->m_backLeft->m_driveMotor.Set(0.1);
@@ -342,6 +352,11 @@ void diagnostic::TestDrivetrain::Test03MeasureTurnAlignment() {
                 m_drivetrain->m_frontRight->m_driveMotor.StopMotor();
                 m_drivetrain->m_backLeft->m_driveMotor.StopMotor();
                 m_drivetrain->m_backRight->m_driveMotor.StopMotor();
+
+                m_drivetrain->m_frontLeft->m_turningMotor.SetIdleMode(rev::CANSparkBase::IdleMode::kCoast);
+                m_drivetrain->m_frontRight->m_turningMotor.SetIdleMode(rev::CANSparkBase::IdleMode::kCoast);
+                m_drivetrain->m_backLeft->m_turningMotor.SetIdleMode(rev::CANSparkBase::IdleMode::kCoast);
+                m_drivetrain->m_backRight->m_turningMotor.SetIdleMode(rev::CANSparkBase::IdleMode::kCoast);
             }
         },
         [this] (bool interrupted) {
