@@ -26,19 +26,6 @@
 using meters_per_turn = units::compound_unit<units::meters, units::inverse<units::turns>>;
 using meters_per_turn_t = units::unit_t<meters_per_turn>;
 
-#define ROBOT_ID 1
-
-#if ROBOT_ID == 1
-// FIXME: measure steer ratio and gear ratio of 2024 robot swerve modules.
-static constexpr double MK1_DRIVE_RATIO = 1.0 / 1.0; // motor turns per gearbox turn
-static constexpr double DRIVE_GEAR_RATIO = 1.0 / 1.0; //  gearbox turns per wheel turn
-#elif ROBOT_ID == 2
-// FIXME: measure steer ratio and gear ratio of 2024 robot swerve modules.
-static constexpr double MK1_DRIVE_RATIO = 1.0 / 1.0; // motor turns per gearbox turn
-static constexpr double DRIVE_GEAR_RATIO = 1.0 / 1.0; //  gearbox turns per wheel turn
-#endif
-
-
 SwerveModule::SwerveModule(
     int driveMotorCan,
     int turningMotorCan,
@@ -105,13 +92,13 @@ SwerveModule::SwerveModule(
     m_driveMotor.SetSmartCurrentLimit(40);
 
     m_driveEncoder.SetPositionConversionFactor(
-        MK1_DRIVE_RATIO         //  gearbox turn per motor turn
-        / DRIVE_GEAR_RATIO      //  wheel turn per gearbox turn
+        constants::drive::k_driveWheelPerMotorRatio
+        * (std::numbers::pi * constants::drive::k_wheelDiameter.value() / 1.0)  // meter per turn
     );
     m_driveEncoder.SetVelocityConversionFactor(
-        MK1_DRIVE_RATIO         //  gearbox turn per motor turn
-        / DRIVE_GEAR_RATIO      //  wheel turn per gearbox turn
-        * (1.0 / 60.0)          //  minute per second
+        constants::drive::k_driveWheelPerMotorRatio
+        * (std::numbers::pi * constants::drive::k_wheelDiameter.value() / 1.0)  // meter per turn
+        * (1.0 / 60.0)                                                          //  minute per second
     );
 
     m_drivePid.SetFeedbackDevice(m_driveEncoder);
