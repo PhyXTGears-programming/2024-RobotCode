@@ -22,5 +22,7 @@ namespace constants {
 
     namespace drive {
         constexpr int k_numberOfSwerveModules = 4;
+
+        constexpr double k_turnWheelPerMotorRatio  = 21.428571;
     }
 };

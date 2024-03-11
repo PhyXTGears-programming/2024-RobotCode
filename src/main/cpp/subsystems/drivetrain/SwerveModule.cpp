@@ -87,15 +87,13 @@ SwerveModule::SwerveModule(
     static constexpr double STEER_GEAR_RATIO = 4.0 / 1.0; //  gearbox turns per wheel turn
 
     m_turningEncoder.SetPositionConversionFactor(
-        2.0 * std::numbers::pi    //  radians per (any) turn
-        / MK1_STEER_RATIO         //  gearbox turn per motor turn
-        / STEER_GEAR_RATIO        //  wheel turn per gearbox turn
+        2.0 * std::numbers::pi                          // radians per motor turn
+        / constants::drive::k_turnWheelPerMotorRatio    // motor turn per wheel turn
     );
     m_turningEncoder.SetVelocityConversionFactor(
-        (2.0 *std::numbers::pi  / 1.0)  //  radians per any turn
-        / MK1_STEER_RATIO              //  gearbox turn per motor turn
-        / STEER_GEAR_RATIO             //  wheel turn per gearbox turn
-        * (1.0 / 60.0)                  //  minute per second
+        (2.0 * std::numbers::pi / 1.0)                  //  radians per motor turn
+        / constants::drive::k_turnWheelPerMotorRatio    // motor turn per wheel turn
+        * (1.0 / 60.0)                                  //  minute per second
     );
 
     m_turningPid.SetFeedbackDevice(m_turningEncoder);
