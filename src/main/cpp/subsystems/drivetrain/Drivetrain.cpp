@@ -88,6 +88,16 @@ Drivetrain::Drivetrain(std::shared_ptr<cpptoml::table> table) {
 
     ResetGyro();
 
+    m_odometry = new frc::SwerveDriveOdometry(
+        m_kinematics,
+        frc::Rotation2d(GetHeading()),
+        {
+            m_frontLeft->GetPosition(),
+            m_frontRight->GetPosition(),
+            m_backLeft->GetPosition(),
+            m_backRight->GetPosition()
+        }
+    );
 }
 
 void Drivetrain::Drive(
@@ -137,7 +147,7 @@ radian_t Drivetrain::GetHeading() {
 }
 
 void Drivetrain::UpdateOdometry() {
-    m_odometry.Update(
+    m_odometry->Update(
         frc::Rotation2d(GetHeading()),
         {
             m_frontLeft->GetPosition(),
@@ -149,7 +159,7 @@ void Drivetrain::UpdateOdometry() {
 }
 
 void Drivetrain::ResetPosition(){
-    m_odometry.ResetPosition(
+    m_odometry->ResetPosition(
         frc::Rotation2d(GetHeading()),
         {
             m_frontLeft->GetPosition(),
@@ -162,7 +172,7 @@ void Drivetrain::ResetPosition(){
 }
 
 void Drivetrain::SetPosition(radian_t heading, frc::Pose2d toPose) {
-    m_odometry.ResetPosition(
+    m_odometry->ResetPosition(
         frc::Rotation2d(heading),
         {
             m_frontLeft->GetPosition(),
@@ -175,7 +185,7 @@ void Drivetrain::SetPosition(radian_t heading, frc::Pose2d toPose) {
 }
 
 void Drivetrain::SetPose(frc::Pose2d toPose) {
-    m_odometry.ResetPosition(
+    m_odometry->ResetPosition(
         frc::Rotation2d(GetHeading()),
         {
             m_frontLeft->GetPosition(),
@@ -188,7 +198,7 @@ void Drivetrain::SetPose(frc::Pose2d toPose) {
 }
 
 Point Drivetrain::GetChassisPosition() {
-    frc::Translation2d translation = m_odometry.GetPose().Translation();
+    frc::Translation2d translation = m_odometry->GetPose().Translation();
 
     return Point(translation.X().value(), translation.Y().value());
 }
