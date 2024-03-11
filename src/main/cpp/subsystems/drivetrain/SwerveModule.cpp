@@ -49,10 +49,10 @@ SwerveModule::SwerveModule(
 ) :
     m_name(name),
     m_absEncoderOffset(absEncoderOffset),
-    m_driveMotor(driveMotorCan, rev::CANSparkLowLevel::MotorType::kBrushless),
+    m_driveMotor(driveMotorCan, rev::CANSparkMax::MotorType::kBrushless),
     m_drivePid(m_driveMotor.GetPIDController()),
     m_driveEncoder(m_driveMotor.GetEncoder(rev::SparkRelativeEncoder::Type::kHallSensor)),
-    m_turningMotor(turningMotorCan, rev::CANSparkLowLevel::MotorType::kBrushless),
+    m_turningMotor(turningMotorCan, rev::CANSparkMax::MotorType::kBrushless),
     m_turningPid(m_turningMotor.GetPIDController()),
     m_turningEncoder(m_turningMotor.GetEncoder(rev::SparkRelativeEncoder::Type::kHallSensor)),
     m_turningAbsEncoder(turningAbsEncoderCan)
