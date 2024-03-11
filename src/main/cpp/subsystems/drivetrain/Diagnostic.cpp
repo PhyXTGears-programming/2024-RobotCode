@@ -333,6 +333,11 @@ void diagnostic::TestDrivetrain::Test03MeasureTurnAlignment() {
 
                 // Reset toggle to prevent repeat without user interaction.
                 dashToggleSetZero.SetBoolean(false);
+
+                dashFrontLeftTurnOffset.SetDouble(flOffset.convert<units::degree>().value());
+                dashFrontRightTurnOffset.SetDouble(frOffset.convert<units::degree>().value());
+                dashBackLeftTurnOffset.SetDouble(blOffset.convert<units::degree>().value());
+                dashBackRightTurnOffset.SetDouble(brOffset.convert<units::degree>().value());
             }
 
             // Drive motor
