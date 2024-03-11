@@ -19,10 +19,9 @@
 
 #include <rev/ControlType.h>
 
-#include <ctre/phoenix/motorcontrol/ControlMode.h>
-#include <ctre/phoenix/sensors/SensorInitializationStrategy.h>
-#include <ctre/phoenix/sensors/SensorTimeBase.h>
-#include <ctre/phoenix/sensors/AbsoluteSensorRange.h>
+#include <ctre/phoenix6/core/CoreCANcoder.hpp>
+#include <ctre/phoenix6/configs/Configs.hpp>
+#include <ctre/phoenix6/signals/SpnEnums.hpp>
 
 using meters_per_turn = units::compound_unit<units::meters, units::inverse<units::turns>>;
 using meters_per_turn_t = units::unit_t<meters_per_turn>;
@@ -44,7 +43,7 @@ SwerveModule::SwerveModule(
     int driveMotorCan,
     int turningMotorCan,
     int turningAbsEncoderCan,
-    double absEncoderOffset,
+    units::radian_t absEncoderOffset,
     std::string_view name
 ) :
     m_name(name),
@@ -55,36 +54,22 @@ SwerveModule::SwerveModule(
     m_turningMotor(turningMotorCan, rev::CANSparkMax::MotorType::kBrushless),
     m_turningPid(m_turningMotor.GetPIDController()),
     m_turningEncoder(m_turningMotor.GetEncoder(rev::SparkRelativeEncoder::Type::kHallSensor)),
-    m_turningAbsEncoder(turningAbsEncoderCan)
+    m_turningAbsEncoder(turningAbsEncoderCan),
+    m_turningAbsPositionSignal(m_turningAbsEncoder.GetAbsolutePosition())
 {
     m_turningMotor.SetInverted(false);
     m_turningMotor.SetIdleMode(rev::CANSparkBase::IdleMode::kBrake);
     m_turningMotor.SetSmartCurrentLimit(30);
 
-    m_turningAbsEncoder.ConfigAbsoluteSensorRange(
-        ctre::phoenix::sensors::AbsoluteSensorRange::Signed_PlusMinus180
-    );
-    m_turningAbsEncoder.ConfigSensorDirection(false);       // FIXME: confirm direction during robot test.
-    m_turningAbsEncoder.ConfigSensorInitializationStrategy(
-        ctre::phoenix::sensors::SensorInitializationStrategy::BootToAbsolutePosition
-    );
+    ctre::phoenix6::configs::CANcoderConfiguration configCanCoder{};
+    ctre::phoenix6::configs::MagnetSensorConfigs configMagnetSensor{};
+    configMagnetSensor
+        .WithAbsoluteSensorRange(ctre::phoenix6::signals::AbsoluteSensorRangeValue::Signed_PlusMinusHalf)
+        .WithSensorDirection(ctre::phoenix6::signals::SensorDirectionValue::CounterClockwise_Positive);
 
-    // Set the distance (in this case, angle) per pulse for the turning encoder.
-    // this is the angele through an entire rotation (2* std::numbers::pu)
-    // divided by the encoder resolution
-    const double DEG_PER_PULSE = 0.087890625;
-    m_turningAbsEncoder.ConfigFeedbackCoefficient(
-        DEG_PER_PULSE * 2.0 * std::numbers::pi /* radians */ / 360.0 /* degress */,
-        "radians",
-        ctre::phoenix::sensors::SensorTimeBase::PerSecond,
-        100.0
-    );
+    configCanCoder.WithMagnetSensor(configMagnetSensor);
 
-    // FIXME: measure steer ratio and gear ratio of 2024 robot swerve modules.
-    // 1.023 from experiment. measure (relHeading initialrelheading)  / (absheading initial abs heading)
-    // after manually turning wheel in a full circle more turns = more accuracy
-    static constexpr double MK1_STEER_RATIO = 1.023 * 11.30 / 1.0; // motor turns per gearbox turn
-    static constexpr double STEER_GEAR_RATIO = 4.0 / 1.0; //  gearbox turns per wheel turn
+    m_turningAbsEncoder.GetConfigurator().Apply(configCanCoder);
 
     m_turningEncoder.SetPositionConversionFactor(
         2.0 * std::numbers::pi                          // radians per motor turn
@@ -211,7 +196,9 @@ void SwerveModule::SetDesiredState(
 }
 
 void SwerveModule::ResetTurnPosition() {
-    m_turningEncoder.SetPosition(GetTurnAbsPosition().value());
+    m_turningEncoder.SetPosition(
+        GetTurnAbsPosition().convert<units::radian>().value()
+    );
 }
 
 units::radian_t SwerveModule::GetTurnPosition() {
@@ -219,16 +206,20 @@ units::radian_t SwerveModule::GetTurnPosition() {
 }
 
 units::radian_t SwerveModule::GetTurnAbsPosition() {
-    return units::radian_t{
-        std::remainder(
-            m_turningAbsEncoder.GetAbsolutePosition() + m_absEncoderOffset,
-            2.0 * std::numbers::pi
+    auto position = units::math::abs(
+        units::math::fmod(
+            m_turningAbsPositionSignal.GetValue()
+                + m_absEncoderOffset
+                + 180_deg,
+            360_deg
         )
-    };
+    ) - 180_deg;
+
+    return position.convert<units::radian>();
 }
 
 units::radian_t SwerveModule::GetTurnAbsPositionRaw() {
-    return units::radian_t{ m_turningAbsEncoder.GetAbsolutePosition() };
+    return m_turningAbsPositionSignal.GetValue().convert<units::radian>();
 }
 
 void SwerveModule::UpdateDashboard() {

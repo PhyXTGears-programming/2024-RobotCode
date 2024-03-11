@@ -33,7 +33,7 @@ Drivetrain::Drivetrain(std::shared_ptr<cpptoml::table> table) {
         interface::drive::k_frontLeftDrive,
         interface::drive::k_frontLeftTurn,
         interface::drive::k_frontLeftEncoder,
-        *frontLeftAbsEncoderOffset,
+        units::degree_t(*frontLeftAbsEncoderOffset),
         "front-left"
     );
 
@@ -48,7 +48,7 @@ Drivetrain::Drivetrain(std::shared_ptr<cpptoml::table> table) {
         interface::drive::k_frontRightDrive,
         interface::drive::k_frontRightTurn,
         interface::drive::k_frontRightEncoder,
-        *frontRightAbsEncoderOffset,
+        units::degree_t(*frontRightAbsEncoderOffset),
         "front-right"
     );
 
@@ -63,7 +63,7 @@ Drivetrain::Drivetrain(std::shared_ptr<cpptoml::table> table) {
         interface::drive::k_backLeftDrive,
         interface::drive::k_backLeftTurn,
         interface::drive::k_backLeftEncoder,
-        *backLeftAbsEncoderOffset,
+        units::degree_t(*backLeftAbsEncoderOffset),
         "back-left"
     );
 
@@ -78,7 +78,7 @@ Drivetrain::Drivetrain(std::shared_ptr<cpptoml::table> table) {
         interface::drive::k_backRightDrive,
         interface::drive::k_backRightTurn,
         interface::drive::k_backRightEncoder,
-        *backRightAbsEncoderOffset,
+        units::degree_t(*backRightAbsEncoderOffset),
         "back-right"
     );
 

@@ -17,8 +17,8 @@
 #include <units/velocity.h>
 #include <units/voltage.h>
 
-#include <ctre/phoenix/sensors/CANCoder.h>
-#include <ctre/Phoenix.h>
+#include <ctre/phoenix6/CANcoder.hpp>
+#include <ctre/phoenix6/StatusSignal.hpp>
 
 #include <rev/SparkRelativeEncoder.h>
 #include <rev/SparkPIDController.h>
@@ -32,7 +32,7 @@ public:
         int driveMotorCan,
         int turningMotorCan,
         int turningAbsEncoderCan,
-        double absEncoderOffset,
+        units::radian_t absEncoderOffset,
         std::string_view name = "swerve ??"sv
     );
 
@@ -60,7 +60,7 @@ private:
 
     std::string m_name;
 
-    double m_absEncoderOffset = 0.0;
+    units::radian_t m_absEncoderOffset = 0.0_rad;
 
 public:
     rev::CANSparkMax m_driveMotor;
@@ -71,7 +71,8 @@ public:
     rev::SparkPIDController m_turningPid;
     rev::SparkRelativeEncoder m_turningEncoder;
 
-    ctre::phoenix::sensors::CANCoder m_turningAbsEncoder;
+    ctre::phoenix6::hardware::CANcoder m_turningAbsEncoder;
+    ctre::phoenix6::StatusSignal<units::turn_t> & m_turningAbsPositionSignal;
 
     friend class diagnostic::TestDrivetrain;
 };
