@@ -75,7 +75,9 @@ void Robot::AutonomousPeriodic() {
 
 void Robot::TeleopInit() {}
 
-void Robot::TeleopPeriodic() {}
+void Robot::TeleopPeriodic() {
+    frc2::CommandScheduler::GetInstance().Run();
+}
 
 void Robot::DisabledInit() {}
 
