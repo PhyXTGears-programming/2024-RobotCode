@@ -28,6 +28,8 @@ void Robot::RobotInit() {
     m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
     frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
 
+    m_driverController = new frc::XboxController(0);
+
     c_drivetrain = new Drivetrain(toml->get_table("drivetrain"));
 }
 
@@ -96,3 +98,4 @@ int main() {
     return frc::StartRobot<Robot>();
 }
 #endif
+

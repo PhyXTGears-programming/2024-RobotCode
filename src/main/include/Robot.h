@@ -8,6 +8,7 @@
 
 #include <string>
 
+#include <frc/XboxController.h>
 #include <frc/smartdashboard/SendableChooser.h>
 #include <frc/TimedRobot.h>
 
@@ -31,6 +32,8 @@ class Robot : public frc::TimedRobot {
         const std::string kAutoNameDefault = "Default";
         const std::string kAutoNameCustom = "My Auto";
         std::string m_autoSelected;
+
+        frc::XboxController * m_driverController = nullptr;
 
         Drivetrain * c_drivetrain = nullptr;
 };
