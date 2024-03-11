@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "Constants.h"
 #include "external/cpptoml.h"
 #include "subsystems/drivetrain/DiagnosticDecl.h"
 #include "subsystems/drivetrain/SwerveModule.h"
@@ -17,6 +18,7 @@
 
 #include <AHRS.h>
 
+using constants::drive::k_numberOfSwerveModules;
 
 /**
  * Represents a swerve drive style drivetrain.
@@ -67,14 +69,14 @@ class Drivetrain : public frc2::SubsystemBase {
         AHRS m_gyro{ frc::SPI::kMXP };
         double m_gyroOffset = 0.0;
 
-        frc::SwerveDriveKinematics<4> m_kinematics{
+        frc::SwerveDriveKinematics<k_numberOfSwerveModules> m_kinematics{
             m_frontLeftLocation,
             m_frontRightLocation,
             m_backLeftLocation,
             m_backRightLocation
         };
 
-        frc::SwerveDriveOdometry<4> * m_odometry;
+        frc::SwerveDriveOdometry<k_numberOfSwerveModules> * m_odometry;
 
         friend class diagnostic::TestDrivetrain;
 };
