@@ -76,7 +76,7 @@ Drivetrain::Drivetrain(std::shared_ptr<cpptoml::table> table) {
 
     m_backRight = new SwerveModule(
         Interface::drive::k_backRightDrive,
-        Interface::drive::k_backRightDrive,
+        Interface::drive::k_backRightTurn,
         Interface::drive::k_backRightEncoder,
         *backRightAbsEncoderOffset,
         "back-right"
