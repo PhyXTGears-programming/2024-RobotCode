@@ -7,7 +7,7 @@
 
 
 GateSubsystem::GateSubsystem(std::shared_ptr<cpptoml::table> table)
-:   m_servo(Interface::gate::k_servo)
+:   m_servo(interface::gate::k_servo)
 {
     bool hasError = false;
 
