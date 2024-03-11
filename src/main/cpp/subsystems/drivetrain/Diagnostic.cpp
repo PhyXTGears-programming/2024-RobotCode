@@ -503,6 +503,12 @@ void diagnostic::TestDrivetrain::Test05TuneDrivePid() {
                     std::clamp(kF, -32.0, 32.0)
                 );
             }
+
+            dashDriveVelocity.SetDouble(
+                (m_drivetrain->m_frontLeft->m_driveEncoder.GetVelocity())
+                    * (1.0 / (2.0 * std::numbers::pi))
+                    * (60.0 / 1.0)
+            );
         },
         [this] (bool interrupted) {
             m_drivetrain->m_frontLeft->m_driveMotor.StopMotor();
