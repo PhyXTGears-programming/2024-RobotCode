@@ -22,65 +22,73 @@ using units::radian_t;
 using units::second_t;
 
 Drivetrain::Drivetrain(std::shared_ptr<cpptoml::table> table) {
-    cpptoml::option<double> frontLeftAbsEncoderOffset =
-        table->get_qualified_as<double>("frontLeftAbsEncoderOffset");
+    {
+        cpptoml::option<double> frontLeftAbsEncoderOffset =
+            table->get_qualified_as<double>("frontLeftAbsEncoderOffset");
 
-    if (!frontLeftAbsEncoderOffset) {
-        throw "Error: drivetrain cannot find toml property frontLeftAbsEncoderOffset";
+        if (!frontLeftAbsEncoderOffset) {
+            throw "Error: drivetrain cannot find toml property frontLeftAbsEncoderOffset";
+        }
+
+        m_frontLeft = new SwerveModule(
+            interface::drive::k_frontLeftDrive,
+            interface::drive::k_frontLeftTurn,
+            interface::drive::k_frontLeftEncoder,
+            units::degree_t(*frontLeftAbsEncoderOffset),
+            "front-left"
+        );
     }
 
-    m_frontLeft = new SwerveModule(
-        interface::drive::k_frontLeftDrive,
-        interface::drive::k_frontLeftTurn,
-        interface::drive::k_frontLeftEncoder,
-        units::degree_t(*frontLeftAbsEncoderOffset),
-        "front-left"
-    );
+    {
+        cpptoml::option<double> frontRightAbsEncoderOffset =
+            table->get_qualified_as<double>("frontRightAbsEncoderOffset");
 
-    cpptoml::option<double> frontRightAbsEncoderOffset =
-        table->get_qualified_as<double>("frontRightAbsEncoderOffset");
+        if (!frontRightAbsEncoderOffset) {
+            throw "Error: drivetrain cannot find toml property frontRightAbsEncoderOffset";
+        }
 
-    if (!frontRightAbsEncoderOffset) {
-        throw "Error: drivetrain cannot find toml property frontRightAbsEncoderOffset";
+        m_frontRight = new SwerveModule(
+            interface::drive::k_frontRightDrive,
+            interface::drive::k_frontRightTurn,
+            interface::drive::k_frontRightEncoder,
+            units::degree_t(*frontRightAbsEncoderOffset),
+            "front-right"
+        );
     }
 
-    m_frontRight = new SwerveModule(
-        interface::drive::k_frontRightDrive,
-        interface::drive::k_frontRightTurn,
-        interface::drive::k_frontRightEncoder,
-        units::degree_t(*frontRightAbsEncoderOffset),
-        "front-right"
-    );
+    {
+        cpptoml::option<double> backLeftAbsEncoderOffset =
+            table->get_qualified_as<double>("backLeftAbsEncoderOffset");
 
-    cpptoml::option<double> backLeftAbsEncoderOffset =
-        table->get_qualified_as<double>("backLeftAbsEncoderOffset");
+        if (!backLeftAbsEncoderOffset) {
+            throw "Error: drivetrain cannot find toml property backLeftAbsEncoderOffset";
+        }
 
-    if (!backLeftAbsEncoderOffset) {
-        throw "Error: drivetrain cannot find toml property backLeftAbsEncoderOffset";
+        m_backLeft = new SwerveModule(
+            interface::drive::k_backLeftDrive,
+            interface::drive::k_backLeftTurn,
+            interface::drive::k_backLeftEncoder,
+            units::degree_t(*backLeftAbsEncoderOffset),
+            "back-left"
+        );
     }
 
-    m_backLeft = new SwerveModule(
-        interface::drive::k_backLeftDrive,
-        interface::drive::k_backLeftTurn,
-        interface::drive::k_backLeftEncoder,
-        units::degree_t(*backLeftAbsEncoderOffset),
-        "back-left"
-    );
+    {
+        cpptoml::option<double> backRightAbsEncoderOffset =
+            table->get_qualified_as<double>("backRightAbsEncoderOffset");
 
-    cpptoml::option<double> backRightAbsEncoderOffset =
-        table->get_qualified_as<double>("backRightAbsEncoderOffset");
+        if (!backRightAbsEncoderOffset) {
+            throw "Error: drivetrain cannot find toml property backRightAbsEncoderOffset";
+        }
 
-    if (!backRightAbsEncoderOffset) {
-        throw "Error: drivetrain cannot find toml property backRightAbsEncoderOffset";
+        m_backRight = new SwerveModule(
+            interface::drive::k_backRightDrive,
+            interface::drive::k_backRightTurn,
+            interface::drive::k_backRightEncoder,
+            units::degree_t(*backRightAbsEncoderOffset),
+            "back-right"
+        );
     }
-
-    m_backRight = new SwerveModule(
-        interface::drive::k_backRightDrive,
-        interface::drive::k_backRightTurn,
-        interface::drive::k_backRightEncoder,
-        units::degree_t(*backRightAbsEncoderOffset),
-        "back-right"
-    );
 
     m_gyro.Reset();
 
