@@ -66,7 +66,7 @@ void diagnostic::TestDrivetrain::Test01MeasureTurnConversionFactor() {
     ).ToPtr();
 
     frc::SmartDashboard::PutData(
-        "daig/01-measure-turn-conv-factor",
+        "diag/01-measure-turn-conv-factor",
         command.get()
     );
 }

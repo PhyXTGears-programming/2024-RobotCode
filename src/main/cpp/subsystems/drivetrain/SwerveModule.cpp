@@ -219,7 +219,7 @@ void SwerveModule::UpdateDashboard() {
         GetTurnPosition().convert<units::degree>().value()
     );
     frc::SmartDashboard::PutNumber(
-        std::string{m_name} + std::string{"abs-heading"},
+        std::string{m_name} + std::string{"/abs-heading"},
         GetTurnAbsPosition().convert<units::degree>().value()
     );
     frc::SmartDashboard::PutNumber(
