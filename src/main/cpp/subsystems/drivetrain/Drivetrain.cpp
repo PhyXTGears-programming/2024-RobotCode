@@ -7,6 +7,8 @@
 #include "subsystems/drivetrain/Drivetrain.h"
 #include "util/point.h"
 
+#include <iostream>
+
 #include <frc/geometry/Pose2d.h>
 #include <frc/geometry/Translation2d.h>
 #include <frc/smartdashboard/SmartDashboard.h>
