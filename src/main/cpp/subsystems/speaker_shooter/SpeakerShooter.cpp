@@ -1,10 +1,11 @@
+#include "Interface.h"
 #include "subsystems/speaker_shooter/SpeakerShooter.h"
 
 #include <frc2/command/SubsystemBase.h>
 
 SpeakerShooterSubsystem::SpeakerShooterSubsystem(std::shared_ptr<cpptoml::table> table)
     : m_shootMotor1(
-        Interface::k_speakerShooterMotor1,
+        interface::speaker::k_motor1,
         rev::CANSparkMaxLowLevel::MotorType::kBrushless
     ),
     m_shootPid1(m_shootMotor1.GetPIDController()),
@@ -12,10 +13,10 @@ SpeakerShooterSubsystem::SpeakerShooterSubsystem(std::shared_ptr<cpptoml::table>
         rev::SparkRelativeEncoder::Type::kHallSensor
     )),
     m_shootMotor2(
-        Interface::k_speakerShooterMotor2,
+        interface::speaker::k_motor2,
         rev::CANSparkMaxLowLevel::MotorType::kBrushless
     ),
-    m_noteSensor(Interface::k_speakerShooterNoteSensor)
+    m_noteSensor(interface::speaker::k_noteSensor)
 {
     // Load configuration values from TOML.
     {
