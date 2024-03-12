@@ -27,7 +27,8 @@ Drivetrain::Drivetrain(std::shared_ptr<cpptoml::table> table) {
             table->get_qualified_as<double>("frontLeftAbsEncoderOffset");
 
         if (!frontLeftAbsEncoderOffset) {
-            throw "Error: drivetrain cannot find toml property frontLeftAbsEncoderOffset";
+            std::cerr << "Error: drivetrain cannot find toml property frontLeftAbsEncoderOffset" << std::endl;
+            throw "error";
         }
 
         m_frontLeft = new SwerveModule(
@@ -44,7 +45,8 @@ Drivetrain::Drivetrain(std::shared_ptr<cpptoml::table> table) {
             table->get_qualified_as<double>("frontRightAbsEncoderOffset");
 
         if (!frontRightAbsEncoderOffset) {
-            throw "Error: drivetrain cannot find toml property frontRightAbsEncoderOffset";
+            std::cerr << "Error: drivetrain cannot find toml property frontRightAbsEncoderOffset" << std::endl;
+            throw "error";
         }
 
         m_frontRight = new SwerveModule(
@@ -61,7 +63,8 @@ Drivetrain::Drivetrain(std::shared_ptr<cpptoml::table> table) {
             table->get_qualified_as<double>("backLeftAbsEncoderOffset");
 
         if (!backLeftAbsEncoderOffset) {
-            throw "Error: drivetrain cannot find toml property backLeftAbsEncoderOffset";
+            std::cerr << "Error: drivetrain cannot find toml property backLeftAbsEncoderOffset" << std::endl;
+            throw "error";
         }
 
         m_backLeft = new SwerveModule(
@@ -78,7 +81,8 @@ Drivetrain::Drivetrain(std::shared_ptr<cpptoml::table> table) {
             table->get_qualified_as<double>("backRightAbsEncoderOffset");
 
         if (!backRightAbsEncoderOffset) {
-            throw "Error: drivetrain cannot find toml property backRightAbsEncoderOffset";
+            std::cerr << "Error: drivetrain cannot find toml property backRightAbsEncoderOffset" << std::endl;
+            throw "error";
         }
 
         m_backRight = new SwerveModule(
