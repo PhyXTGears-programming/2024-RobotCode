@@ -68,7 +68,7 @@ void DriveTeleopCommand::Execute() {
 
     const auto turnSpeed = turnSpeedFactor
         * m_turnSpeedLimiter.Calculate(frc::ApplyDeadband(
-            m_driveController->GetRightX(),
+            -m_driveController->GetRightX(),
             JOYSTICK_DEADZONE)
         );
 
