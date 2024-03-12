@@ -1,6 +1,8 @@
 #include "Interface.h"
 #include "subsystems/speaker_shooter/SpeakerShooter.h"
 
+#include <iostream>
+
 #include <frc2/command/SubsystemBase.h>
 
 SpeakerShooterSubsystem::SpeakerShooterSubsystem(std::shared_ptr<cpptoml::table> table)
@@ -18,25 +20,33 @@ SpeakerShooterSubsystem::SpeakerShooterSubsystem(std::shared_ptr<cpptoml::table>
     ),
     m_noteSensor(interface::speaker::k_noteSensor)
 {
+    bool hasError = false;
+
     // Load configuration values from TOML.
     {
         cpptoml::option<double> speed = table->get_qualified_as<double>("shootSpeed");
 
-        if (!speed) {
-            throw "Error: arm shooter cannot find toml property armShooter.shootSpeed";
+        if (speed) {
+            m_config.shootSpeed = rpm_t(*speed);
+        } else {
+            std::cerr << "Error: arm shooter cannot find toml property armShooter.shootSpeed" << std::endl;
+            hasError = true;
         }
-
-        m_config.shootSpeed = rpm_t(*speed);
     }
 
     {
         cpptoml::option<double> speed = table->get_qualified_as<double>("reverseSpeed");
 
-        if (!speed) {
-            throw "Error: arm shooter cannot find toml property armShooter.reverseSpeed";
+        if (speed) {
+            m_config.reverseSpeed = rpm_t(*speed);
+        } else {
+            std::cerr << "Error: arm shooter cannot find toml property armShooter.reverseSpeed" << std::endl;
+            hasError = true;
         }
+    }
 
-        m_config.reverseSpeed = rpm_t(*speed);
+    if (hasError) {
+        abort();
     }
 
     m_shootPid1.SetFeedbackDevice(m_shootEncoder1);
