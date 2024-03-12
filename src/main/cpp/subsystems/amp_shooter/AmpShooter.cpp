@@ -7,10 +7,10 @@
 AmpShooterSubsystem::AmpShooterSubsystem(
     std::shared_ptr<cpptoml::table> table
 ) :
-    m_liftMotor(Interface::k_ampShooterLiftMotor, rev::CANSparkMax::MotorType::kBrushless),
-    m_shootMotor(Interface::k_ampShooterShootMotor, rev::CANSparkMax::MotorType::kBrushless),
-    m_servo(Interface::k_ampShooterServo),
-    m_noteSensor(Interface::k_ampShooterNoteSensor)
+    m_liftMotor(interface::amp::k_liftMotor, rev::CANSparkMax::MotorType::kBrushless),
+    m_shootMotor(interface::amp::k_shootMotor, rev::CANSparkMax::MotorType::kBrushless),
+    m_servo(interface::amp::k_tiltServo),
+    m_noteSensor(interface::amp::k_noteSensor)
 {
     cpptoml::option<double> liftCurrentThreshold = table->get_qualified_as<double>("liftCurrentThreshold");
     if (!liftCurrentThreshold) {
