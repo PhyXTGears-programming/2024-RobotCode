@@ -31,6 +31,11 @@ void Robot::RobotInit() {
     m_driverController = new frc::XboxController(0);
 
     m_drivetrain = new Drivetrain(toml->get_table("drivetrain"));
+
+    m_driveTeleopCommand = new DriveTeleopCommand(
+        m_drivetrain,
+        m_driverController
+    );
 }
 
 /**
@@ -75,7 +80,9 @@ void Robot::AutonomousPeriodic() {
     }
 }
 
-void Robot::TeleopInit() {}
+void Robot::TeleopInit() {
+    m_driveTeleopCommand->Schedule();
+}
 
 void Robot::TeleopPeriodic() {
     frc2::CommandScheduler::GetInstance().Run();
@@ -98,6 +105,3 @@ int main() {
     return frc::StartRobot<Robot>();
 }
 #endif
-
-
-

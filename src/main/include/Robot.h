@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include "commands/DriveTeleopCommand.h"
+
 #include "subsystems/drivetrain/Drivetrain.h"
 
 #include <string>
@@ -36,4 +38,6 @@ class Robot : public frc::TimedRobot {
         frc::XboxController * m_driverController = nullptr;
 
         Drivetrain * m_drivetrain = nullptr;
+
+        DriveTeleopCommand * m_driveTeleopCommand = nullptr;
 };
