@@ -148,37 +148,14 @@ void SwerveModule::SetDesiredState(
     //  modules change directions. this results in smoother driving
     targetState.speed *= (targetState.angle - encoderRotation).Cos();
 
-    // FIXME: measure wheel diameter.
-    constexpr units::meter_t WHEEL_DIAMETER = 3.899_in;
-    constexpr meters_per_turn_t WHEEL_DISTANCE_CONVERSION_FACTOR =
-        WHEEL_DIAMETER
-        * std::numbers::pi
-        / 1.0_tr;
-    constexpr double DRIVE_WHEEL_TO_MOTOR_RATIO = 1.0_tr / 6.12_tr;
-
-    // units are actually native units per 100ms no units exist for
-    // pulses/ticks/ native untis so let the units lib verify  the dims=ensionmath
-    // up to turns per second
-    double driveSpeed = (
-        targetState.speed
-        / WHEEL_DISTANCE_CONVERSION_FACTOR /* wheel turn per meter */
-        / DRIVE_WHEEL_TO_MOTOR_RATIO       /* motor turn per wheel turn */
-    ).value();
-
-    // Set drive speed velocity.
-    m_drivePid.SetReference(
-        driveSpeed,
-        rev::ControlType::kVelocity,
-        0,
-        std::copysign(10.0, driveSpeed)
+    double drivePercent = std::clamp(
+        (targetState.speed / constants::k_maxDriveSpeed).value(),
+        -1.0, 1.0
     );
 
-    /* TODO: compare performance of percent speed to pid velocity control.
     // Set drive speed percent.
-    m_driveMotor.Set(
-        std::clamp((driveSpeed  / constants::k_maxDriveSpeed).value(), -1.0, 1.0)
-    );
-    */
+    m_driveMotor.Set(drivePercent);
+    // */
 
     m_turningPid.SetReference(
         targetState.angle.Radians().value(),
