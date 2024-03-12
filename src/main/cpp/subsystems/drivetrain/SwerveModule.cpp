@@ -44,7 +44,7 @@ SwerveModule::SwerveModule(
     m_turningAbsEncoder(turningAbsEncoderCan),
     m_turningAbsPositionSignal(m_turningAbsEncoder.GetAbsolutePosition())
 {
-    m_turningMotor.SetInverted(false);
+    m_turningMotor.SetInverted(true);
     m_turningMotor.SetIdleMode(rev::CANSparkBase::IdleMode::kBrake);
     m_turningMotor.SetSmartCurrentLimit(30);
 
