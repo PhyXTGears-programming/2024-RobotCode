@@ -21,6 +21,7 @@ void Robot::RobotInit() {
         std::cerr
             << "Unable to open config file: deploy/config.toml" << std::endl
             << ex.what() << std::endl;
+        throw ex;
         // clang-format on
     }
 
