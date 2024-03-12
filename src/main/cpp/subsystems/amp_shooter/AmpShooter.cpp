@@ -2,6 +2,8 @@
 #include "rev/CANSparkMax.h"
 #include "subsystems/amp_shooter/AmpShooter.h"
 
+#include <iostream>
+
 #include <frc2/command/SubsystemBase.h>
 
 AmpShooterSubsystem::AmpShooterSubsystem(
@@ -12,28 +14,40 @@ AmpShooterSubsystem::AmpShooterSubsystem(
     m_servo(interface::amp::k_tiltServo),
     m_noteSensor(interface::amp::k_noteSensor)
 {
+    bool hasError = false;
+
     {
         cpptoml::option<double> liftCurrentThreshold = table->get_qualified_as<double>("liftCurrentThreshold");
-        if (!liftCurrentThreshold) {
-            throw "Error: ampShooter cannot find toml property liftCurrentThreshold";
+        if (liftCurrentThreshold) {
+            m_config.liftCurrentThreshold = *liftCurrentThreshold;
+        } else {
+            std::cerr << "Error: ampShooter cannot find toml property liftCurrentThreshold" << std::endl;
+            hasError = true;
         }
-        m_config.liftCurrentThreshold = *liftCurrentThreshold;
     }
 
     {
         cpptoml::option<double> servoExtendPulseMicro = table->get_qualified_as<double>("servo.extendPulseMicro");
-        if (!servoExtendPulseMicro) {
-            throw "Error: ampShooter cannot find toml property servo.extendPulseTime";
+        if (servoExtendPulseMicro) {
+            m_config.servo.extendPulseTime = units::microsecond_t(*servoExtendPulseMicro);
+        } else {
+            std::cerr << "Error: ampShooter cannot find toml property servo.extendPulseTime" << std::endl;
+            hasError = true;
         }
-        m_config.servo.extendPulseTime = units::microsecond_t(*servoExtendPulseMicro);
     }
 
     {
         cpptoml::option<double> servoRetractPulseMicro = table->get_qualified_as<double>("servo.retractPulseMicro");
-        if (!servoRetractPulseMicro) {
-            throw "Error: ampShooter cannot find toml property servo.retractPulseTime";
+        if (servoRetractPulseMicro) {
+            m_config.servo.retractPulseTime = units::microsecond_t(*servoRetractPulseMicro);
+        } else {
+            std::cerr << "Error: ampShooter cannot find toml property servo.retractPulseTime" << std::endl;
+            hasError = true;
         }
-        m_config.servo.retractPulseTime = units::microsecond_t(*servoRetractPulseMicro);
+    }
+
+    if (hasError) {
+        abort();
     }
 
     m_liftMotor.SetInverted(false);
