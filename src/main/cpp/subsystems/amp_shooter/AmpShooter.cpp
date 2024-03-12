@@ -12,23 +12,29 @@ AmpShooterSubsystem::AmpShooterSubsystem(
     m_servo(interface::amp::k_tiltServo),
     m_noteSensor(interface::amp::k_noteSensor)
 {
-    cpptoml::option<double> liftCurrentThreshold = table->get_qualified_as<double>("liftCurrentThreshold");
-    if (!liftCurrentThreshold) {
-        throw "Error: ampShooter cannot find toml property liftCurrentThreshold";
+    {
+        cpptoml::option<double> liftCurrentThreshold = table->get_qualified_as<double>("liftCurrentThreshold");
+        if (!liftCurrentThreshold) {
+            throw "Error: ampShooter cannot find toml property liftCurrentThreshold";
+        }
+        m_config.liftCurrentThreshold = *liftCurrentThreshold;
     }
-    m_config.liftCurrentThreshold = *liftCurrentThreshold;
 
-    cpptoml::option<double> servoExtendPulseMicro = table->get_qualified_as<double>("servo.extendPulseMicro");
-    if (!servoExtendPulseMicro) {
-        throw "Error: ampShooter cannot find toml property servo.extendPulseTime";
+    {
+        cpptoml::option<double> servoExtendPulseMicro = table->get_qualified_as<double>("servo.extendPulseMicro");
+        if (!servoExtendPulseMicro) {
+            throw "Error: ampShooter cannot find toml property servo.extendPulseTime";
+        }
+        m_config.servo.extendPulseTime = units::microsecond_t(*servoExtendPulseMicro);
     }
-    m_config.servo.extendPulseTime = units::microsecond_t(*servoExtendPulseMicro);
 
-    cpptoml::option<double> servoRetractPulseMicro = table->get_qualified_as<double>("servo.retractPulseMicro");
-    if (!servoRetractPulseMicro) {
-        throw "Error: ampShooter cannot find toml property servo.retractPulseTime";
+    {
+        cpptoml::option<double> servoRetractPulseMicro = table->get_qualified_as<double>("servo.retractPulseMicro");
+        if (!servoRetractPulseMicro) {
+            throw "Error: ampShooter cannot find toml property servo.retractPulseTime";
+        }
+        m_config.servo.retractPulseTime = units::microsecond_t(*servoRetractPulseMicro);
     }
-    m_config.servo.retractPulseTime = units::microsecond_t(*servoRetractPulseMicro);
 
     m_liftMotor.SetInverted(false);
     m_liftMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
