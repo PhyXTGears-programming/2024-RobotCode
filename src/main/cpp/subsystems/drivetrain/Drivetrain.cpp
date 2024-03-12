@@ -22,6 +22,45 @@ using units::radian_t;
 using units::second_t;
 
 Drivetrain::Drivetrain(std::shared_ptr<cpptoml::table> table) {
+    double turnP = 0.0;
+    double turnI = 0.0;
+    double turnD = 0.0;
+
+    {
+        cpptoml::option<double> kP = table->get_qualified_as<double>("swerve.turn.kP");
+
+        if (!kP) {
+            std::cerr << "Error: drivetrain cannot find toml property swerve.turn.kP" << std::endl;
+            throw "error";
+        }
+
+        turnP = *kP;
+    }
+
+    {
+        cpptoml::option<double> kI = table->get_qualified_as<double>("swerve.turn.kI");
+
+        if (!kI) {
+            std::cerr << "Error: drivetrain cannot find toml property swerve.turn.kI" << std::endl;
+            throw "error";
+        }
+
+        turnI = *kI;
+    }
+
+    {
+        cpptoml::option<double> kD = table->get_qualified_as<double>("swerve.turn.kD");
+
+        if (!kD) {
+            std::cerr << "Error: drivetrain canot find toml property swerve.turn.kD" << std::endl;
+            throw "error";
+        }
+
+        turnD = *kD;
+    }
+
+    SwerveModule::PidConfig turnPidConfig(turnP, turnI, turnD);
+
     {
         cpptoml::option<double> frontLeftAbsEncoderOffset =
             table->get_qualified_as<double>("frontLeftAbsEncoderOffset");
@@ -36,6 +75,7 @@ Drivetrain::Drivetrain(std::shared_ptr<cpptoml::table> table) {
             interface::drive::k_frontLeftTurn,
             interface::drive::k_frontLeftEncoder,
             units::degree_t(*frontLeftAbsEncoderOffset),
+            turnPidConfig,
             "front-left"
         );
     }
@@ -54,6 +94,7 @@ Drivetrain::Drivetrain(std::shared_ptr<cpptoml::table> table) {
             interface::drive::k_frontRightTurn,
             interface::drive::k_frontRightEncoder,
             units::degree_t(*frontRightAbsEncoderOffset),
+            turnPidConfig,
             "front-right"
         );
     }
@@ -72,6 +113,7 @@ Drivetrain::Drivetrain(std::shared_ptr<cpptoml::table> table) {
             interface::drive::k_backLeftTurn,
             interface::drive::k_backLeftEncoder,
             units::degree_t(*backLeftAbsEncoderOffset),
+            turnPidConfig,
             "back-left"
         );
     }
@@ -90,6 +132,7 @@ Drivetrain::Drivetrain(std::shared_ptr<cpptoml::table> table) {
             interface::drive::k_backRightTurn,
             interface::drive::k_backRightEncoder,
             units::degree_t(*backRightAbsEncoderOffset),
+            turnPidConfig,
             "back-right"
         );
     }

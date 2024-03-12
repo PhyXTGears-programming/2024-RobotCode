@@ -31,6 +31,7 @@ SwerveModule::SwerveModule(
     int turningMotorCan,
     int turningAbsEncoderCan,
     units::radian_t absEncoderOffset,
+    PidConfig const & turnConfig,
     std::string_view name
 ) :
     m_name(name),
@@ -70,13 +71,12 @@ SwerveModule::SwerveModule(
 
     m_turningPid.SetFeedbackDevice(m_turningEncoder);
 
-    // FIXME: tune pids on robot.
     // Limit the pid controllers input range between -pi and pi and set the
     // input to be continuous.
-    m_turningPid.SetP(0.4);
-    m_turningPid.SetI(0.001);
+    m_turningPid.SetP(turnConfig.kP);
+    m_turningPid.SetI(turnConfig.kI);
     m_turningPid.SetIZone(std::numbers::pi / 8.0);  // 1/8 of 180 deg
-    m_turningPid.SetD(0.0);
+    m_turningPid.SetD(turnConfig.kD);
     //  feedforward sign does not reflect pid error will always push in one direction not to zero error
     m_turningPid.SetFF(0.0);
     m_turningPid.SetOutputRange(-1.0, 1.0);

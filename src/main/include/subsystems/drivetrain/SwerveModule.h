@@ -28,11 +28,14 @@ using namespace std::literals::string_view_literals;
 
 class SwerveModule {
 public:
+    struct PidConfig;
+
     SwerveModule(
         int driveMotorCan,
         int turningMotorCan,
         int turningAbsEncoderCan,
         units::radian_t absEncoderOffset,
+        PidConfig const & turnConfig,
         std::string_view name = "swerve ??"sv
     );
 
@@ -72,5 +75,11 @@ public:
     ctre::phoenix6::StatusSignal<units::turn_t> & m_turningAbsPositionSignal;
 
     friend class diagnostic::TestDrivetrain;
+
+    struct PidConfig {
+        double kP = 1.0;
+        double kI = 0.0;
+        double kD = 0.0;
+    };
 };
 
