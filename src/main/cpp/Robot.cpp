@@ -22,13 +22,22 @@ void Robot::RobotInit() {
             << "Unable to open config file: deploy/config.toml" << std::endl
             << ex.what() << std::endl;
 
-        throw "error";
+        abort();
         // clang-format on
     }
 
     m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
     m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
     frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
+
+    m_driverController = new frc::XboxController(0);
+
+    m_drivetrain = new Drivetrain(toml->get_table("drivetrain"));
+
+    m_driveTeleopCommand = new DriveTeleopCommand(
+        m_drivetrain,
+        m_driverController
+    );
 }
 
 /**
@@ -73,9 +82,13 @@ void Robot::AutonomousPeriodic() {
     }
 }
 
-void Robot::TeleopInit() {}
+void Robot::TeleopInit() {
+    m_driveTeleopCommand->Schedule();
+}
 
-void Robot::TeleopPeriodic() {}
+void Robot::TeleopPeriodic() {
+    frc2::CommandScheduler::GetInstance().Run();
+}
 
 void Robot::DisabledInit() {}
 

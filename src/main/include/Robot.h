@@ -4,10 +4,15 @@
 
 #pragma once
 
+#include "commands/DriveTeleopCommand.h"
+
+#include "subsystems/drivetrain/Drivetrain.h"
+
 #include <string>
 
-#include <frc/TimedRobot.h>
+#include <frc/XboxController.h>
 #include <frc/smartdashboard/SendableChooser.h>
+#include <frc/TimedRobot.h>
 
 class Robot : public frc::TimedRobot {
     public:
@@ -29,4 +34,10 @@ class Robot : public frc::TimedRobot {
         const std::string kAutoNameDefault = "Default";
         const std::string kAutoNameCustom = "My Auto";
         std::string m_autoSelected;
+
+        frc::XboxController * m_driverController = nullptr;
+
+        Drivetrain * m_drivetrain = nullptr;
+
+        DriveTeleopCommand * m_driveTeleopCommand = nullptr;
 };
