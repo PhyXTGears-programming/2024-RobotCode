@@ -188,7 +188,7 @@ void SwerveModule::SetDesiredState(
 
 void SwerveModule::ResetTurnPosition() {
     m_turningEncoder.SetPosition(
-        GetTurnAbsPosition().convert<units::radian>().value()
+        GetTurnAbsPosition().value()
     );
 }
 
