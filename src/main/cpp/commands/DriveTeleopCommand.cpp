@@ -44,14 +44,14 @@ void DriveTeleopCommand::Execute() {
     double leftTrigger = m_driveController->GetLeftTriggerAxis();   // Range [0.0..1.0]
     double rightTrigger = m_driveController->GetRightTriggerAxis(); // Range [0.0..1.0]
 
-    meters_per_second_t driveReduce = leftTrigger * (Constants::k_normalDriveSpeed - Constants::k_slowDriveSpeed);
-    meters_per_second_t driveGain   = rightTrigger * (Constants::k_fastDriveSpeed - Constants::k_normalDriveSpeed);
+    meters_per_second_t driveReduce = leftTrigger * (constants::k_normalDriveSpeed - constants::k_slowDriveSpeed);
+    meters_per_second_t driveGain   = rightTrigger * (constants::k_fastDriveSpeed - constants::k_normalDriveSpeed);
 
-    meters_per_second_t driveSpeedFactor = Constants::k_normalDriveSpeed + driveGain - driveReduce;
+    meters_per_second_t driveSpeedFactor = constants::k_normalDriveSpeed + driveGain - driveReduce;
 
-    radians_per_second_t turnReduce = leftTrigger * (Constants::k_maxTurnSpeed - Constants::k_slowTurnSpeed);
+    radians_per_second_t turnReduce = leftTrigger * (constants::k_maxTurnSpeed - constants::k_slowTurnSpeed);
 
-    radians_per_second_t turnSpeedFactor = Constants::k_maxTurnSpeed - turnReduce;
+    radians_per_second_t turnSpeedFactor = constants::k_maxTurnSpeed - turnReduce;
 
     // the rotation limit is there in case the driver does not want to spin as fast while driving
     const auto forwardSpeed = driveSpeedFactor
@@ -68,7 +68,7 @@ void DriveTeleopCommand::Execute() {
 
     const auto turnSpeed = turnSpeedFactor
         * m_turnSpeedLimiter.Calculate(frc::ApplyDeadband(
-            m_driveController->GetRightX(),
+            -m_driveController->GetRightX(),
             JOYSTICK_DEADZONE)
         );
 

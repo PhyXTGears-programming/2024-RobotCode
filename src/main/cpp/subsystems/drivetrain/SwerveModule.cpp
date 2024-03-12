@@ -19,32 +19,19 @@
 
 #include <rev/ControlType.h>
 
-#include <ctre/phoenix/motorcontrol/ControlMode.h>
-#include <ctre/phoenix/sensors/SensorInitializationStrategy.h>
-#include <ctre/phoenix/sensors/SensorTimeBase.h>
-#include <ctre/phoenix/sensors/AbsoluteSensorRange.h>
+#include <ctre/phoenix6/core/CoreCANcoder.hpp>
+#include <ctre/phoenix6/configs/Configs.hpp>
+#include <ctre/phoenix6/signals/SpnEnums.hpp>
 
 using meters_per_turn = units::compound_unit<units::meters, units::inverse<units::turns>>;
 using meters_per_turn_t = units::unit_t<meters_per_turn>;
-
-#define ROBOT_ID 1
-
-#if ROBOT_ID == 1
-// FIXME: measure steer ratio and gear ratio of 2024 robot swerve modules.
-static constexpr double MK1_DRIVE_RATIO = 1.0 / 1.0; // motor turns per gearbox turn
-static constexpr double DRIVE_GEAR_RATIO = 1.0 / 1.0; //  gearbox turns per wheel turn
-#elif ROBOT_ID == 2
-// FIXME: measure steer ratio and gear ratio of 2024 robot swerve modules.
-static constexpr double MK1_DRIVE_RATIO = 1.0 / 1.0; // motor turns per gearbox turn
-static constexpr double DRIVE_GEAR_RATIO = 1.0 / 1.0; //  gearbox turns per wheel turn
-#endif
-
 
 SwerveModule::SwerveModule(
     int driveMotorCan,
     int turningMotorCan,
     int turningAbsEncoderCan,
-    double absEncoderOffset,
+    units::radian_t absEncoderOffset,
+    PidConfig const & turnConfig,
     std::string_view name
 ) :
     m_name(name),
@@ -55,58 +42,41 @@ SwerveModule::SwerveModule(
     m_turningMotor(turningMotorCan, rev::CANSparkMax::MotorType::kBrushless),
     m_turningPid(m_turningMotor.GetPIDController()),
     m_turningEncoder(m_turningMotor.GetEncoder(rev::SparkRelativeEncoder::Type::kHallSensor)),
-    m_turningAbsEncoder(turningAbsEncoderCan)
+    m_turningAbsEncoder(turningAbsEncoderCan),
+    m_turningAbsPositionSignal(m_turningAbsEncoder.GetAbsolutePosition())
 {
-    m_turningMotor.SetInverted(false);
+    m_turningMotor.SetInverted(true);
     m_turningMotor.SetIdleMode(rev::CANSparkBase::IdleMode::kBrake);
     m_turningMotor.SetSmartCurrentLimit(30);
 
-    m_turningAbsEncoder.ConfigAbsoluteSensorRange(
-        ctre::phoenix::sensors::AbsoluteSensorRange::Signed_PlusMinus180
-    );
-    m_turningAbsEncoder.ConfigSensorDirection(false);       // FIXME: confirm direction during robot test.
-    m_turningAbsEncoder.ConfigSensorInitializationStrategy(
-        ctre::phoenix::sensors::SensorInitializationStrategy::BootToAbsolutePosition
-    );
+    ctre::phoenix6::configs::CANcoderConfiguration configCanCoder{};
+    ctre::phoenix6::configs::MagnetSensorConfigs configMagnetSensor{};
+    configMagnetSensor
+        .WithAbsoluteSensorRange(ctre::phoenix6::signals::AbsoluteSensorRangeValue::Signed_PlusMinusHalf)
+        .WithSensorDirection(ctre::phoenix6::signals::SensorDirectionValue::CounterClockwise_Positive);
 
-    // Set the distance (in this case, angle) per pulse for the turning encoder.
-    // this is the angele through an entire rotation (2* std::numbers::pu)
-    // divided by the encoder resolution
-    const double DEG_PER_PULSE = 0.087890625;
-    m_turningAbsEncoder.ConfigFeedbackCoefficient(
-        DEG_PER_PULSE * 2.0 * std::numbers::pi /* radians */ / 360.0 /* degress */,
-        "radians",
-        ctre::phoenix::sensors::SensorTimeBase::PerSecond,
-        100.0
-    );
+    configCanCoder.WithMagnetSensor(configMagnetSensor);
 
-    // FIXME: measure steer ratio and gear ratio of 2024 robot swerve modules.
-    // 1.023 from experiment. measure (relHeading initialrelheading)  / (absheading initial abs heading)
-    // after manually turning wheel in a full circle more turns = more accuracy
-    static constexpr double MK1_STEER_RATIO = 1.023 * 11.30 / 1.0; // motor turns per gearbox turn
-    static constexpr double STEER_GEAR_RATIO = 4.0 / 1.0; //  gearbox turns per wheel turn
+    m_turningAbsEncoder.GetConfigurator().Apply(configCanCoder);
 
     m_turningEncoder.SetPositionConversionFactor(
-        2.0 * std::numbers::pi    //  radians per (any) turn
-        / MK1_STEER_RATIO         //  gearbox turn per motor turn
-        / STEER_GEAR_RATIO        //  wheel turn per gearbox turn
+        2.0 * std::numbers::pi                          // radians per motor turn
+        / constants::drive::k_turnWheelPerMotorRatio    // motor turn per wheel turn
     );
     m_turningEncoder.SetVelocityConversionFactor(
-        (2.0 *std::numbers::pi  / 1.0)  //  radians per any turn
-        / MK1_STEER_RATIO              //  gearbox turn per motor turn
-        / STEER_GEAR_RATIO             //  wheel turn per gearbox turn
-        * (1.0 / 60.0)                  //  minute per second
+        (2.0 * std::numbers::pi / 1.0)                  //  radians per motor turn
+        / constants::drive::k_turnWheelPerMotorRatio    // motor turn per wheel turn
+        * (1.0 / 60.0)                                  //  minute per second
     );
 
     m_turningPid.SetFeedbackDevice(m_turningEncoder);
 
-    // FIXME: tune pids on robot.
     // Limit the pid controllers input range between -pi and pi and set the
     // input to be continuous.
-    m_turningPid.SetP(0.4);
-    m_turningPid.SetI(0.001);
+    m_turningPid.SetP(turnConfig.kP);
+    m_turningPid.SetI(turnConfig.kI);
     m_turningPid.SetIZone(std::numbers::pi / 8.0);  // 1/8 of 180 deg
-    m_turningPid.SetD(0.0);
+    m_turningPid.SetD(turnConfig.kD);
     //  feedforward sign does not reflect pid error will always push in one direction not to zero error
     m_turningPid.SetFF(0.0);
     m_turningPid.SetOutputRange(-1.0, 1.0);
@@ -122,13 +92,13 @@ SwerveModule::SwerveModule(
     m_driveMotor.SetSmartCurrentLimit(40);
 
     m_driveEncoder.SetPositionConversionFactor(
-        MK1_DRIVE_RATIO         //  gearbox turn per motor turn
-        / DRIVE_GEAR_RATIO      //  wheel turn per gearbox turn
+        constants::drive::k_driveWheelPerMotorRatio
+        * (std::numbers::pi * constants::drive::k_wheelDiameter.value() / 1.0)  // meter per turn
     );
     m_driveEncoder.SetVelocityConversionFactor(
-        MK1_DRIVE_RATIO         //  gearbox turn per motor turn
-        / DRIVE_GEAR_RATIO      //  wheel turn per gearbox turn
-        * (1.0 / 60.0)          //  minute per second
+        constants::drive::k_driveWheelPerMotorRatio
+        * (std::numbers::pi * constants::drive::k_wheelDiameter.value() / 1.0)  // meter per turn
+        * (1.0 / 60.0)                                                          //  minute per second
     );
 
     m_drivePid.SetFeedbackDevice(m_driveEncoder);
@@ -141,6 +111,10 @@ SwerveModule::SwerveModule(
     m_drivePid.SetFF(0.0);
 
     m_driveEncoder.SetPosition(0.0);
+}
+
+void SwerveModule::Periodic() {
+    m_turningAbsPositionSignal.Refresh();
 }
 
 frc::SwerveModuleState SwerveModule::GetState() {
@@ -174,37 +148,14 @@ void SwerveModule::SetDesiredState(
     //  modules change directions. this results in smoother driving
     targetState.speed *= (targetState.angle - encoderRotation).Cos();
 
-    // FIXME: measure wheel diameter.
-    constexpr units::meter_t WHEEL_DIAMETER = 3.899_in;
-    constexpr meters_per_turn_t WHEEL_DISTANCE_CONVERSION_FACTOR =
-        WHEEL_DIAMETER
-        * std::numbers::pi
-        / 1.0_tr;
-    constexpr double DRIVE_WHEEL_TO_MOTOR_RATIO = 1.0_tr / 6.12_tr;
-
-    // units are actually native units per 100ms no units exist for
-    // pulses/ticks/ native untis so let the units lib verify  the dims=ensionmath
-    // up to turns per second
-    double driveSpeed = (
-        targetState.speed
-        / WHEEL_DISTANCE_CONVERSION_FACTOR /* wheel turn per meter */
-        / DRIVE_WHEEL_TO_MOTOR_RATIO       /* motor turn per wheel turn */
-    ).value();
-
-    // Set drive speed velocity.
-    m_drivePid.SetReference(
-        driveSpeed,
-        rev::ControlType::kVelocity,
-        0,
-        std::copysign(10.0, driveSpeed)
+    double drivePercent = std::clamp(
+        (targetState.speed / constants::k_maxDriveSpeed).value(),
+        -1.0, 1.0
     );
 
-    /* TODO: compare performance of percent speed to pid velocity control.
     // Set drive speed percent.
-    m_driveMotor.Set(
-        std::clamp((driveSpeed  / Constants::k_maxDriveSpeed).value(), -1.0, 1.0)
-    );
-    */
+    m_driveMotor.Set(drivePercent);
+    // */
 
     m_turningPid.SetReference(
         targetState.angle.Radians().value(),
@@ -213,7 +164,9 @@ void SwerveModule::SetDesiredState(
 }
 
 void SwerveModule::ResetTurnPosition() {
-    m_turningEncoder.SetPosition(GetTurnAbsPosition().value());
+    m_turningEncoder.SetPosition(
+        GetTurnAbsPosition().value()
+    );
 }
 
 units::radian_t SwerveModule::GetTurnPosition() {
@@ -221,16 +174,20 @@ units::radian_t SwerveModule::GetTurnPosition() {
 }
 
 units::radian_t SwerveModule::GetTurnAbsPosition() {
-    return units::radian_t{
-        std::remainder(
-            m_turningAbsEncoder.GetAbsolutePosition() + m_absEncoderOffset,
-            2.0 * std::numbers::pi
+    auto position = units::math::abs(
+        units::math::fmod(
+            m_turningAbsPositionSignal.GetValue()
+                + m_absEncoderOffset
+                + 180_deg,
+            360_deg
         )
-    };
+    ) - 180_deg;
+
+    return position.convert<units::radian>();
 }
 
 units::radian_t SwerveModule::GetTurnAbsPositionRaw() {
-    return units::radian_t{ m_turningAbsEncoder.GetAbsolutePosition() };
+    return m_turningAbsPositionSignal.GetValue().convert<units::radian>();
 }
 
 void SwerveModule::UpdateDashboard() {
@@ -239,7 +196,7 @@ void SwerveModule::UpdateDashboard() {
         GetTurnPosition().convert<units::degree>().value()
     );
     frc::SmartDashboard::PutNumber(
-        std::string{m_name} + std::string{"abs-heading"},
+        std::string{m_name} + std::string{"/abs-heading"},
         GetTurnAbsPosition().convert<units::degree>().value()
     );
     frc::SmartDashboard::PutNumber(

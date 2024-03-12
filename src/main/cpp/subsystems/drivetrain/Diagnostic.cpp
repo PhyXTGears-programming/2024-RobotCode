@@ -66,7 +66,7 @@ void diagnostic::TestDrivetrain::Test01MeasureTurnConversionFactor() {
     ).ToPtr();
 
     frc::SmartDashboard::PutData(
-        "daig/01-measure-turn-conv-factor",
+        "diag/01-measure-turn-conv-factor",
         command.get()
     );
 }
@@ -230,7 +230,7 @@ void diagnostic::TestDrivetrain::Test03MeasureTurnAlignment() {
         .Add("diag/drive-forward", false)
         .GetEntry();
 
-    static double flOffset, frOffset, blOffset, brOffset;
+    static units::radian_t flOffset, frOffset, blOffset, brOffset;
 
     static frc2::CommandPtr command = frc2::FunctionalCommand(
         [this] () {
@@ -238,9 +238,14 @@ void diagnostic::TestDrivetrain::Test03MeasureTurnAlignment() {
             frOffset = m_drivetrain->m_frontRight->m_absEncoderOffset;
             blOffset = m_drivetrain->m_backLeft->m_absEncoderOffset;
             brOffset = m_drivetrain->m_backRight->m_absEncoderOffset;
+
+            m_drivetrain->m_frontLeft->m_turningMotor.SetIdleMode(rev::CANSparkBase::IdleMode::kCoast);
+            m_drivetrain->m_frontRight->m_turningMotor.SetIdleMode(rev::CANSparkBase::IdleMode::kCoast);
+            m_drivetrain->m_backLeft->m_turningMotor.SetIdleMode(rev::CANSparkBase::IdleMode::kCoast);
+            m_drivetrain->m_backRight->m_turningMotor.SetIdleMode(rev::CANSparkBase::IdleMode::kCoast);
         },
         [this] () {
-            double offset;
+            units::radian_t offset;
 
             // Show relative positions.
 
@@ -280,28 +285,28 @@ void diagnostic::TestDrivetrain::Test03MeasureTurnAlignment() {
 
             // Update offsets.
 
-            offset = dashFrontLeftTurnOffset.GetDouble(-999.0);
+            offset = units::degree_t(dashFrontLeftTurnOffset.GetDouble(-999.0));
             if (offset != flOffset) {
                 flOffset = offset;
                 m_drivetrain->m_frontLeft->m_absEncoderOffset = flOffset;
                 m_drivetrain->m_frontLeft->ResetTurnPosition();
             }
 
-            offset = dashFrontRightTurnOffset.GetDouble(-999.0);
+            offset = units::degree_t(dashFrontRightTurnOffset.GetDouble(-999.0));
             if (offset != frOffset) {
                 frOffset = offset;
                 m_drivetrain->m_frontRight->m_absEncoderOffset = frOffset;
                 m_drivetrain->m_frontRight->ResetTurnPosition();
             }
 
-            offset = dashBackLeftTurnOffset.GetDouble(-999.0);
+            offset = units::degree_t(dashBackLeftTurnOffset.GetDouble(-999.0));
             if (offset != blOffset) {
                 blOffset = offset;
                 m_drivetrain->m_backLeft->m_absEncoderOffset = blOffset;
                 m_drivetrain->m_backLeft->ResetTurnPosition();
             }
 
-            offset = dashBackRightTurnOffset.GetDouble(-999.0);
+            offset = units::degree_t(dashBackRightTurnOffset.GetDouble(-999.0));
             if (offset != brOffset) {
                 brOffset = offset;
                 m_drivetrain->m_backRight->m_absEncoderOffset = brOffset;
@@ -310,29 +315,39 @@ void diagnostic::TestDrivetrain::Test03MeasureTurnAlignment() {
             // Set zeroes.
 
             if (dashToggleSetZero.GetBoolean(false)) {
-                flOffset = -m_drivetrain->m_frontLeft->GetTurnAbsPositionRaw().value();
+                flOffset = -m_drivetrain->m_frontLeft->GetTurnAbsPositionRaw();
                 m_drivetrain->m_frontLeft->m_absEncoderOffset = flOffset;
                 m_drivetrain->m_frontLeft->ResetTurnPosition();
 
-                frOffset = -m_drivetrain->m_frontRight->GetTurnAbsPositionRaw().value();
-                m_drivetrain->m_frontRight->m_absEncoderOffset = flOffset;
+                frOffset = -m_drivetrain->m_frontRight->GetTurnAbsPositionRaw();
+                m_drivetrain->m_frontRight->m_absEncoderOffset = frOffset;
                 m_drivetrain->m_frontRight->ResetTurnPosition();
 
-                blOffset = -m_drivetrain->m_backLeft->GetTurnAbsPositionRaw().value();
-                m_drivetrain->m_backLeft->m_absEncoderOffset = flOffset;
+                blOffset = -m_drivetrain->m_backLeft->GetTurnAbsPositionRaw();
+                m_drivetrain->m_backLeft->m_absEncoderOffset = blOffset;
                 m_drivetrain->m_backLeft->ResetTurnPosition();
 
-                brOffset = -m_drivetrain->m_backRight->GetTurnAbsPositionRaw().value();
-                m_drivetrain->m_backRight->m_absEncoderOffset = flOffset;
+                brOffset = -m_drivetrain->m_backRight->GetTurnAbsPositionRaw();
+                m_drivetrain->m_backRight->m_absEncoderOffset = brOffset;
                 m_drivetrain->m_backRight->ResetTurnPosition();
 
                 // Reset toggle to prevent repeat without user interaction.
                 dashToggleSetZero.SetBoolean(false);
+
+                dashFrontLeftTurnOffset.SetDouble(flOffset.convert<units::degree>().value());
+                dashFrontRightTurnOffset.SetDouble(frOffset.convert<units::degree>().value());
+                dashBackLeftTurnOffset.SetDouble(blOffset.convert<units::degree>().value());
+                dashBackRightTurnOffset.SetDouble(brOffset.convert<units::degree>().value());
             }
 
             // Drive motor
 
             if (dashDriveForward.GetBoolean(false)) {
+                m_drivetrain->m_frontLeft->m_turningMotor.SetIdleMode(rev::CANSparkBase::IdleMode::kBrake);
+                m_drivetrain->m_frontRight->m_turningMotor.SetIdleMode(rev::CANSparkBase::IdleMode::kBrake);
+                m_drivetrain->m_backLeft->m_turningMotor.SetIdleMode(rev::CANSparkBase::IdleMode::kBrake);
+                m_drivetrain->m_backRight->m_turningMotor.SetIdleMode(rev::CANSparkBase::IdleMode::kBrake);
+
                 m_drivetrain->m_frontLeft->m_driveMotor.Set(0.1);
                 m_drivetrain->m_frontRight->m_driveMotor.Set(0.1);
                 m_drivetrain->m_backLeft->m_driveMotor.Set(0.1);
@@ -342,6 +357,11 @@ void diagnostic::TestDrivetrain::Test03MeasureTurnAlignment() {
                 m_drivetrain->m_frontRight->m_driveMotor.StopMotor();
                 m_drivetrain->m_backLeft->m_driveMotor.StopMotor();
                 m_drivetrain->m_backRight->m_driveMotor.StopMotor();
+
+                m_drivetrain->m_frontLeft->m_turningMotor.SetIdleMode(rev::CANSparkBase::IdleMode::kCoast);
+                m_drivetrain->m_frontRight->m_turningMotor.SetIdleMode(rev::CANSparkBase::IdleMode::kCoast);
+                m_drivetrain->m_backLeft->m_turningMotor.SetIdleMode(rev::CANSparkBase::IdleMode::kCoast);
+                m_drivetrain->m_backRight->m_turningMotor.SetIdleMode(rev::CANSparkBase::IdleMode::kCoast);
             }
         },
         [this] (bool interrupted) {
@@ -503,6 +523,12 @@ void diagnostic::TestDrivetrain::Test05TuneDrivePid() {
                     std::clamp(kF, -32.0, 32.0)
                 );
             }
+
+            dashDriveVelocity.SetDouble(
+                (m_drivetrain->m_frontLeft->m_driveEncoder.GetVelocity())
+                    * (1.0 / (2.0 * std::numbers::pi))
+                    * (60.0 / 1.0)
+            );
         },
         [this] (bool interrupted) {
             m_drivetrain->m_frontLeft->m_driveMotor.StopMotor();

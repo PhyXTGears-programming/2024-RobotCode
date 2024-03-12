@@ -7,6 +7,8 @@
 #include "subsystems/drivetrain/Drivetrain.h"
 #include "util/point.h"
 
+#include <iostream>
+
 #include <frc/geometry/Pose2d.h>
 #include <frc/geometry/Translation2d.h>
 #include <frc/smartdashboard/SmartDashboard.h>
@@ -22,65 +24,120 @@ using units::radian_t;
 using units::second_t;
 
 Drivetrain::Drivetrain(std::shared_ptr<cpptoml::table> table) {
-    cpptoml::option<double> frontLeftAbsEncoderOffset =
-        table->get_qualified_as<double>("frontLeftAbsEncoderOffset");
+    double turnP = 0.0;
+    double turnI = 0.0;
+    double turnD = 0.0;
 
-    if (!frontLeftAbsEncoderOffset) {
-        throw "Error: drivetrain cannot find toml property frontLeftAbsEncoderOffset";
+    {
+        cpptoml::option<double> kP = table->get_qualified_as<double>("swerve.turn.kP");
+
+        if (!kP) {
+            std::cerr << "Error: drivetrain cannot find toml property swerve.turn.kP" << std::endl;
+            throw "error";
+        }
+
+        turnP = *kP;
     }
 
-    m_frontLeft = new SwerveModule(
-        Interface::drive::k_frontLeftDrive,
-        Interface::drive::k_frontLeftTurn,
-        Interface::drive::k_frontLeftEncoder,
-        *frontLeftAbsEncoderOffset,
-        "front-left"
-    );
+    {
+        cpptoml::option<double> kI = table->get_qualified_as<double>("swerve.turn.kI");
 
-    cpptoml::option<double> frontRightAbsEncoderOffset =
-        table->get_qualified_as<double>("frontRightAbsEncoderOffset");
+        if (!kI) {
+            std::cerr << "Error: drivetrain cannot find toml property swerve.turn.kI" << std::endl;
+            throw "error";
+        }
 
-    if (!frontRightAbsEncoderOffset) {
-        throw "Error: drivetrain cannot find toml property frontRightAbsEncoderOffset";
+        turnI = *kI;
     }
 
-    m_frontRight = new SwerveModule(
-        Interface::drive::k_frontRightDrive,
-        Interface::drive::k_frontRightTurn,
-        Interface::drive::k_frontRightEncoder,
-        *frontRightAbsEncoderOffset,
-        "front-right"
-    );
+    {
+        cpptoml::option<double> kD = table->get_qualified_as<double>("swerve.turn.kD");
 
-    cpptoml::option<double> backLeftAbsEncoderOffset =
-        table->get_qualified_as<double>("backLeftAbsEncoderOffset");
+        if (!kD) {
+            std::cerr << "Error: drivetrain canot find toml property swerve.turn.kD" << std::endl;
+            throw "error";
+        }
 
-    if (!backLeftAbsEncoderOffset) {
-        throw "Error: drivetrain cannot find toml property backLeftAbsEncoderOffset";
+        turnD = *kD;
     }
 
-    m_backLeft = new SwerveModule(
-        Interface::drive::k_backLeftDrive,
-        Interface::drive::k_backLeftTurn,
-        Interface::drive::k_backLeftEncoder,
-        *backLeftAbsEncoderOffset,
-        "back-left"
-    );
+    SwerveModule::PidConfig turnPidConfig(turnP, turnI, turnD);
 
-    cpptoml::option<double> backRightAbsEncoderOffset =
-        table->get_qualified_as<double>("backRightAbsEncoderOffset");
+    {
+        cpptoml::option<double> frontLeftAbsEncoderOffset =
+            table->get_qualified_as<double>("frontLeftAbsEncoderOffset");
 
-    if (!backRightAbsEncoderOffset) {
-        throw "Error: drivetrain cannot find toml property backRightAbsEncoderOffset";
+        if (!frontLeftAbsEncoderOffset) {
+            std::cerr << "Error: drivetrain cannot find toml property frontLeftAbsEncoderOffset" << std::endl;
+            throw "error";
+        }
+
+        m_frontLeft = new SwerveModule(
+            interface::drive::k_frontLeftDrive,
+            interface::drive::k_frontLeftTurn,
+            interface::drive::k_frontLeftEncoder,
+            units::degree_t(*frontLeftAbsEncoderOffset),
+            turnPidConfig,
+            "front-left"
+        );
     }
 
-    m_backRight = new SwerveModule(
-        Interface::drive::k_backRightDrive,
-        Interface::drive::k_backRightTurn,
-        Interface::drive::k_backRightEncoder,
-        *backRightAbsEncoderOffset,
-        "back-right"
-    );
+    {
+        cpptoml::option<double> frontRightAbsEncoderOffset =
+            table->get_qualified_as<double>("frontRightAbsEncoderOffset");
+
+        if (!frontRightAbsEncoderOffset) {
+            std::cerr << "Error: drivetrain cannot find toml property frontRightAbsEncoderOffset" << std::endl;
+            throw "error";
+        }
+
+        m_frontRight = new SwerveModule(
+            interface::drive::k_frontRightDrive,
+            interface::drive::k_frontRightTurn,
+            interface::drive::k_frontRightEncoder,
+            units::degree_t(*frontRightAbsEncoderOffset),
+            turnPidConfig,
+            "front-right"
+        );
+    }
+
+    {
+        cpptoml::option<double> backLeftAbsEncoderOffset =
+            table->get_qualified_as<double>("backLeftAbsEncoderOffset");
+
+        if (!backLeftAbsEncoderOffset) {
+            std::cerr << "Error: drivetrain cannot find toml property backLeftAbsEncoderOffset" << std::endl;
+            throw "error";
+        }
+
+        m_backLeft = new SwerveModule(
+            interface::drive::k_backLeftDrive,
+            interface::drive::k_backLeftTurn,
+            interface::drive::k_backLeftEncoder,
+            units::degree_t(*backLeftAbsEncoderOffset),
+            turnPidConfig,
+            "back-left"
+        );
+    }
+
+    {
+        cpptoml::option<double> backRightAbsEncoderOffset =
+            table->get_qualified_as<double>("backRightAbsEncoderOffset");
+
+        if (!backRightAbsEncoderOffset) {
+            std::cerr << "Error: drivetrain cannot find toml property backRightAbsEncoderOffset" << std::endl;
+            throw "error";
+        }
+
+        m_backRight = new SwerveModule(
+            interface::drive::k_backRightDrive,
+            interface::drive::k_backRightTurn,
+            interface::drive::k_backRightEncoder,
+            units::degree_t(*backRightAbsEncoderOffset),
+            turnPidConfig,
+            "back-right"
+        );
+    }
 
     m_gyro.Reset();
 
@@ -121,7 +178,7 @@ void Drivetrain::Drive(
         frc::ChassisSpeeds::Discretize(chassisSpeeds, period)
     );
 
-    m_kinematics.DesaturateWheelSpeeds(&states, Constants::k_maxDriveSpeed);
+    m_kinematics.DesaturateWheelSpeeds(&states, constants::k_maxDriveSpeed);
 
     auto [fl, fr, bl, br] = states;
 
@@ -132,6 +189,11 @@ void Drivetrain::Drive(
 }
 
 void Drivetrain::Periodic() {
+    m_frontLeft->Periodic();
+    m_frontRight->Periodic();
+    m_backLeft->Periodic();
+    m_backRight->Periodic();
+
     m_frontLeft->UpdateDashboard();
     m_frontRight->UpdateDashboard();
     m_backLeft->UpdateDashboard();
