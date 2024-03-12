@@ -1,5 +1,7 @@
 #pragma once
 
+#include <frc/I2C.h>
+
 namespace interface {
     namespace {
         // Drivetrain Drive Motors
@@ -58,6 +60,8 @@ namespace interface {
     }
 
     namespace bling {
+        const frc::I2C::Port k_port = frc::I2C::Port::kOnboard;
+        const int k_address = 0x30;
     }
 
     namespace climb {

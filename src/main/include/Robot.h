@@ -1,8 +1,9 @@
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
-
 #pragma once
+
+#include "subsystems/bling/Bling.h"
 
 #include <string>
 
@@ -29,4 +30,6 @@ class Robot : public frc::TimedRobot {
   const std::string kAutoNameDefault = "Default";
   const std::string kAutoNameCustom = "My Auto";
   std::string m_autoSelected;
+  
+  BlingSubsystem m_bling;
 };
