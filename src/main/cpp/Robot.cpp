@@ -3,11 +3,29 @@
 // the WPILib BSD license file in the root directory of this project.
 
 #include "Robot.h"
+#include "external/cpptoml.h"
+
+#include <iostream>
 
 #include <fmt/core.h>
+#include <frc/Filesystem.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 
 void Robot::RobotInit() {
+    std::shared_ptr<cpptoml::table> toml = nullptr;
+
+    try {
+        toml = cpptoml::parse_file(frc::filesystem::GetDeployDirectory() + "/config.toml");
+    } catch (cpptoml::parse_exception & ex) {
+        // clang-format off
+        std::cerr
+            << "Unable to open config file: deploy/config.toml" << std::endl
+            << ex.what() << std::endl;
+
+        throw "error";
+        // clang-format on
+    }
+
     m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
     m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
     frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
