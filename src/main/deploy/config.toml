@@ -7,3 +7,7 @@ backRightAbsEncoderOffset  =  -32.3
 swerve.turn.kP = 2.0
 swerve.turn.kI = 0.01
 swerve.turn.kD = 3.0
+
+[gate]
+openMicros = 1000
+closeMicros = 1000
