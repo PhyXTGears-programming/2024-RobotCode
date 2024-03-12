@@ -187,6 +187,11 @@ void Drivetrain::Drive(
 }
 
 void Drivetrain::Periodic() {
+    m_frontLeft->Periodic();
+    m_frontRight->Periodic();
+    m_backLeft->Periodic();
+    m_backRight->Periodic();
+
     m_frontLeft->UpdateDashboard();
     m_frontRight->UpdateDashboard();
     m_backLeft->UpdateDashboard();

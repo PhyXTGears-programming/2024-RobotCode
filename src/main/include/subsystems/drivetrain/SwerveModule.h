@@ -39,6 +39,8 @@ public:
         std::string_view name = "swerve ??"sv
     );
 
+    void Periodic();
+
     frc::SwerveModuleState GetState();
     frc::SwerveModulePosition GetPosition();
 

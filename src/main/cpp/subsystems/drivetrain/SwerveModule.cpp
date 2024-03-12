@@ -113,6 +113,10 @@ SwerveModule::SwerveModule(
     m_driveEncoder.SetPosition(0.0);
 }
 
+void SwerveModule::Periodic() {
+    m_turningAbsPositionSignal.Refresh();
+}
+
 frc::SwerveModuleState SwerveModule::GetState() {
     return {
         units::meters_per_second_t{ m_driveEncoder.GetVelocity() },
