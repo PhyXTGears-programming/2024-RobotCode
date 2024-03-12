@@ -17,8 +17,8 @@ class GateSubsystem : public frc2::SubsystemBase {
         frc::Servo m_servo;
 
         struct {
-            units::microsecond_t openMs;
-            units::microsecond_t closeMs;
+            units::microsecond_t openMicros;
+            units::microsecond_t closeMicros;
 
         } m_config;
 };
