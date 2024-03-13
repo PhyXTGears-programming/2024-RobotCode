@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "subsystems/amp_shooter/AmpShooter.h"
 #include <string>
 
 #include <frc/TimedRobot.h>
@@ -29,4 +30,7 @@ class Robot : public frc::TimedRobot {
         const std::string kAutoNameDefault = "Default";
         const std::string kAutoNameCustom = "My Auto";
         std::string m_autoSelected;
+
+        AmpShooterSubsystem * m_ampShooterSubsystem = nullptr;
+
 };

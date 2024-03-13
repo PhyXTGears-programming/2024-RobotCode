@@ -4,6 +4,7 @@
 
 #include "Robot.h"
 #include "external/cpptoml.h"
+#include "subsystems/amp_shooter/AmpShooter.h"
 
 #include <iostream>
 
@@ -25,6 +26,8 @@ void Robot::RobotInit() {
         throw "error";
         // clang-format on
     }
+
+    m_ampShooterSubsystem = new AmpShooterSubsystem(toml->get_table("amp"));
 
     m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
     m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
