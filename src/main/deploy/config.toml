@@ -26,3 +26,6 @@ closeMicros = 1300
 intakeSpeed = 0.50
 
 [speaker]
+shootSpeed = 60
+reverseSpeed = 60
+distanceThreshold = 0.100
