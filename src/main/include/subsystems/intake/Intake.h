@@ -1,6 +1,7 @@
 #pragma once
 
 #include "external/cpptoml.h"
+#include "subsystems/intake/DiagnosticDecl.h"
 
 #include <frc2/command/SubsystemBase.h>
 
@@ -28,4 +29,6 @@ class IntakeSubsystem : public frc2::SubsystemBase {
             double intakeSpeed;
 
         } m_config;
+
+    friend class diagnostic::TestIntake;
 };
