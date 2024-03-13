@@ -37,6 +37,8 @@ void Robot::RobotInit() {
 
     m_drivetrain = new Drivetrain(toml->get_table("drivetrain"));
 
+    m_gate = new GateSubsystem(toml->get_table("gate"));
+
     m_driveTeleopCommand = new DriveTeleopCommand(
         m_drivetrain,
         m_driverController

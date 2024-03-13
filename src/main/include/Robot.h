@@ -7,6 +7,7 @@
 #include "commands/DriveTeleopCommand.h"
 
 #include "subsystems/drivetrain/Drivetrain.h"
+#include "subsystems/gate/Gate.h"
 
 #include <string>
 
@@ -38,6 +39,7 @@ class Robot : public frc::TimedRobot {
         frc::XboxController * m_driverController = nullptr;
 
         Drivetrain * m_drivetrain = nullptr;
+        GateSubsystem * m_gate = nullptr;
 
         DriveTeleopCommand * m_driveTeleopCommand = nullptr;
 };
