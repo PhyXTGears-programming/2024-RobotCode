@@ -2,6 +2,7 @@
 
 #include <iostream>
 
+#include <frc/smartdashboard/SmartDashboard.h>
 #include <frc/shuffleboard/Shuffleboard.h>
 #include <frc/shuffleboard/ShuffleboardLayout.h>
 #include <frc2/command/CommandPtr.h>
@@ -87,10 +88,10 @@ void diagnostic::TestIntake::Test01TuneIntake() {
         ).ToPtr()
             .WithName("Intake Amp");
 
-        static auto& _dashCommand =
-            *layout
-            .Add("diag/intake/01-tune-intake/intake-amp", command.get())
-            .GetEntry();
+        frc::SmartDashboard::PutData(
+            "diag/intake/01-tune-intake/intake-amp",
+            command.get()
+        );
     }
 
     {
@@ -131,9 +132,9 @@ void diagnostic::TestIntake::Test01TuneIntake() {
         ).ToPtr()
             .WithName("Intake Speaker");
 
-        static auto& _dashCommand =
-            *layout
-            .Add("diag/intake/01-tune-intake/intake-speaker", command.get())
-            .GetEntry();
+        frc::SmartDashboard::PutData(
+            "diag/intake/01-tune-intake/intake-speaker",
+            command.get()
+        );
     }
 }
