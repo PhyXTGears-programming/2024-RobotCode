@@ -3,10 +3,10 @@
 #include "subsystems/amp_shooter/AmpShooter.h"
 #include "subsystems/intake/Intake.h"
 
-#include <frc2/command/CommandBase.h>
+#include <frc2/command/Command.h>
 #include <frc2/command/CommandHelper.h>
 
-class IntakeAmp : public frc2::CommandHelper<frc2::CommandBase, IntakeAmp> {
+class IntakeAmp : public frc2::CommandHelper<frc2::Command, IntakeAmp> {
     public:
         IntakeAmp(IntakeSubsystem * intake, AmpShooterSubsystem * amp);
 
