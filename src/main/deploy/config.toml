@@ -15,8 +15,8 @@ swerve.turn.kI = 0.01
 swerve.turn.kD = 3.0
 
 [gate]
-openMicros = 1000
-closeMicros = 1000
+openMicros  =  950
+closeMicros = 1500
 
 [intake]
 
