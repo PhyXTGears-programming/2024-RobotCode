@@ -53,7 +53,9 @@ void Robot::RobotInit() {
  * <p> This runs after the mode specific periodic functions, but before
  * LiveWindow and SmartDashboard integrated updating.
  */
-void Robot::RobotPeriodic() {}
+void Robot::RobotPeriodic() {
+    frc2::CommandScheduler::GetInstance().Run();
+}
 
 /**
  * This autonomous (along with the chooser code above) shows how to select
@@ -91,9 +93,7 @@ void Robot::TeleopInit() {
     m_driveTeleopCommand->Schedule();
 }
 
-void Robot::TeleopPeriodic() {
-    frc2::CommandScheduler::GetInstance().Run();
-}
+void Robot::TeleopPeriodic() {}
 
 void Robot::DisabledInit() {}
 
