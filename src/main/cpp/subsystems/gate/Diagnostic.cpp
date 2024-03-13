@@ -61,11 +61,10 @@ void diagnostic::TestGate::Test01TuneServo() {
         ).ToPtr()
             .WithName("Open Gate");
 
-        static auto& _dashCommand =
-            *layout
-            .Add("diag/gate/01-tune-servo/open-gate", command.get())
-            .WithWidget(frc::BuiltInWidgets::kCommand)
-            .GetEntry();
+        frc::SmartDashboard::PutData(
+            "diag/gate/01-tune-servo/open-gate",
+            command.get()
+        );
     }
 
     {
@@ -109,10 +108,9 @@ void diagnostic::TestGate::Test01TuneServo() {
         ).ToPtr()
             .WithName("Reload Setpoints");
 
-        static auto& _dashCommand =
-            *layout
-            .Add("diag/gate/01-tune-servo/reload-setpoints", command.get())
-            .WithWidget(frc::BuiltInWidgets::kCommand)
-            .GetEntry();
+        frc::SmartDashboard::PutData(
+            "diag/gate/01-tune-servo/reload-setpoints",
+            command.get()
+        );
     }
 }
