@@ -30,7 +30,7 @@ SpeakerShooterSubsystem::SpeakerShooterSubsystem(std::shared_ptr<cpptoml::table>
         if (speed) {
             m_config.shootSpeed = rpm_t(*speed);
         } else {
-            std::cerr << "Error: arm shooter cannot find toml property armShooter.shootSpeed" << std::endl;
+            std::cerr << "Error: speaker shooter cannot find toml property speaker.shootSpeed" << std::endl;
             hasError = true;
         }
     }
@@ -41,7 +41,7 @@ SpeakerShooterSubsystem::SpeakerShooterSubsystem(std::shared_ptr<cpptoml::table>
         if (speed) {
             m_config.reverseSpeed = rpm_t(*speed);
         } else {
-            std::cerr << "Error: arm shooter cannot find toml property armShooter.reverseSpeed" << std::endl;
+            std::cerr << "Error: speaker shooter cannot find toml property speaker.reverseSpeed" << std::endl;
             hasError = true;
         }
     }
@@ -52,7 +52,7 @@ SpeakerShooterSubsystem::SpeakerShooterSubsystem(std::shared_ptr<cpptoml::table>
         if (distanceThreshold) {
             m_config.distanceThreshold = units::meter_t(*distanceThreshold);
         } else {
-            std::cerr << "Error: arm shooter cannot find toml property armShooter.distanceThreshold" << std::endl;
+            std::cerr << "Error: speaker shooter cannot find toml property speaker.distanceThreshold" << std::endl;
             hasError = true;
         }
     }
