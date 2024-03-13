@@ -1,6 +1,7 @@
 #pragma once
 
 #include "external/cpptoml.h"
+#include "subsystems/gate/DiagnosticDecl.h"
 
 #include <frc/Servo.h>
 #include <frc2/command/SubsystemBase.h>
@@ -21,4 +22,6 @@ class GateSubsystem : public frc2::SubsystemBase {
             units::microsecond_t closeMicros;
 
         } m_config;
+
+    friend class diagnostic::TestGate;
 };
