@@ -7,8 +7,6 @@ IntakeAmp::IntakeAmp(IntakeSubsystem * intake, AmpShooterSubsystem * amp) {
 
     m_amp = amp;
     m_intake = intake;
-
-    
 }
 
 void IntakeAmp::Initialize() {

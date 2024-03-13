@@ -32,9 +32,7 @@ void Robot::RobotInit() {
     m_driverController = new frc::XboxController(0);
 
     m_amp = new AmpShooterSubsystem(toml->get_table("amp"));
-
     m_drivetrain = new Drivetrain(toml->get_table("drivetrain"));
-
     m_gate = new GateSubsystem(toml->get_table("gate"));
 
     m_driveTeleopCommand = new DriveTeleopCommand(

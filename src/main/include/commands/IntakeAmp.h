@@ -4,9 +4,7 @@
 #include "subsystems/intake/Intake.h"
 
 #include <frc2/command/CommandBase.h>
-
 #include <frc2/command/CommandHelper.h>
-
 
 class IntakeAmp : public frc2::CommandHelper<frc2::CommandBase, IntakeAmp> {
     public:
