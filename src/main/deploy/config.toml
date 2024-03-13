@@ -5,8 +5,18 @@
 [climb]
 
 [drivetrain]
+frontLeftAbsEncoderOffset  =   39.8
+frontRightAbsEncoderOffset = -130.1
+backLeftAbsEncoderOffset   =  -93.3
+backRightAbsEncoderOffset  =  -32.3
+
+swerve.turn.kP = 2.0
+swerve.turn.kI = 0.01
+swerve.turn.kD = 3.0
 
 [gate]
+openMicros  =  950
+closeMicros = 1300
 
 [intake]
 intakeSpeed = 0.10
