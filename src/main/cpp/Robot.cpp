@@ -29,10 +29,6 @@ void Robot::RobotInit() {
 
     frc::CameraServer::StartAutomaticCapture();
 
-    m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
-    m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
-    frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
-
     m_driverController = new frc::XboxController(0);
 
     m_drivetrain = new Drivetrain(toml->get_table("drivetrain"));
@@ -43,6 +39,10 @@ void Robot::RobotInit() {
         m_drivetrain,
         m_driverController
     );
+
+    m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
+    m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
+    frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
 }
 
 /**
