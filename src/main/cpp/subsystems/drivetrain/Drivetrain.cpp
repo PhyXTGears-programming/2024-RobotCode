@@ -18,6 +18,7 @@
 
 using namespace std::literals::string_view_literals;
 
+using units::degree_t;
 using units::meters_per_second_t;
 using units::radians_per_second_t;
 using units::radian_t;
@@ -205,7 +206,7 @@ void Drivetrain::ResetGyro() {
 }
 
 radian_t Drivetrain::GetHeading() {
-    return radian_t(m_gyro.GetYaw() + m_gyroOffset);
+    return degree_t(m_gyro.GetYaw() + m_gyroOffset);
 }
 
 void Drivetrain::UpdateOdometry() {
