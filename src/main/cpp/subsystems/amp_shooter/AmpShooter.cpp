@@ -2,33 +2,53 @@
 #include "rev/CANSparkMax.h"
 #include "subsystems/amp_shooter/AmpShooter.h"
 
+#include <iostream>
+
 #include <frc2/command/SubsystemBase.h>
 
 AmpShooterSubsystem::AmpShooterSubsystem(
     std::shared_ptr<cpptoml::table> table
 ) :
-    m_liftMotor(Interface::k_ampShooterLiftMotor, rev::CANSparkMax::MotorType::kBrushless),
-    m_shootMotor(Interface::k_ampShooterShootMotor, rev::CANSparkMax::MotorType::kBrushless),
-    m_servo(Interface::k_ampShooterServo),
-    m_noteSensor(Interface::k_ampShooterNoteSensor)
+    m_liftMotor(interface::amp::k_liftMotor, rev::CANSparkMax::MotorType::kBrushless),
+    m_shootMotor(interface::amp::k_shootMotor, rev::CANSparkMax::MotorType::kBrushless),
+    m_servo(interface::amp::k_tiltServo),
+    m_noteSensor(interface::amp::k_noteSensor)
 {
-    cpptoml::option<double> liftCurrentThreshold = table->get_qualified_as<double>("liftCurrentThreshold");
-    if (!liftCurrentThreshold) {
-        throw "Error: ampShooter cannot find toml property liftCurrentThreshold";
-    }
-    m_config.liftCurrentThreshold = *liftCurrentThreshold;
+    bool hasError = false;
 
-    cpptoml::option<double> servoExtendAngleDeg = table->get_qualified_as<double>("servo.extendAngleDeg");
-    if (!servoExtendAngleDeg) {
-        throw "Error: ampShooter cannot find toml property servo.extendAngleDeg";
+    {
+        cpptoml::option<double> liftCurrentThreshold = table->get_qualified_as<double>("liftCurrentThreshold");
+        if (liftCurrentThreshold) {
+            m_config.liftCurrentThreshold = *liftCurrentThreshold;
+        } else {
+            std::cerr << "Error: ampShooter cannot find toml property liftCurrentThreshold" << std::endl;
+            hasError = true;
+        }
     }
-    m_config.servo.extendAngleDeg = *servoExtendAngleDeg;
 
-    cpptoml::option<double> servoRetractAngleDeg = table->get_qualified_as<double>("servo.retractAngleDeg");
-    if (!servoRetractAngleDeg) {
-        throw "Error: ampShooter cannot find toml property servo.retractAngleDeg";
+    {
+        cpptoml::option<double> servoExtendPulseMicro = table->get_qualified_as<double>("servo.extendPulseMicro");
+        if (servoExtendPulseMicro) {
+            m_config.servo.extendPulseTime = units::microsecond_t(*servoExtendPulseMicro);
+        } else {
+            std::cerr << "Error: ampShooter cannot find toml property servo.extendPulseTime" << std::endl;
+            hasError = true;
+        }
     }
-    m_config.servo.retractAngleDeg = *servoRetractAngleDeg;
+
+    {
+        cpptoml::option<double> servoRetractPulseMicro = table->get_qualified_as<double>("servo.retractPulseMicro");
+        if (servoRetractPulseMicro) {
+            m_config.servo.retractPulseTime = units::microsecond_t(*servoRetractPulseMicro);
+        } else {
+            std::cerr << "Error: ampShooter cannot find toml property servo.retractPulseTime" << std::endl;
+            hasError = true;
+        }
+    }
+
+    if (hasError) {
+        abort();
+    }
 
     m_liftMotor.SetInverted(false);
     m_liftMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
@@ -66,11 +86,11 @@ void AmpShooterSubsystem::StopShoot() {
 }
 
 void AmpShooterSubsystem::Extend() {
-    m_servo.SetAngle(m_config.servo.extendAngleDeg);
+    m_servo.SetPulseTime(m_config.servo.extendPulseTime);
 }
 
 void AmpShooterSubsystem::Retract() {
-    m_servo.SetAngle(m_config.servo.retractAngleDeg);
+    m_servo.SetPulseTime(m_config.servo.retractPulseTime);
 }
 
 bool AmpShooterSubsystem::IsNoteDetected() {
