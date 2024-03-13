@@ -93,7 +93,7 @@ bool SpeakerShooterSubsystem::IsSpeakerNear() {
 }
 
 rpm_t SpeakerShooterSubsystem::GetShooterSpeed(){
-// idk how to that
+    return rpm_t(m_shootEncoder1.GetVelocity());
 }
 
 void SpeakerShooterSubsystem::SetShooterSpeed(rpm_t speed){
