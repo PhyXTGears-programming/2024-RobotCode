@@ -14,9 +14,13 @@
 
 diagnostic::TestIntake::TestIntake(
     IntakeSubsystem * intake,
+    AmpShooterSubsystem * amp,
+    SpeakerShooterSubsystem * speaker,
     frc::XboxController * controller
 ) {
     m_intake = intake;
+    m_amp = amp;
+    m_speaker = speaker;
     m_controller = controller;
 }
 
@@ -48,6 +52,16 @@ void diagnostic::TestIntake::Test01TuneIntake() {
     static nt::GenericEntry & dashIntakeSpeed =
         *layout
         .Add("diag/intake/set speed %", m_intake->m_config.intakeSpeed)
+        .GetEntry();
+
+    static nt::GenericEntry & dashAmpDetectNote =
+        *layout
+        .Add("diag/intake/amp detect note", false)
+        .GetEntry();
+
+    static nt::GenericEntry & dashSpeakerDetectNote =
+        *layout
+        .Add("diag/intake/speaker detect note", false)
         .GetEntry();
 
     {
@@ -134,6 +148,27 @@ void diagnostic::TestIntake::Test01TuneIntake() {
 
         frc::SmartDashboard::PutData(
             "diag/intake/01-tune-intake/intake-speaker",
+            command.get()
+        );
+    }
+
+    {
+        static frc2::CommandPtr command = frc2::FunctionalCommand(
+            [] () {},
+            [this] () {
+                dashAmpDetectNote.SetBoolean(m_amp->IsNoteDetected());
+                dashSpeakerDetectNote.SetBoolean(m_speaker->IsNoteDetected());
+            },
+            [this] (bool interrupted) {},
+            [this] () -> bool {
+                return m_controller->GetStartButtonPressed();
+            },
+            { m_amp, m_speaker }
+        ).ToPtr()
+            .WithName("Detect Note");
+
+        frc::SmartDashboard::PutData(
+            "diag/intake/01-tune-intake/detect-note",
             command.get()
         );
     }
