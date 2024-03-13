@@ -9,5 +9,6 @@
 [gate]
 
 [intake]
+intakeSpeed = 0.10
 
 [speaker]
