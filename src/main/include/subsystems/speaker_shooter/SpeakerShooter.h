@@ -8,7 +8,6 @@
 *******************************/
 
 #include "external/cpptoml.h"
-#include "Interface.h"
 
 #include <frc/DigitalInput.h>
 #include <frc2/command/SubsystemBase.h>

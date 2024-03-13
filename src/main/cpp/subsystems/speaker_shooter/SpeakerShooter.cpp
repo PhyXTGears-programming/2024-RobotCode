@@ -1,12 +1,14 @@
+#include "Interface.h"
 #include "subsystems/speaker_shooter/SpeakerShooter.h"
 
 #include <cmath>
+#include <iostream>
 
 #include <frc2/command/SubsystemBase.h>
 
 SpeakerShooterSubsystem::SpeakerShooterSubsystem(std::shared_ptr<cpptoml::table> table)
-    : m_shootMotor1(
-        Interface::k_speakerShooterMotor1,
+:   m_shootMotor1(
+        interface::speaker::k_motor1,
         rev::CANSparkMaxLowLevel::MotorType::kBrushless
     ),
     m_shootPid1(m_shootMotor1.GetPIDController()),
@@ -14,30 +16,49 @@ SpeakerShooterSubsystem::SpeakerShooterSubsystem(std::shared_ptr<cpptoml::table>
         rev::SparkRelativeEncoder::Type::kHallSensor
     )),
     m_shootMotor2(
-        Interface::k_speakerShooterMotor2,
+        interface::speaker::k_motor2,
         rev::CANSparkMaxLowLevel::MotorType::kBrushless
     ),
-    m_noteSensor(Interface::k_speakerShooterNoteSensor)
+    m_noteSensor(interface::speaker::k_noteSensor)
 {
+    bool hasError = false;
+
     // Load configuration values from TOML.
     {
         cpptoml::option<double> speed = table->get_qualified_as<double>("shootSpeed");
 
-        if (!speed) {
-            throw "Error: arm shooter cannot find toml property armShooter.shootSpeed";
+        if (speed) {
+            m_config.shootSpeed = rpm_t(*speed);
+        } else {
+            std::cerr << "Error: speaker shooter cannot find toml property speaker.shootSpeed" << std::endl;
+            hasError = true;
         }
-
-        m_config.shootSpeed = rpm_t(*speed);
     }
 
     {
         cpptoml::option<double> speed = table->get_qualified_as<double>("reverseSpeed");
 
-        if (!speed) {
-            throw "Error: arm shooter cannot find toml property armShooter.reverseSpeed";
+        if (speed) {
+            m_config.reverseSpeed = rpm_t(*speed);
+        } else {
+            std::cerr << "Error: speaker shooter cannot find toml property speaker.reverseSpeed" << std::endl;
+            hasError = true;
         }
+    }
 
-        m_config.reverseSpeed = rpm_t(*speed);
+    {
+        cpptoml::option<double> distanceThreshold = table->get_qualified_as<double>("distanceThreshold");
+
+        if (distanceThreshold) {
+            m_config.distanceThreshold = units::meter_t(*distanceThreshold);
+        } else {
+            std::cerr << "Error: speaker shooter cannot find toml property speaker.distanceThreshold" << std::endl;
+            hasError = true;
+        }
+    }
+
+    if (hasError) {
+        abort();
     }
 
     {
@@ -82,7 +103,7 @@ bool SpeakerShooterSubsystem::IsSpeakerNear() {
 }
 
 rpm_t SpeakerShooterSubsystem::GetShooterSpeed(){
-// idk how to that
+    return rpm_t(m_shootEncoder1.GetVelocity());
 }
 
 void SpeakerShooterSubsystem::SetShooterSpeed(rpm_t speed){
