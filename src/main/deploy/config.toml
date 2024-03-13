@@ -1,4 +1,8 @@
 [amp]
+liftCurrentThreshold = 0.0
+
+servo.extendPulseMicro = 1900
+servo.retractPulseMicro = 1500
 
 [bling]
 
