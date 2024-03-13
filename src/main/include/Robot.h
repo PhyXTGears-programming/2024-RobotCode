@@ -31,6 +31,6 @@ class Robot : public frc::TimedRobot {
         const std::string kAutoNameCustom = "My Auto";
         std::string m_autoSelected;
 
-        AmpShooterSubsystem * m_ampShooterSubsystem = nullptr;
+        AmpShooterSubsystem * m_amp = nullptr;
 
 };

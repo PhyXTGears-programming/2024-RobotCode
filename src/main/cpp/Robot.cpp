@@ -27,7 +27,7 @@ void Robot::RobotInit() {
         // clang-format on
     }
 
-    m_ampShooterSubsystem = new AmpShooterSubsystem(toml->get_table("amp"));
+    m_amp = new AmpShooterSubsystem(toml->get_table("amp"));
 
     m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
     m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
