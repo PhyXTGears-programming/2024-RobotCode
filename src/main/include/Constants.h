@@ -19,7 +19,7 @@ using rad_per_sec_per_volt_t = units::unit_t<rad_per_sec_per_volt>;
 
 namespace constants {
 
-    constexpr meters_per_second_t k_maxDriveSpeed = 5_mps;
+    constexpr meters_per_second_t k_maxDriveSpeed = 4_mps;
 
     constexpr meters_per_second_t k_normalDriveSpeed = 1.5_mps;
     constexpr meters_per_second_t k_slowDriveSpeed = k_normalDriveSpeed * (1.0 - 0.75); // 75% slower.
