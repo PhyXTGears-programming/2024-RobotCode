@@ -8,6 +8,7 @@
 
 #include "subsystems/amp_shooter/AmpShooter.h"
 #include "subsystems/drivetrain/Drivetrain.h"
+#include "subsystems/intake/Intake.h"
 #include "subsystems/gate/Gate.h"
 
 #include <string>
@@ -43,6 +44,7 @@ class Robot : public frc::TimedRobot {
         AmpShooterSubsystem * m_amp = nullptr;
         Drivetrain * m_drivetrain = nullptr;
         GateSubsystem * m_gate = nullptr;
+        IntakeSubsystem * m_intake = nullptr;
 
         DriveTeleopCommand * m_driveTeleopCommand = nullptr;
 };

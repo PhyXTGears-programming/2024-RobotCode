@@ -34,6 +34,7 @@ void Robot::RobotInit() {
     m_amp = new AmpShooterSubsystem(toml->get_table("amp"));
     m_drivetrain = new Drivetrain(toml->get_table("drivetrain"));
     m_gate = new GateSubsystem(toml->get_table("gate"));
+    m_intake = new IntakeSubsystem(toml->get_table("intake"));
 
     m_driveTeleopCommand = new DriveTeleopCommand(
         m_drivetrain,
