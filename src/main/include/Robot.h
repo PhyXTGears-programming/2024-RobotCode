@@ -10,6 +10,7 @@
 #include "subsystems/drivetrain/Drivetrain.h"
 #include "subsystems/intake/Intake.h"
 #include "subsystems/gate/Gate.h"
+#include "subsystems/speaker_shooter/SpeakerShooter.h"
 
 #include <string>
 
@@ -45,6 +46,7 @@ class Robot : public frc::TimedRobot {
         Drivetrain * m_drivetrain = nullptr;
         GateSubsystem * m_gate = nullptr;
         IntakeSubsystem * m_intake = nullptr;
+        SpeakerShooterSubsystem * m_speaker = nullptr;
 
         DriveTeleopCommand * m_driveTeleopCommand = nullptr;
 };
