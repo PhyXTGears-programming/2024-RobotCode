@@ -4,10 +4,19 @@
 
 #pragma once
 
+#include "commands/DriveTeleopCommand.h"
+
+#include "subsystems/amp_shooter/AmpShooter.h"
+#include "subsystems/drivetrain/Drivetrain.h"
+#include "subsystems/intake/Intake.h"
+#include "subsystems/gate/Gate.h"
+#include "subsystems/speaker_shooter/SpeakerShooter.h"
+
 #include <string>
 
-#include <frc/TimedRobot.h>
+#include <frc/XboxController.h>
 #include <frc/smartdashboard/SendableChooser.h>
+#include <frc/TimedRobot.h>
 
 class Robot : public frc::TimedRobot {
     public:
@@ -29,4 +38,16 @@ class Robot : public frc::TimedRobot {
         const std::string kAutoNameDefault = "Default";
         const std::string kAutoNameCustom = "My Auto";
         std::string m_autoSelected;
+
+
+        frc::XboxController * m_driverController = nullptr;
+        frc::XboxController * m_operatorController = nullptr;
+
+        AmpShooterSubsystem * m_amp = nullptr;
+        Drivetrain * m_drivetrain = nullptr;
+        GateSubsystem * m_gate = nullptr;
+        IntakeSubsystem * m_intake = nullptr;
+        SpeakerShooterSubsystem * m_speaker = nullptr;
+
+        DriveTeleopCommand * m_driveTeleopCommand = nullptr;
 };

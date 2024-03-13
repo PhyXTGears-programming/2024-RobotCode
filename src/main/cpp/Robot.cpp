@@ -7,6 +7,7 @@
 
 #include <iostream>
 
+#include <cameraserver/CameraServer.h>
 #include <fmt/core.h>
 #include <frc/Filesystem.h>
 #include <frc/smartdashboard/SmartDashboard.h>
@@ -22,9 +23,25 @@ void Robot::RobotInit() {
             << "Unable to open config file: deploy/config.toml" << std::endl
             << ex.what() << std::endl;
 
-        throw "error";
+        abort();
         // clang-format on
     }
+
+    frc::CameraServer::StartAutomaticCapture();
+
+    m_driverController = new frc::XboxController(0);
+    m_operatorController = new frc::XboxController(1);
+
+    m_amp = new AmpShooterSubsystem(toml->get_table("amp"));
+    m_drivetrain = new Drivetrain(toml->get_table("drivetrain"));
+    m_gate = new GateSubsystem(toml->get_table("gate"));
+    m_intake = new IntakeSubsystem(toml->get_table("intake"));
+    m_speaker = new SpeakerShooterSubsystem(toml->get_table("speaker"));
+
+    m_driveTeleopCommand = new DriveTeleopCommand(
+        m_drivetrain,
+        m_driverController
+    );
 
     m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
     m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
@@ -39,7 +56,9 @@ void Robot::RobotInit() {
  * <p> This runs after the mode specific periodic functions, but before
  * LiveWindow and SmartDashboard integrated updating.
  */
-void Robot::RobotPeriodic() {}
+void Robot::RobotPeriodic() {
+    frc2::CommandScheduler::GetInstance().Run();
+}
 
 /**
  * This autonomous (along with the chooser code above) shows how to select
@@ -73,7 +92,9 @@ void Robot::AutonomousPeriodic() {
     }
 }
 
-void Robot::TeleopInit() {}
+void Robot::TeleopInit() {
+    m_driveTeleopCommand->Schedule();
+}
 
 void Robot::TeleopPeriodic() {}
 
