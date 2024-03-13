@@ -10,7 +10,7 @@
 
 #include <networktables/GenericEntry.h>
 
-#define DIAG_INTAKE_TAB "D/Intake"
+#define DIAG_INTAKE_TAB "D-Intake"
 
 diagnostic::TestIntake::TestIntake(
     IntakeSubsystem * intake,
