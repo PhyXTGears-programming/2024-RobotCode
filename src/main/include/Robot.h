@@ -41,6 +41,7 @@ class Robot : public frc::TimedRobot {
 
 
         frc::XboxController * m_driverController = nullptr;
+        frc::XboxController * m_operatorController = nullptr;
 
         AmpShooterSubsystem * m_amp = nullptr;
         Drivetrain * m_drivetrain = nullptr;
