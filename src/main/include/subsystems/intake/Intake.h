@@ -23,11 +23,9 @@ class IntakeSubsystem : public frc2::SubsystemBase {
     private:
         rev::CANSparkMax m_motorBottom;
         rev::CANSparkMax m_motorTop;
-        
 
         struct {
             double intakeSpeed;
 
         } m_config;
-        
 };

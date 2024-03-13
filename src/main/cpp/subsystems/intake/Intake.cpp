@@ -1,13 +1,11 @@
 #include "Interface.h"
 #include "subsystems/intake/Intake.h"
 
-
 #include <frc2/command/SubsystemBase.h>
 
-
-
 IntakeSubsystem::IntakeSubsystem(std::shared_ptr<cpptoml::table> table)
-    : m_motorBottom(interface::intake::k_motorBottom, rev::CANSparkMax::MotorType::kBrushless), 
+:
+    m_motorBottom(interface::intake::k_motorBottom, rev::CANSparkMax::MotorType::kBrushless),
     m_motorTop(interface::intake::k_motorTop, rev::CANSparkMax::MotorType::kBrushless)
 {
     {
@@ -16,7 +14,7 @@ IntakeSubsystem::IntakeSubsystem(std::shared_ptr<cpptoml::table> table)
         if (!speed) {
             throw "Error: intake cannot find toml intake.intakeSpeed";
         }
-        
+
         m_config.intakeSpeed = *speed;
     }
 
