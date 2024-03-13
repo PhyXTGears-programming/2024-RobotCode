@@ -61,16 +61,6 @@ SpeakerShooterSubsystem::SpeakerShooterSubsystem(std::shared_ptr<cpptoml::table>
         abort();
     }
 
-    {
-        cpptoml::option<double> distanceThreshold = table->get_qualified_as<double>("distanceThreshold");
-
-        if (!distanceThreshold) {
-            throw "Error: arm shooter cannot find toml property armShooter.distanceThreshold";
-        }
-
-        m_config.distanceThreshold = units::meter_t(*distanceThreshold);
-    }
-
     m_shootPid1.SetFeedbackDevice(m_shootEncoder1);
 
     // Shoot motor 2 shall follow motor 1 in reverse direction.
