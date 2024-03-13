@@ -43,6 +43,7 @@ class SpeakerShooterSubsystem : public frc2::SubsystemBase { //SubsystemBase is 
         rev::SparkRelativeEncoder m_shootEncoder1;
 
         rev::CANSparkMax m_shootMotor2;
+        rev::SparkRelativeEncoder m_shootEncoder2;
 
         frc::DigitalInput m_noteSensor;
 

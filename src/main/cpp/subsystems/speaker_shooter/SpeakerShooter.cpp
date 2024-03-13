@@ -19,6 +19,9 @@ SpeakerShooterSubsystem::SpeakerShooterSubsystem(std::shared_ptr<cpptoml::table>
         interface::speaker::k_motor2,
         rev::CANSparkMaxLowLevel::MotorType::kBrushless
     ),
+    m_shootEncoder2(m_shootMotor2.GetEncoder(
+        rev::SparkRelativeEncoder::Type::kHallSensor
+    )),
     m_noteSensor(interface::speaker::k_noteSensor)
 {
     bool hasError = false;
