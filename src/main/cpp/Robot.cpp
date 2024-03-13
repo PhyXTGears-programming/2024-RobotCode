@@ -7,6 +7,7 @@
 
 #include <iostream>
 
+#include <cameraserver/CameraServer.h>
 #include <fmt/core.h>
 #include <frc/Filesystem.h>
 #include <frc/smartdashboard/SmartDashboard.h>
@@ -25,6 +26,8 @@ void Robot::RobotInit() {
         abort();
         // clang-format on
     }
+
+    frc::CameraServer::StartAutomaticCapture();
 
     m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
     m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
