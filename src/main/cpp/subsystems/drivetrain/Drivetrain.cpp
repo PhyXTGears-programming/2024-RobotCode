@@ -206,7 +206,7 @@ void Drivetrain::ResetGyro() {
 }
 
 radian_t Drivetrain::GetHeading() {
-    return degree_t(m_gyro.GetYaw() + m_gyroOffset);
+    return -degree_t(m_gyro.GetYaw() + m_gyroOffset);
 }
 
 void Drivetrain::UpdateOdometry() {
