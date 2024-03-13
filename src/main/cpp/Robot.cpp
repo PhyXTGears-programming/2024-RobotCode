@@ -30,10 +30,13 @@ void Robot::RobotInit() {
     frc::CameraServer::StartAutomaticCapture();
 
     m_driverController = new frc::XboxController(0);
+    m_operatorController = new frc::XboxController(1);
 
+    m_amp = new AmpShooterSubsystem(toml->get_table("amp"));
     m_drivetrain = new Drivetrain(toml->get_table("drivetrain"));
-
     m_gate = new GateSubsystem(toml->get_table("gate"));
+    m_intake = new IntakeSubsystem(toml->get_table("intake"));
+    m_speaker = new SpeakerShooterSubsystem(toml->get_table("speaker"));
 
     m_driveTeleopCommand = new DriveTeleopCommand(
         m_drivetrain,

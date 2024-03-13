@@ -1,4 +1,8 @@
 [amp]
+liftCurrentThreshold = 0.0
+
+servo.extendPulseMicro = 1900
+servo.retractPulseMicro = 1500
 
 [bling]
 
@@ -19,5 +23,9 @@ openMicros  =  950
 closeMicros = 1300
 
 [intake]
+intakeSpeed = 0.50
 
 [speaker]
+shootSpeed = 60
+reverseSpeed = 60
+distanceThreshold = 0.100
