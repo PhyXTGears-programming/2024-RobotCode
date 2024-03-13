@@ -11,7 +11,7 @@
 
 #include <networktables/GenericEntry.h>
 
-#define DIAG_GATE_TAB "D/Gate"
+#define DIAG_GATE_TAB "D-Gate"
 
 diagnostic::TestGate::TestGate(
     GateSubsystem * gate,
