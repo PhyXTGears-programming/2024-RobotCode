@@ -9,7 +9,8 @@ ClimbSubsystem::ClimbSubsystem()
 :   m_winch(
         interface::climb::k_winchMotor,
         rev::CANSparkMax::MotorType::kBrushless
-    )
+    ),
+    m_lock(interface::climb::k_lockServo)
 {
     // (+) speed lifts the robot up, pulls arms down.
     m_winch.SetInverted(true);
@@ -47,10 +48,16 @@ bool ClimbSubsystem::IsArmHome() {
     return false;
 }
 
-void ClimbSubsystem::Lock() {}
+void ClimbSubsystem::Lock() {
+    m_lock.SetPulseTime(m_config.lockWinchMicros);
+    m_isLockEngaged = true;
+}
 
-void ClimbSubsystem::Unlock() {}
+void ClimbSubsystem::Unlock() {
+    m_lock.SetPulseTime(m_config.unlockWinchMicros);
+    m_isLockEngaged = false;
+}
 
 bool ClimbSubsystem::IsLockEngaged() {
-    return false;
+    return m_isLockEngaged;
 }

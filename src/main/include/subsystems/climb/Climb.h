@@ -1,5 +1,6 @@
 #pragma once
 
+#include <frc/Servo.h>
 #include <frc2/command/SubsystemBase.h>
 
 #include <rev/CANSparkMax.h>
@@ -42,4 +43,8 @@ class ClimbSubsystem : public frc2::SubsystemBase {
 
     private:
         rev::CANSparkMax m_winch;
+
+        frc::Servo m_lock;
+
+        bool m_isLockEngaged = true;
 };
