@@ -18,6 +18,8 @@ void ClimbUp::Execute() {
 
     if (0.2 > std::abs(climbAxis)) {
         m_climb->StopClimb();
+    } else if (climbAxis < 0.0 && m_climb->IsLockEngaged()) {
+        m_climb->StopClimb();
     } else {
         m_climb->ClimbUp(climbAxis * m_climb->GetMaxSpeed());
     }
