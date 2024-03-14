@@ -91,7 +91,7 @@ void SpeakerShooterSubsystem::ReverseShooter() {
 }
 
 void SpeakerShooterSubsystem::StopShooter() {
-    SetShooterSpeed(0_rpm);
+    m_shootMotor1.StopMotor();
 }
 
 bool SpeakerShooterSubsystem::IsNoteDetected() {
