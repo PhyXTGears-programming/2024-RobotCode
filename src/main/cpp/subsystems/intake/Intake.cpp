@@ -23,6 +23,17 @@ IntakeSubsystem::IntakeSubsystem(std::shared_ptr<cpptoml::table> table)
         }
     }
 
+    {
+        cpptoml::option<double> speed = table->get_qualified_as<double>("reverseSpeed");
+
+        if (speed) {
+            m_config.reverseSpeed = *speed;
+        } else {
+            std::cerr << "Error: intake cannot find toml intake.reverseSpeed" << std::endl;
+            hasError = true;
+        }
+    }
+
     if (hasError) {
         abort();
     }
@@ -41,13 +52,13 @@ void IntakeSubsystem::IntakeSpeakerShooter() {
 }
 
 void IntakeSubsystem::ReverseAmpShooter() {
-    m_motorTop.Set(-m_config.intakeSpeed);
-    m_motorBottom.Set(-m_config.intakeSpeed);
+    m_motorTop.Set(-m_config.reverseSpeed);
+    m_motorBottom.Set(-m_config.reverseSpeed);
 }
 
 void IntakeSubsystem::ReverseSpeakerShooter() {
-    m_motorTop.Set(m_config.intakeSpeed);
-    m_motorBottom.Set(-m_config.intakeSpeed);
+    m_motorTop.Set(m_config.reverseSpeed);
+    m_motorBottom.Set(-m_config.reverseSpeed);
 }
 
 void IntakeSubsystem::Stop() {

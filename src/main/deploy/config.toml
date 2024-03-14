@@ -27,6 +27,7 @@ closeMicros = 1300
 
 [intake]
 intakeSpeed = 0.45
+reverseSpeed = 0.2
 
 [speaker]
 shootSpeed = 4300

@@ -27,7 +27,7 @@ class IntakeSubsystem : public frc2::SubsystemBase {
 
         struct {
             double intakeSpeed;
-
+            double reverseSpeed;
         } m_config;
 
     friend class diagnostic::TestIntake;
