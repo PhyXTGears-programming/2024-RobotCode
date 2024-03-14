@@ -59,6 +59,8 @@ void Robot::RobotInit() {
  */
 void Robot::RobotPeriodic() {
     frc2::CommandScheduler::GetInstance().Run();
+
+    frc::SmartDashboard::PutBoolean("Climb Locked?", m_climb->IsLockEngaged());
 }
 
 /**
@@ -97,7 +99,28 @@ void Robot::TeleopInit() {
     m_driveTeleopCommand->Schedule();
 }
 
-void Robot::TeleopPeriodic() {}
+void Robot::TeleopPeriodic() {
+    double climbSpeed = -m_operatorController->GetLeftY() * m_climb->GetMaxSpeed();
+
+    if (0.2 > std::abs(climbSpeed)) {
+        m_climb->StopClimb();
+    } else {
+        m_climb->ClimbUp(climbSpeed);
+    }
+
+    switch (m_operatorController->GetPOV(0)) {
+        case 0:
+            break;
+        case 90:
+            m_climb->Lock();
+            break;
+        case 180:
+            break;
+        case 270:
+            m_climb->Unlock();
+            break;
+    }
+}
 
 void Robot::DisabledInit() {}
 

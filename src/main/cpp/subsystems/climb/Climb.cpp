@@ -98,3 +98,7 @@ void ClimbSubsystem::Unlock() {
 bool ClimbSubsystem::IsLockEngaged() {
     return m_isLockEngaged;
 }
+
+double ClimbSubsystem::GetMaxSpeed() {
+    return m_config.maxSpeed;
+}

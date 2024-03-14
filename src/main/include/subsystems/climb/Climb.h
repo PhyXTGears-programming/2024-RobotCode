@@ -40,6 +40,8 @@ class ClimbSubsystem : public frc2::SubsystemBase {
         //asks the status of the lock
         bool IsLockEngaged();
 
+        double GetMaxSpeed();
+
     private:
         rev::CANSparkMax m_winch;
 
