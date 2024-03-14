@@ -6,9 +6,10 @@
 #include "external/cpptoml.h"
 
 #include <iostream>
+#include <fmt/core.h>
 
 #include <cameraserver/CameraServer.h>
-#include <fmt/core.h>
+
 #include <frc/Filesystem.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 
