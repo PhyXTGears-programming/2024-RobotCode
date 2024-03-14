@@ -1,5 +1,7 @@
 #pragma once
 
+#include "external/cpptoml.h"
+
 #include <frc/Servo.h>
 #include <frc2/command/SubsystemBase.h>
 
@@ -7,8 +9,7 @@
 
 class ClimbSubsystem : public frc2::SubsystemBase {
     public:
-
-        ClimbSubsystem();
+        ClimbSubsystem(std::shared_ptr<cpptoml::table> table);
 
         // Tells arm to go up | speed is a placeholder
         void ClimbUp(double speed);
@@ -47,4 +48,10 @@ class ClimbSubsystem : public frc2::SubsystemBase {
         frc::Servo m_lock;
 
         bool m_isLockEngaged = true;
+
+        struct {
+            double maxSpeed;
+            units::microsecond_t lockWinchMicros = 0.0_us;
+            units::microsecond_t unlockWinchMicros = 0.0_us;
+        } m_config;
 };

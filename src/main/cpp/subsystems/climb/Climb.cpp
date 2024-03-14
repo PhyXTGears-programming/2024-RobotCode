@@ -3,15 +3,56 @@
 #include "Interface.h"
 #include "subsystems/climb/Climb.h"
 
+#include <iostream>
+
 #include <frc2/command/SubsystemBase.h>
 
-ClimbSubsystem::ClimbSubsystem()
+ClimbSubsystem::ClimbSubsystem(std::shared_ptr<cpptoml::table> table)
 :   m_winch(
         interface::climb::k_winchMotor,
         rev::CANSparkMax::MotorType::kBrushless
     ),
     m_lock(interface::climb::k_lockServo)
 {
+    bool hasError = false;
+
+    {
+        cpptoml::option<double> lockWinchMicros = table->get_qualified_as<double>("lockWinchMicros");
+
+        if (lockWinchMicros) {
+            m_config.lockWinchMicros = units::microsecond_t(*lockWinchMicros);
+        } else {
+            std::cerr << "Error: climb cannot find toml property climb.lockWinchMicros" << std::endl;
+            hasError = true;
+        }
+    }
+
+    {
+        cpptoml::option<double> unlockWinchMicros = table->get_qualified_as<double>("unlockWinchMicros");
+
+        if (unlockWinchMicros) {
+            m_config.unlockWinchMicros = units::microsecond_t(*unlockWinchMicros);
+        } else {
+            std::cerr << "Error: climb cannot find toml property climb.unlockWinchMicros" << std::endl;
+            hasError = true;
+        }
+    }
+
+    {
+        cpptoml::option<double> maxSpeed = table->get_qualified_as<double>("maxSpeed");
+
+        if (maxSpeed) {
+            m_config.maxSpeed = *maxSpeed;
+        } else {
+            std::cerr << "Error: climb cannot find toml property climb.maxSpeed" << std::endl;
+            hasError = true;
+        }
+    }
+
+    if (hasError) {
+        abort();
+    }
+
     // (+) speed lifts the robot up, pulls arms down.
     m_winch.SetInverted(true);
 }
