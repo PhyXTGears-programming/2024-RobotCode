@@ -58,15 +58,11 @@ ClimbSubsystem::ClimbSubsystem(std::shared_ptr<cpptoml::table> table)
 }
 
 void ClimbSubsystem::ClimbUp(double speed) {
-    SetClimbSpeed(std::max(0.0, speed));
+    m_winch.Set(speed);
 }
 
 void ClimbSubsystem::ClimbDown(double speed) {
-    SetClimbSpeed(std::min(0.0, speed));
-}
-
-void ClimbSubsystem::SetClimbSpeed(double speed) {
-    m_winch.Set(speed);
+    m_winch.Set(-speed);
 }
 
 void ClimbSubsystem::StopClimb() {

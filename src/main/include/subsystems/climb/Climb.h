@@ -17,8 +17,6 @@ class ClimbSubsystem : public frc2::SubsystemBase {
         // Tells arm to go down
         void ClimbDown(double speed);
 
-        void SetClimbSpeed(double speed);
-
         void StopClimb();
 
         // Gets the arm position
