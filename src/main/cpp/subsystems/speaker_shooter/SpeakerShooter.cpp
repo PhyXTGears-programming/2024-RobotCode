@@ -95,7 +95,7 @@ void SpeakerShooterSubsystem::StopShooter() {
 }
 
 bool SpeakerShooterSubsystem::IsNoteDetected() {
-    return m_noteSensor.Get();
+    return !m_noteSensor.Get();
 }
 
 units::meter_t SpeakerShooterSubsystem::GetSpeakerDistance(){

@@ -94,5 +94,5 @@ void AmpShooterSubsystem::Retract() {
 }
 
 bool AmpShooterSubsystem::IsNoteDetected() {
-    return m_noteSensor.Get();
+    return !m_noteSensor.Get();
 }
