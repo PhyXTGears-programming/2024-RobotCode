@@ -56,8 +56,9 @@ void Robot::RobotInit() {
     m_openGate = OpenGate(m_gate).ToPtr();
 
     m_intakeSpeaker = IntakeSpeaker(m_intake, m_speaker).ToPtr();
-    m_reverseSpeaker = frc2::cmd::Run(
+    m_reverseSpeaker = frc2::cmd::StartEnd(
         [this] () { m_intake->ReverseSpeakerShooter(); },
+        [this] () { m_intake->Stop(); },
         { m_intake }
     );
     m_shootSpeaker = frc2::cmd::Sequence(
