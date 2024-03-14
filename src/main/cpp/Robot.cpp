@@ -4,6 +4,7 @@
 
 #include "Robot.h"
 
+#include "commands/ClimbUp.h"
 #include "commands/CloseGate.h"
 #include "commands/DriveTeleopCommand.h"
 #include "commands/IntakeSpeaker.h"
@@ -68,6 +69,7 @@ void Robot::RobotInit() {
         ShootSpeaker(m_intake, m_speaker).ToPtr().WithTimeout(2_s)
     );
 
+    m_climbUp = ClimbUp(m_climb, m_operatorController).ToPtr();
 
     m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
     m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
@@ -152,12 +154,10 @@ void Robot::TeleopPeriodic() {
         m_reverseSpeaker.Cancel();
     }
 
-    double climbSpeed = -m_operatorController->GetLeftY() * m_climb->GetMaxSpeed();
-
-    if (0.2 > std::abs(climbSpeed)) {
-        m_climb->StopClimb();
+    if (0.1 > std::abs(m_operatorController->GetLeftY())) {
+        m_climbUp.Schedule();
     } else {
-        m_climb->ClimbUp(climbSpeed);
+        m_climbUp.Cancel();
     }
 
     switch (m_operatorController->GetPOV(0)) {
