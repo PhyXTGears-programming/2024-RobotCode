@@ -8,6 +8,7 @@
 *******************************/
 
 #include "external/cpptoml.h"
+#include "subsystems/speaker_shooter/DiagnosticDecl.h"
 
 #include <frc/DigitalInput.h>
 #include <frc2/command/SubsystemBase.h>
@@ -43,6 +44,7 @@ class SpeakerShooterSubsystem : public frc2::SubsystemBase { //SubsystemBase is 
         rev::SparkRelativeEncoder m_shootEncoder1;
 
         rev::CANSparkMax m_shootMotor2;
+        rev::SparkRelativeEncoder m_shootEncoder2;
 
         frc::DigitalInput m_noteSensor;
 
@@ -51,5 +53,8 @@ class SpeakerShooterSubsystem : public frc2::SubsystemBase { //SubsystemBase is 
             rpm_t shootSpeed;
             rpm_t reverseSpeed;
             units::meter_t  distanceThreshold;
+            units::volt_t   arbFeedForward;
         } m_config;
+
+    friend class diagnostic::TestSpeaker;
 };
