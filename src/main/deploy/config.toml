@@ -26,7 +26,7 @@ openMicros  =  950
 closeMicros = 1300
 
 [intake]
-intakeSpeed = 0.50
+intakeSpeed = 0.45
 
 [speaker]
 shootSpeed = 4300

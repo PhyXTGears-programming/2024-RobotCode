@@ -4,6 +4,7 @@
 #include <cmath>
 #include <iostream>
 
+#include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/SubsystemBase.h>
 
 SpeakerShooterSubsystem::SpeakerShooterSubsystem(std::shared_ptr<cpptoml::table> table)
@@ -79,7 +80,11 @@ SpeakerShooterSubsystem::SpeakerShooterSubsystem(std::shared_ptr<cpptoml::table>
 
     // Shoot motor 2 shall follow motor 1 in reverse direction.
     m_shootMotor2.Follow(m_shootMotor1, true);
+}
 
+void SpeakerShooterSubsystem::Periodic() {
+    frc::SmartDashboard::PutBoolean("Speaker Note Detected", IsNoteDetected());
+    frc::SmartDashboard::PutNumber("Speaker Shoot rpm", GetShooterSpeed().value());
 }
 
 void SpeakerShooterSubsystem::Shoot() {
@@ -95,7 +100,7 @@ void SpeakerShooterSubsystem::StopShooter() {
 }
 
 bool SpeakerShooterSubsystem::IsNoteDetected() {
-    return m_noteSensor.Get();
+    return !m_noteSensor.Get();
 }
 
 units::meter_t SpeakerShooterSubsystem::GetSpeakerDistance(){
@@ -108,6 +113,10 @@ bool SpeakerShooterSubsystem::IsSpeakerNear() {
 
 rpm_t SpeakerShooterSubsystem::GetShooterSpeed(){
     return rpm_t(m_shootEncoder1.GetVelocity());
+}
+
+rpm_t SpeakerShooterSubsystem::GetSpeedThreshold() {
+    return m_config.shootSpeed;
 }
 
 void SpeakerShooterSubsystem::SetShooterSpeed(rpm_t speed){

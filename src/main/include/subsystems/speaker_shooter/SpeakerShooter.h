@@ -24,6 +24,8 @@ class SpeakerShooterSubsystem : public frc2::SubsystemBase { //SubsystemBase is 
     public:
         SpeakerShooterSubsystem(std::shared_ptr<cpptoml::table> table);
 
+        void Periodic() override;
+
         void Shoot();
         void ReverseShooter();
         void StopShooter();
@@ -32,6 +34,7 @@ class SpeakerShooterSubsystem : public frc2::SubsystemBase { //SubsystemBase is 
         bool IsSpeakerNear();
 
         rpm_t GetShooterSpeed();
+        rpm_t GetSpeedThreshold();
 
         void SetShooterSpeed(rpm_t speed);
 
