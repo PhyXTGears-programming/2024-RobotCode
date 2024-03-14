@@ -24,6 +24,8 @@ class SpeakerShooterSubsystem : public frc2::SubsystemBase { //SubsystemBase is 
     public:
         SpeakerShooterSubsystem(std::shared_ptr<cpptoml::table> table);
 
+        void Periodic() override;
+
         void Shoot();
         void ReverseShooter();
         void StopShooter();
