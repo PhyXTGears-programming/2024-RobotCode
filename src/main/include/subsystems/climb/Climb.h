@@ -12,6 +12,8 @@ class ClimbSubsystem : public frc2::SubsystemBase {
     public:
         ClimbSubsystem(std::shared_ptr<cpptoml::table> table);
 
+        void Periodic() override;
+
         // Tells arm to go up | speed is a placeholder
         void ClimbUp(double speed);
 

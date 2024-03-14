@@ -3,6 +3,7 @@
 
 #include <iostream>
 
+#include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/SubsystemBase.h>
 
 ClimbSubsystem::ClimbSubsystem(std::shared_ptr<cpptoml::table> table)
@@ -55,6 +56,10 @@ ClimbSubsystem::ClimbSubsystem(std::shared_ptr<cpptoml::table> table)
 
     // (+) speed lifts the robot up, pulls arms down.
     m_winch.SetInverted(true);
+}
+
+void ClimbSubsystem::Periodic() { 
+    frc::SmartDashboard::PutBoolean("IsArmDown?", IsArmDown());
 }
 
 void ClimbSubsystem::ClimbUp(double speed) {
