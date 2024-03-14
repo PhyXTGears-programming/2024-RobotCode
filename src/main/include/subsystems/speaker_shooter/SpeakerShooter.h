@@ -52,5 +52,6 @@ class SpeakerShooterSubsystem : public frc2::SubsystemBase { //SubsystemBase is 
             rpm_t shootSpeed;
             rpm_t reverseSpeed;
             units::meter_t  distanceThreshold;
+            units::volt_t   arbFeedForward;
         } m_config;
 };

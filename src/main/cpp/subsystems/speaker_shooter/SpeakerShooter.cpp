@@ -60,6 +60,17 @@ SpeakerShooterSubsystem::SpeakerShooterSubsystem(std::shared_ptr<cpptoml::table>
         }
     }
 
+    {
+        cpptoml::option<double> arbFeedForward = table->get_qualified_as<double>("arbFeedForward");
+
+        if (arbFeedForward) {
+            m_config.arbFeedForward = units::volt_t(*arbFeedForward);
+        } else {
+            std::cerr << "Error: speaker shooter cannot find toml property speaker.arbFeedForward" << std::endl;
+            hasError = true;
+        }
+    }
+
     if (hasError) {
         abort();
     }
@@ -100,5 +111,9 @@ rpm_t SpeakerShooterSubsystem::GetShooterSpeed(){
 }
 
 void SpeakerShooterSubsystem::SetShooterSpeed(rpm_t speed){
-// if I could see my intake sub then I could
+    m_shootPid1.SetReference(
+        speed.value(),
+        rev::ControlType::kVelocity,
+        m_config.arbFeedForward.value()
+    );
 }
