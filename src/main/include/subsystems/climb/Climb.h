@@ -2,6 +2,8 @@
 
 #include <frc2/command/SubsystemBase.h>
 
+#include <rev/CANSparkMax.h>
+
 class ClimbSubsystem : public frc2::SubsystemBase {
     public:
 
@@ -12,6 +14,10 @@ class ClimbSubsystem : public frc2::SubsystemBase {
 
         // Tells arm to go down
         void ClimbDown(double speed);
+
+        void SetClimbSpeed(double speed);
+
+        void StopClimb();
 
         // Gets the arm position
         double GetArmPosition();
@@ -35,6 +41,5 @@ class ClimbSubsystem : public frc2::SubsystemBase {
         bool IsLockEngaged();
 
     private:
-        // The arm position
-        double m_armPosition = 2; //2 just for now
+        rev::CANSparkMax m_winch;
 };
