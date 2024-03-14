@@ -7,6 +7,7 @@
 #include "commands/DriveTeleopCommand.h"
 
 #include "subsystems/amp_shooter/AmpShooter.h"
+#include "subsystems/climb/Climb.h"
 #include "subsystems/drivetrain/Drivetrain.h"
 #include "subsystems/intake/Intake.h"
 #include "subsystems/gate/Gate.h"
@@ -44,6 +45,7 @@ class Robot : public frc::TimedRobot {
         frc::XboxController * m_operatorController = nullptr;
 
         AmpShooterSubsystem * m_amp = nullptr;
+        ClimbSubsystem * m_climb = nullptr;
         Drivetrain * m_drivetrain = nullptr;
         GateSubsystem * m_gate = nullptr;
         IntakeSubsystem * m_intake = nullptr;
