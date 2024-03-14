@@ -1,10 +1,9 @@
 #pragma once
 
+#include "subsystems/gate/Gate.h"
 
 #include <frc2/command/Command.h>
 #include <frc2/command/CommandHelper.h>
-
-#include "subsystems/Gate/Gate.h"
 
 class CloseGate : public frc2::CommandHelper<frc2::Command, CloseGate> {
 public:
