@@ -1,5 +1,3 @@
-#pragma once
-
 #include "Interface.h"
 #include "subsystems/climb/Climb.h"
 
