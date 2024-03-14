@@ -2,6 +2,7 @@
 
 #include "external/cpptoml.h"
 
+#include <frc/DigitalInput.h>
 #include <frc/Servo.h>
 #include <frc2/command/SubsystemBase.h>
 
@@ -48,6 +49,9 @@ class ClimbSubsystem : public frc2::SubsystemBase {
         frc::Servo m_lock;
 
         bool m_isLockEngaged = true;
+
+        frc::DigitalInput m_limitLeft;
+        frc::DigitalInput m_limitRight;
 
         struct {
             double maxSpeed;

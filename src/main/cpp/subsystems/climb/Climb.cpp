@@ -10,7 +10,9 @@ ClimbSubsystem::ClimbSubsystem(std::shared_ptr<cpptoml::table> table)
         interface::climb::k_winchMotor,
         rev::CANSparkMax::MotorType::kBrushless
     ),
-    m_lock(interface::climb::k_lockServo)
+    m_lock(interface::climb::k_lockServo),
+    m_limitLeft(interface::climb::k_limitLeft),
+    m_limitRight(interface::climb::k_limitRight)
 {
     bool hasError = false;
 
@@ -76,7 +78,7 @@ bool ClimbSubsystem::IsArmUp() {
 }
 
 bool ClimbSubsystem::IsArmDown() {
-    return false;
+    return (!m_limitLeft.Get() || !m_limitRight.Get());
 }
 
 bool ClimbSubsystem::IsArmHome() {
