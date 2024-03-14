@@ -114,6 +114,7 @@ void SpeakerShooterSubsystem::SetShooterSpeed(rpm_t speed){
     m_shootPid1.SetReference(
         speed.value(),
         rev::ControlType::kVelocity,
-        m_config.arbFeedForward.value()
+        0,
+        std::copysign(m_config.arbFeedForward.value(), speed.value())
     );
 }
