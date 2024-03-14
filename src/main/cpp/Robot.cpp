@@ -33,6 +33,7 @@ void Robot::RobotInit() {
     m_operatorController = new frc::XboxController(1);
 
     m_amp = new AmpShooterSubsystem(toml->get_table("amp"));
+    m_climb = new ClimbSubsystem(nullptr);
     m_drivetrain = new Drivetrain(toml->get_table("drivetrain"));
     m_gate = new GateSubsystem(toml->get_table("gate"));
     m_intake = new IntakeSubsystem(toml->get_table("intake"));
@@ -58,6 +59,8 @@ void Robot::RobotInit() {
  */
 void Robot::RobotPeriodic() {
     frc2::CommandScheduler::GetInstance().Run();
+
+    frc::SmartDashboard::PutBoolean("Climb Locked?", m_climb->IsLockEngaged());
 }
 
 /**
@@ -96,7 +99,28 @@ void Robot::TeleopInit() {
     m_driveTeleopCommand->Schedule();
 }
 
-void Robot::TeleopPeriodic() {}
+void Robot::TeleopPeriodic() {
+    double climbSpeed = -m_operatorController->GetLeftY() * m_climb->GetMaxSpeed();
+
+    if (0.2 > std::abs(climbSpeed)) {
+        m_climb->StopClimb();
+    } else {
+        m_climb->ClimbUp(climbSpeed);
+    }
+
+    switch (m_operatorController->GetPOV(0)) {
+        case 0:
+            break;
+        case 90:
+            m_climb->Lock();
+            break;
+        case 180:
+            break;
+        case 270:
+            m_climb->Unlock();
+            break;
+    }
+}
 
 void Robot::DisabledInit() {}
 
