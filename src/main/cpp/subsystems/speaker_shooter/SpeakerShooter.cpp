@@ -110,6 +110,10 @@ rpm_t SpeakerShooterSubsystem::GetShooterSpeed(){
     return rpm_t(m_shootEncoder1.GetVelocity());
 }
 
+rpm_t SpeakerShooterSubsystem::GetSpeedThreshold() {
+    return m_config.shootSpeed;
+}
+
 void SpeakerShooterSubsystem::SetShooterSpeed(rpm_t speed){
     m_shootPid1.SetReference(
         speed.value(),

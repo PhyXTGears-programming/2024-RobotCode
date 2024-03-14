@@ -32,6 +32,7 @@ class SpeakerShooterSubsystem : public frc2::SubsystemBase { //SubsystemBase is 
         bool IsSpeakerNear();
 
         rpm_t GetShooterSpeed();
+        rpm_t GetSpeedThreshold();
 
         void SetShooterSpeed(rpm_t speed);
 
