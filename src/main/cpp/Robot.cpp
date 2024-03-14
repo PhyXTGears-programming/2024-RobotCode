@@ -149,7 +149,6 @@ void Robot::TeleopPeriodic() {
     if (m_operatorController->GetLeftBumperPressed()) {
         m_reverseSpeaker.Schedule();
     } else if (m_operatorController->GetLeftBumperReleased()) {
-        std::cout << "Cancel reverse speaker" << std::endl;
         m_reverseSpeaker.Cancel();
     }
 
