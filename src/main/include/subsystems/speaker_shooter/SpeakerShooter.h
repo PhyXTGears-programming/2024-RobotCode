@@ -8,6 +8,7 @@
 *******************************/
 
 #include "external/cpptoml.h"
+#include "subsystems/speaker_shooter/DiagnosticDecl.h"
 
 #include <frc/DigitalInput.h>
 #include <frc2/command/SubsystemBase.h>
@@ -54,4 +55,6 @@ class SpeakerShooterSubsystem : public frc2::SubsystemBase { //SubsystemBase is 
             units::meter_t  distanceThreshold;
             units::volt_t   arbFeedForward;
         } m_config;
+
+    friend class diagnostic::TestSpeaker;
 };
