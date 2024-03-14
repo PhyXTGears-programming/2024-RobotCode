@@ -4,8 +4,6 @@
 
 #pragma once
 
-#include "commands/DriveTeleopCommand.h"
-
 #include "subsystems/amp_shooter/AmpShooter.h"
 #include "subsystems/climb/Climb.h"
 #include "subsystems/drivetrain/Drivetrain.h"
@@ -18,6 +16,8 @@
 #include <frc/XboxController.h>
 #include <frc/smartdashboard/SendableChooser.h>
 #include <frc/TimedRobot.h>
+#include <frc2/command/CommandPtr.h>
+#include <frc2/command/Commands.h>
 
 class Robot : public frc::TimedRobot {
     public:
@@ -51,5 +51,12 @@ class Robot : public frc::TimedRobot {
         IntakeSubsystem * m_intake = nullptr;
         SpeakerShooterSubsystem * m_speaker = nullptr;
 
-        DriveTeleopCommand * m_driveTeleopCommand = nullptr;
+        frc2::CommandPtr m_closeGate = frc2::cmd::None();
+        frc2::CommandPtr m_driveTeleopCommand = frc2::cmd::None();
+        frc2::CommandPtr m_openGate = frc2::cmd::None();
+        frc2::CommandPtr m_intakeSpeaker = frc2::cmd::None();
+        frc2::CommandPtr m_reverseSpeaker = frc2::cmd::None();
+        frc2::CommandPtr m_shootSpeaker = frc2::cmd::None();
+
+        bool m_isShootSpeakerInPreheat = false;
 };

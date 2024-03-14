@@ -3,6 +3,14 @@
 // the WPILib BSD license file in the root directory of this project.
 
 #include "Robot.h"
+
+#include "commands/CloseGate.h"
+#include "commands/DriveTeleopCommand.h"
+#include "commands/IntakeSpeaker.h"
+#include "commands/OpenGate.h"
+#include "commands/PreheatSpeaker.h"
+#include "commands/ShootSpeaker.h"
+
 #include "external/cpptoml.h"
 
 #include <iostream>
@@ -12,6 +20,7 @@
 
 #include <frc/Filesystem.h>
 #include <frc/smartdashboard/SmartDashboard.h>
+#include <frc2/command/Commands.h>
 
 void Robot::RobotInit() {
     std::shared_ptr<cpptoml::table> toml = nullptr;
@@ -40,10 +49,24 @@ void Robot::RobotInit() {
     m_intake = new IntakeSubsystem(toml->get_table("intake"));
     m_speaker = new SpeakerShooterSubsystem(toml->get_table("speaker"));
 
-    m_driveTeleopCommand = new DriveTeleopCommand(
-        m_drivetrain,
-        m_driverController
+    m_driveTeleopCommand = DriveTeleopCommand(m_drivetrain, m_driverController).ToPtr();
+
+    m_closeGate = CloseGate(m_gate).ToPtr().WithName("Close Gate");
+    frc::SmartDashboard::PutData("Close Gate", m_closeGate.get());
+    m_openGate = OpenGate(m_gate).ToPtr();
+
+    m_intakeSpeaker = IntakeSpeaker(m_intake, m_speaker).ToPtr();
+    m_reverseSpeaker = frc2::cmd::Run(
+        [this] () { m_intake->ReverseSpeakerShooter(); },
+        { m_intake }
     );
+    m_shootSpeaker = frc2::cmd::Sequence(
+        frc2::cmd::RunOnce([this] () { m_isShootSpeakerInPreheat = true; }, {}),
+        PreheatSpeaker(m_speaker).ToPtr(),
+        frc2::cmd::RunOnce([this] () { m_isShootSpeakerInPreheat = false; }, {}),
+        ShootSpeaker(m_intake, m_speaker).ToPtr().WithTimeout(2_s)
+    );
+
 
     m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
     m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
@@ -62,6 +85,10 @@ void Robot::RobotPeriodic() {
     frc2::CommandScheduler::GetInstance().Run();
 
     frc::SmartDashboard::PutBoolean("Climb Locked?", m_climb->IsLockEngaged());
+
+    if (m_driverController->GetBButtonPressed()) {
+        m_drivetrain->ResetGyro();
+    }
 }
 
 /**
@@ -97,10 +124,34 @@ void Robot::AutonomousPeriodic() {
 }
 
 void Robot::TeleopInit() {
-    m_driveTeleopCommand->Schedule();
+    m_driveTeleopCommand.Schedule();
+    m_openGate.Schedule();
 }
 
 void Robot::TeleopPeriodic() {
+    // Driver Controls
+
+
+    // Operator Controls
+    if (m_operatorController->GetAButtonPressed()) {
+        m_intakeSpeaker.Schedule();
+    } else if (m_operatorController->GetAButtonReleased()) {
+        m_intakeSpeaker.Cancel();
+    }
+
+    if (m_operatorController->GetXButtonPressed()) {
+        m_shootSpeaker.Schedule();
+    } else if (m_operatorController->GetXButtonReleased() && m_isShootSpeakerInPreheat) {
+        m_shootSpeaker.Cancel();
+    }
+
+    if (m_operatorController->GetLeftBumperPressed()) {
+        m_reverseSpeaker.Schedule();
+    } else if (m_operatorController->GetLeftBumperReleased()) {
+        std::cout << "Cancel reverse speaker" << std::endl;
+        m_reverseSpeaker.Cancel();
+    }
+
     double climbSpeed = -m_operatorController->GetLeftY() * m_climb->GetMaxSpeed();
 
     if (0.2 > std::abs(climbSpeed)) {
