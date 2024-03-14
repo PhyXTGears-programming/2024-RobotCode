@@ -20,7 +20,7 @@ public:
     Vector unit() {
         double m = len();
 
-        if (isNearZero(m)) {
+        if (m < 0.0001) {
             return Vector(1.0, 0.0);
         } else {
             return Vector(x / m, y / m);
