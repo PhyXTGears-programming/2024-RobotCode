@@ -62,6 +62,7 @@ class Robot : public frc::TimedRobot {
         frc2::CommandPtr m_intakeSpeaker = frc2::cmd::None();
         frc2::CommandPtr m_reverseSpeaker = frc2::cmd::None();
         frc2::CommandPtr m_shootSpeaker = frc2::cmd::None();
+        frc2::CommandPtr m_shootSpeakerSlow = frc2::cmd::None();
 
         frc2::CommandPtr m_climbUp = frc2::cmd::None();
 

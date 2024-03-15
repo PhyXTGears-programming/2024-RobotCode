@@ -10,8 +10,10 @@
 #include "commands/IntakeSpeaker.h"
 #include "commands/OpenGate.h"
 #include "commands/PreheatSpeaker.h"
+#include "commands/PreheatSpeakerSlow.h"
 #include "commands/RetractAmp.h"
 #include "commands/ShootSpeaker.h"
+#include "commands/ShootSpeakerSlow.h"
 
 #include "external/cpptoml.h"
 
@@ -97,9 +99,15 @@ void Robot::RobotInit() {
     );
     m_shootSpeaker = frc2::cmd::Sequence(
         frc2::cmd::RunOnce([this] () { m_isShootSpeakerInPreheat = true; }, {}),
-        PreheatSpeakerSlow(m_speaker).ToPtr(),
+        PreheatSpeaker(m_speaker).ToPtr(),
         frc2::cmd::RunOnce([this] () { m_isShootSpeakerInPreheat = false; }, {}),
         ShootSpeaker(m_intake, m_speaker).ToPtr().WithTimeout(2_s)
+    );
+    m_shootSpeakerSlow = frc2::cmd::Sequence(
+        frc2::cmd::RunOnce([this] () { m_isShootSpeakerInPreheat = true; }, {}),
+        PreheatSpeakerSlow(m_speaker).ToPtr(),
+        frc2::cmd::RunOnce([this] () { m_isShootSpeakerInPreheat = false; }, {}),
+        ShootSpeakerSlow(m_intake, m_speaker).ToPtr().WithTimeout(2_s)
     );
 
     m_climbUp = ClimbUp(m_climb, m_bling, m_operatorController).ToPtr();
@@ -184,6 +192,12 @@ void Robot::TeleopPeriodic() {
         m_shootSpeaker.Schedule();
     } else if (m_operatorController->GetXButtonReleased() && m_isShootSpeakerInPreheat) {
         m_shootSpeaker.Cancel();
+    }
+
+    if (m_operatorController->GetYButtonPressed()) {
+        m_shootSpeakerSlow.Schedule();
+    } else if (m_operatorController->GetYButtonReleased() && m_isShootSpeakerInPreheat) {
+        m_shootSpeakerSlow.Cancel();
     }
 
     if (m_operatorController->GetLeftBumperPressed()) {
