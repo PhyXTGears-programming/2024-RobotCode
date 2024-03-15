@@ -70,7 +70,7 @@ void Robot::RobotInit() {
         ShootSpeaker(m_intake, m_speaker).ToPtr().WithTimeout(2_s)
     );
 
-    m_climbUp = ClimbUp(m_climb, m_operatorController).ToPtr();
+    m_climbUp = ClimbUp(m_climb, m_bling, m_operatorController).ToPtr();
 
     m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
     m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
