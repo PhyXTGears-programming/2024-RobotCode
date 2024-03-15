@@ -155,7 +155,7 @@ void Robot::TeleopPeriodic() {
         m_reverseSpeaker.Cancel();
     }
 
-    if (0.1 > std::abs(m_operatorController->GetLeftY())) {
+    if (0.1 < std::abs(m_operatorController->GetLeftY())) {
         m_climbUp.Schedule();
     } else {
         m_climbUp.Cancel();
