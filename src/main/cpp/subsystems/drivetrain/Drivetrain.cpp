@@ -15,6 +15,7 @@
 #include <frc/shuffleboard/Shuffleboard.h>
 #include <frc/shuffleboard/Shuffleboard.h>
 #include <frc/shuffleboard/ShuffleboardLayout.h>
+#include <frc/Timer.h>
 
 using namespace std::literals::string_view_literals;
 
@@ -142,7 +143,15 @@ Drivetrain::Drivetrain(std::shared_ptr<cpptoml::table> table) {
 
     m_gyro.Reset();
 
-    while (m_gyro.IsCalibrating());
+    frc::Timer deadline;
+    deadline.Start();
+
+    while (m_gyro.IsCalibrating()) {
+        if (deadline.AdvanceIfElapsed(10_s)) {
+            std::cerr << "Error: Drivetrain: navx calibration deadline elapsed" << std::endl;
+            break;
+        }
+    }
 
     ResetGyro();
 
