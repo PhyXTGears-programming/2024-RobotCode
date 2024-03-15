@@ -7,7 +7,7 @@ servo.retractPulseMicro = 1500
 [bling]
 
 [climb]
-maxSpeed = 0.5
+maxSpeed = 0.75
 lockWinchMicros = 1000
 unlockWinchMicros = 2000
 
