@@ -20,6 +20,8 @@ void ClimbUp::Execute() {
         m_climb->StopClimb();
     } else if (climbAxis < 0.0 && m_climb->IsLockEngaged()) {
         m_climb->StopClimb();
+    } else if (climbAxis > 0.0 && m_climb->IsArmDown()) {
+        m_climb->StopClimb();
     } else {
         m_climb->ClimbUp(climbAxis * m_climb->GetMaxSpeed());
     }
