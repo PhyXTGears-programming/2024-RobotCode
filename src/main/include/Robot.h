@@ -1,10 +1,10 @@
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
-
 #pragma once
 
 #include "subsystems/amp_shooter/AmpShooter.h"
+#include "subsystems/bling/Bling.h"
 #include "subsystems/climb/Climb.h"
 #include "subsystems/drivetrain/Drivetrain.h"
 #include "subsystems/intake/Intake.h"
@@ -45,6 +45,7 @@ class Robot : public frc::TimedRobot {
         frc::XboxController * m_operatorController = nullptr;
 
         AmpShooterSubsystem * m_amp = nullptr;
+        BlingSubsystem * m_bling = nullptr;
         ClimbSubsystem * m_climb = nullptr;
         Drivetrain * m_drivetrain = nullptr;
         GateSubsystem * m_gate = nullptr;

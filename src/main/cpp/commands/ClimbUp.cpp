@@ -3,11 +3,13 @@
 
 ClimbUp::ClimbUp(
     ClimbSubsystem * climb,
+    BlingSubsystem * bling,
     frc::XboxController * controller
 ) {
     AddRequirements(climb);
 
     m_climb = climb;
+    m_bling = bling;
     m_controller = controller;
 }
 
@@ -22,6 +24,8 @@ void ClimbUp::Execute() {
         m_climb->StopClimb();
     } else if (climbAxis > 0.0 && m_climb->IsArmDown()) {
         m_climb->StopClimb();
+        m_bling->BlingEnableTrap();
+        m_bling->BlingRed();
     } else {
         m_climb->ClimbUp(climbAxis * m_climb->GetMaxSpeed());
     }
