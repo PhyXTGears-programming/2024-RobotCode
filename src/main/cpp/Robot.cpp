@@ -39,7 +39,10 @@ void Robot::RobotInit() {
         // clang-format on
     }
 
-    frc::CameraServer::StartAutomaticCapture();
+    auto camera = frc::CameraServer::StartAutomaticCapture();
+    camera.SetConnectionStrategy(cs::VideoSource::ConnectionStrategy::kConnectionKeepOpen);
+    camera.SetResolution(320, 240);
+    frc::CameraServer::GetServer().SetSource(camera);
 
     m_driverController = new frc::XboxController(0);
     m_operatorController = new frc::XboxController(1);
