@@ -199,6 +199,23 @@ void Drivetrain::Periodic() {
     m_frontRight->UpdateDashboard();
     m_backLeft->UpdateDashboard();
     m_backRight->UpdateDashboard();
+
+    frc::SmartDashboard::PutBoolean(
+        "Is Field Oriented?",
+        IsFieldOriented()
+    );
+}
+
+bool Drivetrain::IsFieldOriented() {
+    return m_isFieldOriented;
+}
+
+void Drivetrain::SetFieldOriented(bool isFieldOriented) {
+    m_isFieldOriented = isFieldOriented;
+}
+
+void Drivetrain::ToggleFieldOriented() {
+    m_isFieldOriented = !m_isFieldOriented;
 }
  
 void Drivetrain::ResetGyro() {

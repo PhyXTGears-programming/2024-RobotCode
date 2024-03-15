@@ -134,7 +134,9 @@ void Robot::TeleopInit() {
 
 void Robot::TeleopPeriodic() {
     // Driver Controls
-
+    if (m_driverController->GetYButtonPressed()) {
+        m_drivetrain->ToggleFieldOriented();
+    }
 
     // Operator Controls
     if (m_operatorController->GetAButtonPressed()) {

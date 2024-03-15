@@ -72,7 +72,13 @@ void DriveTeleopCommand::Execute() {
             JOYSTICK_DEADZONE)
         );
 
-    m_drivetrain->Drive(forwardSpeed, strafeSpeed, turnSpeed, true, m_robotPeriod);
+    m_drivetrain->Drive(
+        forwardSpeed,
+        strafeSpeed,
+        turnSpeed,
+        m_drivetrain->IsFieldOriented(),
+        m_robotPeriod
+    );
 }
 
 void DriveTeleopCommand::End(bool interrupted) {
