@@ -57,7 +57,6 @@ class Drivetrain : public frc2::SubsystemBase {
         frc::Translation2d m_backLeftLocation  { -0.287_m, +0.287_m };
         frc::Translation2d m_backRightLocation { -0.287_m, -0.287_m };
 
-    public:
         SwerveModule * m_frontLeft = nullptr;
         SwerveModule * m_frontRight = nullptr;
         SwerveModule * m_backLeft = nullptr;
