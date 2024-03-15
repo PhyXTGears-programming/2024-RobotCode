@@ -10,6 +10,7 @@
 #include "commands/IntakeSpeaker.h"
 #include "commands/OpenGate.h"
 #include "commands/PreheatSpeaker.h"
+#include "commands/RetractAmp.h"
 #include "commands/ShootSpeaker.h"
 
 #include "external/cpptoml.h"
@@ -56,6 +57,8 @@ void Robot::RobotInit() {
     m_closeGate = CloseGate(m_gate).ToPtr().WithName("Close Gate");
     frc::SmartDashboard::PutData("Close Gate", m_closeGate.get());
     m_openGate = OpenGate(m_gate).ToPtr();
+
+    m_retractAmp = RetractAmp(m_amp).ToPtr();
 
     m_intakeSpeaker = IntakeSpeaker(m_intake, m_speaker).ToPtr();
     m_reverseSpeaker = frc2::cmd::StartEnd(
@@ -117,6 +120,8 @@ void Robot::AutonomousInit() {
     } else {
         // Default Auto goes here
     }
+
+    m_retractAmp.Schedule();
 }
 
 void Robot::AutonomousPeriodic() {
@@ -130,6 +135,7 @@ void Robot::AutonomousPeriodic() {
 void Robot::TeleopInit() {
     m_driveTeleopCommand.Schedule();
     m_openGate.Schedule();
+    m_retractAmp.Schedule();
 }
 
 void Robot::TeleopPeriodic() {

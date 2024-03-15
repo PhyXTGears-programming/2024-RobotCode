@@ -52,12 +52,17 @@ class Robot : public frc::TimedRobot {
         IntakeSubsystem * m_intake = nullptr;
         SpeakerShooterSubsystem * m_speaker = nullptr;
 
-        frc2::CommandPtr m_closeGate = frc2::cmd::None();
         frc2::CommandPtr m_driveTeleopCommand = frc2::cmd::None();
+
+        frc2::CommandPtr m_closeGate = frc2::cmd::None();
         frc2::CommandPtr m_openGate = frc2::cmd::None();
+
+        frc2::CommandPtr m_retractAmp = frc2::cmd::None();
+
         frc2::CommandPtr m_intakeSpeaker = frc2::cmd::None();
         frc2::CommandPtr m_reverseSpeaker = frc2::cmd::None();
         frc2::CommandPtr m_shootSpeaker = frc2::cmd::None();
+
         frc2::CommandPtr m_climbUp = frc2::cmd::None();
 
         bool m_isShootSpeakerInPreheat = false;
