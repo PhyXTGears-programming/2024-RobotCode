@@ -8,8 +8,8 @@ servo.retractPulseMicro = 1500
 
 [climb]
 maxSpeed = 0.5
-lockWinchMicros = 1000;
-unlockWinchMicros = 2000;
+lockWinchMicros = 1000
+unlockWinchMicros = 2000
 
 [drivetrain]
 frontLeftAbsEncoderOffset  =   39.8
