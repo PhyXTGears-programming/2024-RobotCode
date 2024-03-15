@@ -24,6 +24,9 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/Commands.h>
 
+#include <wpi/json.h>
+#include <wpi/MemoryBuffer.h>
+
 void Robot::RobotInit() {
     std::shared_ptr<cpptoml::table> toml = nullptr;
 
@@ -39,10 +42,33 @@ void Robot::RobotInit() {
         // clang-format on
     }
 
-    auto camera = frc::CameraServer::StartAutomaticCapture();
-    camera.SetConnectionStrategy(cs::VideoSource::ConnectionStrategy::kConnectionKeepOpen);
-    camera.SetResolution(320, 240);
-    frc::CameraServer::GetServer().SetSource(camera);
+    try {
+        std::error_code ec;
+        std::unique_ptr<wpi::MemoryBuffer> fileBuffer =
+            wpi::MemoryBuffer::GetFile(
+                frc::filesystem::GetDeployDirectory() + "/camera.json",
+                ec
+            );
+
+        if (nullptr == fileBuffer || ec) {
+            std::cerr << "Error: Robot: unable to load camera json" << std::endl;
+           
+            auto camera = frc::CameraServer::StartAutomaticCapture();
+            camera.SetConnectionStrategy(cs::VideoSource::ConnectionStrategy::kConnectionKeepOpen);
+            camera.SetResolution(320, 240);
+            camera.SetFPS(20);
+            frc::CameraServer::GetServer().SetSource(camera);
+        } else {
+            wpi::json cameraJson = wpi::json::parse(fileBuffer->begin(), fileBuffer->end());
+
+            auto camera = frc::CameraServer::StartAutomaticCapture();
+            camera.SetConnectionStrategy(cs::VideoSource::ConnectionStrategy::kConnectionKeepOpen);
+            camera.SetConfigJson(cameraJson);
+            frc::CameraServer::GetServer().SetSource(camera);
+        }
+    } catch (...) {
+        std::cerr << "Error: Robot: unknown exception while configuring camera" << std::endl;
+    }
 
     m_driverController = new frc::XboxController(0);
     m_operatorController = new frc::XboxController(1);
