@@ -1,28 +1,4 @@
-#include <frc/Timer.h>
-#include <frc2/command/Command.h>
-#include <frc2/command/InstantCommand.h>
-#include <frc2/command/ScheduleCommand.h>
-#include <frc2/command/SequentialCommandGroup.h>
-#include <frc2/command/WaitCommand.h>
-#include <frc/smartdashboard/SmartDashboard.h>
-#include <frc2/command/CommandScheduler.h>
-#include <frc2/command/Commands.h>
-
-#include <frc/geometry/Pose2d.h>
-
-#include <units/velocity.h>
-
-#include "subsystems/drivetrain/Drivetrain.h"
-
-#include "util/vector.h"
-
-#include <cmath>
-#include <iomanip>
-#include <iostream>
-#include <vector>
-
-#include "util/geom.h"
-
+#include "auto.h"
 
 #define MAX_PATH_POSE_DISTANCE 0.08_m // Meters
 #define ROTATION_DEAD_ZONE     DEG_2_RAD(5) // Radians
@@ -95,4 +71,32 @@ frc2::CommandPtr generatePathFollowCommand(std::vector<frc::Pose2d> path, units:
         },
         { c_drivetrain }
     }.ToPtr();
+}
+
+frc2::CommandPtr moveBackwardsCommand(Drivetrain *c_drivetrain) {
+    std::vector<frc::Pose2d> path{
+        frc::Pose2d(-0.0_m, 0.0_m, 0.0_rad),
+        frc::Pose2d(-0.1_m, 0.0_m, 0.0_rad),
+        frc::Pose2d(-0.2_m, 0.0_m, 0.0_rad),
+        frc::Pose2d(-0.3_m, 0.0_m, 0.0_rad),
+        frc::Pose2d(-0.4_m, 0.0_m, 0.0_rad),
+        frc::Pose2d(-0.5_m, 0.0_m, 0.0_rad),
+        frc::Pose2d(-0.6_m, 0.0_m, 0.0_rad),
+        frc::Pose2d(-0.7_m, 0.0_m, 0.0_rad),
+        frc::Pose2d(-0.8_m, 0.0_m, 0.0_rad),
+        frc::Pose2d(-0.9_m, 0.0_m, 0.0_rad),
+        frc::Pose2d(-1.0_m, 0.0_m, 0.0_rad),
+        frc::Pose2d(-1.1_m, 0.0_m, 0.0_rad),
+        frc::Pose2d(-1.2_m, 0.0_m, 0.0_rad),
+        frc::Pose2d(-1.3_m, 0.0_m, 0.0_rad),
+        frc::Pose2d(-1.4_m, 0.0_m, 0.0_rad),
+        frc::Pose2d(-1.5_m, 0.0_m, 0.0_rad),
+        frc::Pose2d(-1.6_m, 0.0_m, 0.0_rad),
+        frc::Pose2d(-1.7_m, 0.0_m, 0.0_rad),
+        frc::Pose2d(-1.8_m, 0.0_m, 0.0_rad),
+        frc::Pose2d(-1.9_m, 0.0_m, 0.0_rad),
+        frc::Pose2d(-2.0_m, 0.0_m, 0.0_rad)
+    };
+    
+    return generatePathFollowCommand(path, 0.15_mps, c_drivetrain);
 }
