@@ -55,6 +55,9 @@ class Robot : public frc::TimedRobot {
         frc2::CommandPtr m_closeGate = frc2::cmd::None();
         frc2::CommandPtr m_driveTeleopCommand = frc2::cmd::None();
         frc2::CommandPtr m_openGate = frc2::cmd::None();
+
+        frc2::CommandPtr m_retractAmp = frc2::cmd::None();
+
         frc2::CommandPtr m_intakeSpeaker = frc2::cmd::None();
         frc2::CommandPtr m_reverseSpeaker = frc2::cmd::None();
         frc2::CommandPtr m_shootSpeaker = frc2::cmd::None();
