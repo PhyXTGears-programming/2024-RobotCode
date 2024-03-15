@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Interface.h"
 
 #include <frc/I2C.h>
