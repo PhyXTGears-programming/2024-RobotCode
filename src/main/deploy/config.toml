@@ -30,7 +30,9 @@ intakeSpeed = 0.40
 reverseSpeed = 0.2
 
 [speaker]
-shootSpeed = 4300
+shoot.fast.speed = 4500
+shoot.fast.feedForward = 11.0
+shoot.slow.speed = 3000
+shoot.slow.feedForward = 8.0
 reverseSpeed = -500
 distanceThreshold = 0.100
-arbFeedForward = 9.0

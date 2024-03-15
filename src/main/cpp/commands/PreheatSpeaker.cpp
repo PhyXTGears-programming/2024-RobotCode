@@ -16,5 +16,5 @@ void PreheatSpeaker::Execute() {
 void PreheatSpeaker::End(bool interrupted) {}
 
 bool PreheatSpeaker::IsFinished() {
-    return m_speaker->GetShooterSpeed() >= m_speaker->GetSpeedThreshold();
+    return m_speaker->GetShooterSpeed() >= m_speaker->GetFastSpeedThreshold();
 }

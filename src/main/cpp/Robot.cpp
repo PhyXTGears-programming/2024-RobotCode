@@ -97,7 +97,7 @@ void Robot::RobotInit() {
     );
     m_shootSpeaker = frc2::cmd::Sequence(
         frc2::cmd::RunOnce([this] () { m_isShootSpeakerInPreheat = true; }, {}),
-        PreheatSpeaker(m_speaker).ToPtr(),
+        PreheatSpeakerSlow(m_speaker).ToPtr(),
         frc2::cmd::RunOnce([this] () { m_isShootSpeakerInPreheat = false; }, {}),
         ShootSpeaker(m_intake, m_speaker).ToPtr().WithTimeout(2_s)
     );
