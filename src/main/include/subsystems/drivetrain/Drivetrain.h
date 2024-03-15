@@ -59,11 +59,8 @@ class Drivetrain : public frc2::SubsystemBase {
 
     public:
         SwerveModule * m_frontLeft = nullptr;
-
         SwerveModule * m_frontRight = nullptr;
-
         SwerveModule * m_backLeft = nullptr;
-
         SwerveModule * m_backRight = nullptr;
 
         AHRS m_gyro{ frc::SPI::kMXP };
