@@ -169,7 +169,9 @@ void Robot::AutonomousInit() {
     m_retractAmp.Schedule();
 }
 
-void Robot::AutonomousPeriodic() {}
+void Robot::AutonomousPeriodic() {
+    m_drivetrain->UpdateOdometry(); 
+}
 
 void Robot::TeleopInit() {
     m_driveTeleopCommand.Schedule();
