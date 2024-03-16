@@ -2,6 +2,8 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
+#include "auto.h"
+#include "Constants.h"
 #include "Robot.h"
 
 #include "commands/ClimbUp.h"
@@ -28,6 +30,8 @@
 
 #include <wpi/json.h>
 #include <wpi/MemoryBuffer.h>
+
+namespace auto_ = constants::autonomous;
 
 void Robot::RobotInit() {
     std::shared_ptr<cpptoml::table> toml = nullptr;
@@ -112,8 +116,20 @@ void Robot::RobotInit() {
 
     m_climbUp = ClimbUp(m_climb, m_bling, m_operatorController).ToPtr();
 
-    m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
-    m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
+    m_autoShootSpeakerAndStay = frc2::cmd::Sequence(
+        PreheatSpeaker(m_speaker).ToPtr(),
+        ShootSpeaker(m_intake, m_speaker).ToPtr().WithTimeout(3_s)
+    );
+
+    m_autoShootSpeakerAndLeave = frc2::cmd::Sequence(
+        PreheatSpeaker(m_speaker).ToPtr(),
+        ShootSpeaker(m_intake, m_speaker).ToPtr().WithTimeout(3_s),
+        moveForwardsCommand(m_drivetrain)
+    );
+
+    m_chooser.SetDefaultOption(auto_::k_None, auto_::k_None);
+    m_chooser.AddOption(auto_::k_ShootSpeakerAndStay, auto_::k_ShootSpeakerAndStay);
+    m_chooser.AddOption(auto_::k_ShootSpeakerAndLeave, auto_::k_ShootSpeakerAndLeave);
     frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
 }
 
@@ -148,25 +164,21 @@ void Robot::RobotPeriodic() {
  */
 void Robot::AutonomousInit() {
     m_autoSelected = m_chooser.GetSelected();
-    // m_autoSelected = SmartDashboard::GetString("Auto Selector",
-    //     kAutoNameDefault);
     fmt::print("Auto selected: {}\n", m_autoSelected);
 
-    if (m_autoSelected == kAutoNameCustom) {
-        // Custom Auto goes here
-    } else {
-        // Default Auto goes here
+    if (auto_::k_None == m_autoSelected) {
+        // Do nothing.
+    } else if (auto_::k_ShootSpeakerAndStay == m_autoSelected) {
+        m_autoShootSpeakerAndStay.Schedule();
+    } else if (auto_::k_ShootSpeakerAndLeave == m_autoSelected) {
+        m_autoShootSpeakerAndLeave.Schedule();
     }
 
     m_retractAmp.Schedule();
 }
 
 void Robot::AutonomousPeriodic() {
-    if (m_autoSelected == kAutoNameCustom) {
-        // Custom Auto goes here
-    } else {
-        // Default Auto goes here
-    }
+    m_drivetrain->UpdateOdometry(); 
 }
 
 void Robot::TeleopInit() {

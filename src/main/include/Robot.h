@@ -36,8 +36,6 @@ class Robot : public frc::TimedRobot {
 
     private:
         frc::SendableChooser<std::string> m_chooser;
-        const std::string kAutoNameDefault = "Default";
-        const std::string kAutoNameCustom = "My Auto";
         std::string m_autoSelected;
 
 
@@ -65,6 +63,11 @@ class Robot : public frc::TimedRobot {
         frc2::CommandPtr m_shootSpeakerSlow = frc2::cmd::None();
 
         frc2::CommandPtr m_climbUp = frc2::cmd::None();
+
+        frc2::CommandPtr m_autoShootSpeakerAndStay = frc2::cmd::None();
+
+        // Auto 2: Shoot note in speaker and drive forward out of starting zone.
+        frc2::CommandPtr m_autoShootSpeakerAndLeave = frc2::cmd::None();
 
         bool m_isShootSpeakerInPreheat = false;
 };
