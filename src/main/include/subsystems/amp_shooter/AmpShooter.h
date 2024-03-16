@@ -1,6 +1,7 @@
 #pragma once
 
 #include "external/cpptoml.h"
+#include "NoSparkMax.h"
 
 #include <frc/DigitalInput.h>
 #include <frc/Servo.h>
@@ -29,8 +30,8 @@ class AmpShooterSubsystem : public frc2::SubsystemBase {
         bool IsNoteDetected();
 
     private:
-        rev::CANSparkMax m_liftMotor;
-        rev::CANSparkMax m_shootMotor;
+        NoSparkMax m_liftMotor;
+        NoSparkMax m_shootMotor;
 
         frc::Servo m_servo;
 
