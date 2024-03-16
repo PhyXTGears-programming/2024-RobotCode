@@ -101,6 +101,7 @@ void Robot::RobotInit() {
         [this] () { m_intake->Stop(); },
         { m_intake }
     );
+    m_preheatSpeaker = PreheatSpeaker(m_speaker).ToPtr();
     m_shootSpeaker = frc2::cmd::Sequence(
         frc2::cmd::RunOnce([this] () { m_isShootSpeakerInPreheat = true; }, {}),
         PreheatSpeaker(m_speaker).ToPtr(),
@@ -216,6 +217,12 @@ void Robot::TeleopPeriodic() {
         m_reverseSpeaker.Schedule();
     } else if (m_operatorController->GetLeftBumperReleased()) {
         m_reverseSpeaker.Cancel();
+    }
+
+    if (m_operatorController->GetRightBumperPressed()) {
+        m_preheatSpeaker.Schedule();
+    } else if (m_operatorController->GetRightBumperReleased()) {
+        m_preheatSpeaker.Cancel();
     }
 
     if (0.1 < std::abs(m_operatorController->GetLeftY())) {
