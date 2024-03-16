@@ -23,7 +23,7 @@ namespace constants {
 
     constexpr meters_per_second_t k_normalDriveSpeed = 1.5_mps;
     constexpr meters_per_second_t k_slowDriveSpeed = k_normalDriveSpeed * (1.0 - 0.75); // 75% slower.
-    constexpr meters_per_second_t k_fastDriveSpeed = k_normalDriveSpeed * (1.0 + 0.75); // 75% faster.
+    constexpr meters_per_second_t k_fastDriveSpeed = 4_mps;
 
     constexpr radians_per_second_t k_maxTurnSpeed = 180_deg_per_s;
 
