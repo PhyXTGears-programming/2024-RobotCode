@@ -161,13 +161,7 @@ void Robot::AutonomousInit() {
     m_retractAmp.Schedule();
 }
 
-void Robot::AutonomousPeriodic() {
-    if (m_autoSelected == kAutoNameCustom) {
-        // Custom Auto goes here
-    } else {
-        // Default Auto goes here
-    }
-}
+void Robot::AutonomousPeriodic() {}
 
 void Robot::TeleopInit() {
     m_driveTeleopCommand.Schedule();
