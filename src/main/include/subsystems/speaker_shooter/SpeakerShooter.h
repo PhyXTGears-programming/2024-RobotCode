@@ -10,6 +10,7 @@
 #include "external/cpptoml.h"
 #include "subsystems/speaker_shooter/DiagnosticDecl.h"
 
+#include <frc/AsynchronousInterrupt.h>
 #include <frc/DigitalInput.h>
 #include <frc2/command/SubsystemBase.h>
 
@@ -52,6 +53,10 @@ class SpeakerShooterSubsystem : public frc2::SubsystemBase { //SubsystemBase is 
         rev::SparkRelativeEncoder m_shootEncoder2;
 
         frc::DigitalInput m_noteSensor;
+        frc::AsynchronousInterrupt m_noteInterrupt;
+
+        bool m_isNoteDetected = false;
+        bool m_isDetectFlagViewed = false;
 
         // Config settings loaded from TOML.
         struct {
