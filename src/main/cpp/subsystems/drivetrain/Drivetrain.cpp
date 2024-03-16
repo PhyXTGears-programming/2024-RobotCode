@@ -213,6 +213,11 @@ void Drivetrain::Periodic() {
         "Is Field Oriented?",
         IsFieldOriented()
     );
+
+    frc::SmartDashboard::PutNumber(
+        "Front Left Distance (m)",
+        m_frontLeft->GetPosition().distance.value()
+    );
 }
 
 bool Drivetrain::IsFieldOriented() {
