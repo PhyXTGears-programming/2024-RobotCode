@@ -26,8 +26,8 @@ SpeakerShooterSubsystem::SpeakerShooterSubsystem(std::shared_ptr<cpptoml::table>
     m_noteSensor(interface::speaker::k_noteSensor),
     m_noteInterrupt(
         m_noteSensor,
-        [this] (bool, bool isFalling) {
-            m_isNoteDetected = isFalling;
+        [this] (bool, bool) {
+            m_isNoteDetected = true;
             m_isDetectFlagViewed = false;
         }
     )
@@ -114,15 +114,19 @@ SpeakerShooterSubsystem::SpeakerShooterSubsystem(std::shared_ptr<cpptoml::table>
 
     // Shoot motor 2 shall follow motor 1 in reverse direction.
     m_shootMotor2.Follow(m_shootMotor1, true);
+
+    m_noteInterrupt.SetInterruptEdges(false, true);
+    m_noteInterrupt.Enable();
 }
 
 void SpeakerShooterSubsystem::Periodic() {
-    frc::SmartDashboard::PutBoolean("Speaker Note Detected", IsNoteDetected());
-    frc::SmartDashboard::PutNumber("Speaker Shoot rpm", GetShooterSpeed().value());
-
     if (m_isDetectFlagViewed) {
         m_isNoteDetected = false;
+        m_isDetectFlagViewed = false;
     }
+
+    frc::SmartDashboard::PutBoolean("Speaker Note Detected", IsNoteDetected());
+    frc::SmartDashboard::PutNumber("Speaker Shoot rpm", GetShooterSpeed().value());
 }
 
 void SpeakerShooterSubsystem::Shoot() {
@@ -152,7 +156,7 @@ void SpeakerShooterSubsystem::StopShooter() {
 
 bool SpeakerShooterSubsystem::IsNoteDetected() {
     m_isDetectFlagViewed = true;
-    return m_isNoteDetected;
+    return m_isNoteDetected || !m_noteSensor.Get();
 }
 
 units::meter_t SpeakerShooterSubsystem::GetSpeakerDistance(){
