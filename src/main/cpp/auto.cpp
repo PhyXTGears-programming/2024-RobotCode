@@ -99,7 +99,7 @@ frc2::CommandPtr moveBackwardsCommand(Drivetrain *c_drivetrain) {
         frc::Pose2d(-2.0_m, 0.0_m, 0.0_rad)
     };
     
-    return generatePathFollowCommand(path, 0.15_mps, c_drivetrain);
+    return generatePathFollowCommand(path, 0.60_mps, c_drivetrain);
 }
 
 frc2::CommandPtr moveForwardsCommand(Drivetrain *c_drivetrain) {
@@ -127,5 +127,5 @@ frc2::CommandPtr moveForwardsCommand(Drivetrain *c_drivetrain) {
         frc::Pose2d(2.0_m, 0.0_m, 0.0_rad)
     };
     
-    return generatePathFollowCommand(path, 0.15_mps, c_drivetrain);
+    return generatePathFollowCommand(path, 0.60_mps, c_drivetrain);
 }
