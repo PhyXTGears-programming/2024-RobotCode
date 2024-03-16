@@ -29,6 +29,11 @@ namespace constants {
 
     constexpr radians_per_second_t k_slowTurnSpeed = k_maxTurnSpeed * (1.0 - 0.5);  // 50% slower.
 
+    namespace autonomous {
+        const std::string k_None = "None";
+        const std::string k_ShootSpeakerAndLeave = "Shoot Speaker & Leave";
+    }
+
     namespace drive {
         constexpr int k_numberOfSwerveModules = 4;
 

@@ -28,3 +28,4 @@
 frc2::CommandPtr generatePathFollowCommand(std::vector<frc::Pose2d> path, units::meters_per_second_t speed, Drivetrain *c_drivetrain);
 
 frc2::CommandPtr moveBackwardsCommand(Drivetrain *c_drivetrain);
+frc2::CommandPtr moveForwardsCommand(Drivetrain *c_drivetrain);

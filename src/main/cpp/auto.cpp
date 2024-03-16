@@ -100,3 +100,31 @@ frc2::CommandPtr moveBackwardsCommand(Drivetrain *c_drivetrain) {
     
     return generatePathFollowCommand(path, 0.15_mps, c_drivetrain);
 }
+
+frc2::CommandPtr moveForwardsCommand(Drivetrain *c_drivetrain) {
+    std::vector<frc::Pose2d> path{
+        frc::Pose2d(0.0_m, 0.0_m, 0.0_rad),
+        frc::Pose2d(0.1_m, 0.0_m, 0.0_rad),
+        frc::Pose2d(0.2_m, 0.0_m, 0.0_rad),
+        frc::Pose2d(0.3_m, 0.0_m, 0.0_rad),
+        frc::Pose2d(0.4_m, 0.0_m, 0.0_rad),
+        frc::Pose2d(0.5_m, 0.0_m, 0.0_rad),
+        frc::Pose2d(0.6_m, 0.0_m, 0.0_rad),
+        frc::Pose2d(0.7_m, 0.0_m, 0.0_rad),
+        frc::Pose2d(0.8_m, 0.0_m, 0.0_rad),
+        frc::Pose2d(0.9_m, 0.0_m, 0.0_rad),
+        frc::Pose2d(1.0_m, 0.0_m, 0.0_rad),
+        frc::Pose2d(1.1_m, 0.0_m, 0.0_rad),
+        frc::Pose2d(1.2_m, 0.0_m, 0.0_rad),
+        frc::Pose2d(1.3_m, 0.0_m, 0.0_rad),
+        frc::Pose2d(1.4_m, 0.0_m, 0.0_rad),
+        frc::Pose2d(1.5_m, 0.0_m, 0.0_rad),
+        frc::Pose2d(1.6_m, 0.0_m, 0.0_rad),
+        frc::Pose2d(1.7_m, 0.0_m, 0.0_rad),
+        frc::Pose2d(1.8_m, 0.0_m, 0.0_rad),
+        frc::Pose2d(1.9_m, 0.0_m, 0.0_rad),
+        frc::Pose2d(2.0_m, 0.0_m, 0.0_rad)
+    };
+    
+    return generatePathFollowCommand(path, 0.15_mps, c_drivetrain);
+}
