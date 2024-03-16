@@ -93,48 +93,50 @@ void diagnostic::TestDrivetrain::Test02MeasureDriveConversionFactor() {
         .Add("diag/front-left-drive-voltage", 0.0)
         .GetEntry();
 
-    static frc2::CommandPtr command = frc2::FunctionalCommand(
-        [] () { speedFactor = 0; },
-        [this] () {
-            if (m_controller->GetAButtonPressed()) {
-                speedFactor = std::max(0, speedFactor - 1);
-            }
+    {
+        static frc2::CommandPtr command = frc2::FunctionalCommand(
+            [] () { speedFactor = 0; },
+            [this] () {
+                if (m_controller->GetAButtonPressed()) {
+                    speedFactor = std::max(0, speedFactor - 1);
+                }
 
-            if (m_controller->GetBButtonPressed()) {
-                speedFactor = std::min(10, speedFactor + 1);
-            }
+                if (m_controller->GetBButtonPressed()) {
+                    speedFactor = std::min(10, speedFactor + 1);
+                }
 
-            if (0 == speedFactor) {
+                if (0 == speedFactor) {
+                    m_drivetrain->m_frontLeft->m_driveMotor.StopMotor();
+                } else {
+                    m_drivetrain->m_frontLeft->m_driveMotor.Set(speedFactor * 0.10);
+                }
+
+                dashDriveVelocity.SetDouble(
+                    m_drivetrain->m_frontLeft->m_driveEncoder.GetVelocity()
+                    * (1.0 / 2.0 * std::numbers::pi)    // rev per radian
+                    * (60.0 / 1.0)                      // second per minute
+                );
+
+                // https://www.chiefdelphi.com/t/get-voltage-from-spark-max/344136/3
+                dashDriveVoltage.SetDouble(
+                    m_drivetrain->m_frontLeft->m_driveMotor.GetAppliedOutput()
+                    * m_drivetrain->m_frontLeft->m_driveMotor.GetBusVoltage()
+                );
+            },
+            [this] (bool interrupted) {
                 m_drivetrain->m_frontLeft->m_driveMotor.StopMotor();
-            } else {
-                m_drivetrain->m_frontLeft->m_driveMotor.Set(speedFactor * 0.10);
-            }
+            },
+            [this] () -> bool {
+                return m_controller->GetStartButtonPressed();
+            },
+            { m_drivetrain }
+        ).ToPtr();
 
-            dashDriveVelocity.SetDouble(
-                m_drivetrain->m_frontLeft->m_driveEncoder.GetVelocity()
-                * (1.0 / 2.0 * std::numbers::pi)    // rev per radian
-                * (60.0 / 1.0)                      // second per minute
-            );
-
-            // https://www.chiefdelphi.com/t/get-voltage-from-spark-max/344136/3
-            dashDriveVoltage.SetDouble(
-                m_drivetrain->m_frontLeft->m_driveMotor.GetAppliedOutput()
-                * m_drivetrain->m_frontLeft->m_driveMotor.GetBusVoltage()
-            );
-        },
-        [this] (bool interrupted) {
-            m_drivetrain->m_frontLeft->m_driveMotor.StopMotor();
-        },
-        [this] () -> bool {
-            return m_controller->GetStartButtonPressed();
-        },
-        { m_drivetrain }
-    ).ToPtr();
-
-    frc::SmartDashboard::PutData(
-        "diag/02-measure-drive-conv-factor",
-        command.get()
-    );
+        frc::SmartDashboard::PutData(
+            "diag/02-measure-drive-conv-factor",
+            command.get()
+        );
+    }
 }
 
 void diagnostic::TestDrivetrain::Test03MeasureTurnAlignment() {
