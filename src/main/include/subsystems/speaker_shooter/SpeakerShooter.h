@@ -27,6 +27,7 @@ class SpeakerShooterSubsystem : public frc2::SubsystemBase { //SubsystemBase is 
         void Periodic() override;
 
         void Shoot();
+        void SlowShoot();
         void ReverseShooter();
         void StopShooter();
 
@@ -34,9 +35,10 @@ class SpeakerShooterSubsystem : public frc2::SubsystemBase { //SubsystemBase is 
         bool IsSpeakerNear();
 
         rpm_t GetShooterSpeed();
-        rpm_t GetSpeedThreshold();
+        rpm_t GetFastSpeedThreshold();
+        rpm_t GetSlowSpeedThreshold();
 
-        void SetShooterSpeed(rpm_t speed);
+        void SetShooterSpeed(rpm_t speed, units::volt_t feedForward);
 
         units::meter_t GetSpeakerDistance();
 
@@ -53,10 +55,19 @@ class SpeakerShooterSubsystem : public frc2::SubsystemBase { //SubsystemBase is 
 
         // Config settings loaded from TOML.
         struct {
-            rpm_t shootSpeed;
+            struct {
+                struct {
+                    rpm_t speed;
+                    units::volt_t feedForward;
+                } fast;
+                struct {
+                    rpm_t speed;
+                    units::volt_t feedForward;
+                } slow;
+            } shoot;
             rpm_t reverseSpeed;
             units::meter_t  distanceThreshold;
-            units::volt_t   arbFeedForward;
+            units::volt_t   feedForwardSlow;
         } m_config;
 
     friend class diagnostic::TestSpeaker;

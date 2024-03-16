@@ -29,17 +29,55 @@ SpeakerShooterSubsystem::SpeakerShooterSubsystem(std::shared_ptr<cpptoml::table>
 
     // Load configuration values from TOML.
     {
-        cpptoml::option<double> speed = table->get_qualified_as<double>("shootSpeed");
+        // shoot.fast.speed
+        cpptoml::option<double> speed = table->get_qualified_as<double>("shoot.fast.speed");
 
         if (speed) {
-            m_config.shootSpeed = rpm_t(*speed);
+            m_config.shoot.fast.speed = rpm_t(*speed);
         } else {
-            std::cerr << "Error: speaker shooter cannot find toml property speaker.shootSpeed" << std::endl;
+            std::cerr << "Error: speaker shooter cannot find toml property speaker.shoot.fast.speed" << std::endl;
             hasError = true;
         }
     }
 
     {
+        // shoot.fast.feedForward
+        cpptoml::option<double> feedForward = table->get_qualified_as<double>("shoot.fast.feedForward");
+
+        if (feedForward) {
+            m_config.shoot.fast.feedForward = units::volt_t(*feedForward);
+        } else {
+            std::cerr << "Error: speaker shooter cannot find toml property speaker.shoot.fast.feedForward" << std::endl;
+            hasError = true;
+        }
+    }
+
+    {
+        // shoot.slow.speed
+        cpptoml::option<double> speed = table->get_qualified_as<double>("shoot.slow.speed");
+
+        if (speed) {
+            m_config.shoot.slow.speed = rpm_t(*speed);
+        } else {
+            std::cerr << "Error: speaker shooter cannot find toml property speaker.shoot.slow.speed" << std::endl;
+            hasError = true;
+        }
+    }
+
+    {
+        // shoot.slow.feedForward
+        cpptoml::option<double> feedForward = table->get_qualified_as<double>("shoot.slow.feedForward");
+
+        if (feedForward) {
+            m_config.shoot.slow.feedForward = units::volt_t(*feedForward);
+        } else {
+            std::cerr << "Error: speaker shooter cannot find toml property speaker.shoot.slow.feedForward" << std::endl;
+            hasError = true;
+        }
+    }
+
+    {
+        // reverseSpeed
         cpptoml::option<double> speed = table->get_qualified_as<double>("reverseSpeed");
 
         if (speed) {
@@ -61,17 +99,6 @@ SpeakerShooterSubsystem::SpeakerShooterSubsystem(std::shared_ptr<cpptoml::table>
         }
     }
 
-    {
-        cpptoml::option<double> arbFeedForward = table->get_qualified_as<double>("arbFeedForward");
-
-        if (arbFeedForward) {
-            m_config.arbFeedForward = units::volt_t(*arbFeedForward);
-        } else {
-            std::cerr << "Error: speaker shooter cannot find toml property speaker.arbFeedForward" << std::endl;
-            hasError = true;
-        }
-    }
-
     if (hasError) {
         abort();
     }
@@ -88,11 +115,24 @@ void SpeakerShooterSubsystem::Periodic() {
 }
 
 void SpeakerShooterSubsystem::Shoot() {
-    SetShooterSpeed(m_config.shootSpeed);
+    SetShooterSpeed(
+        m_config.shoot.fast.speed,
+        m_config.shoot.fast.feedForward
+    );
+}
+
+void SpeakerShooterSubsystem::SlowShoot() {
+    SetShooterSpeed(
+        m_config.shoot.slow.speed,
+        m_config.shoot.slow.feedForward
+    );
 }
 
 void SpeakerShooterSubsystem::ReverseShooter() {
-    SetShooterSpeed(m_config.reverseSpeed);
+    SetShooterSpeed(
+        m_config.reverseSpeed,
+        m_config.shoot.slow.feedForward
+    );
 }
 
 void SpeakerShooterSubsystem::StopShooter() {
@@ -115,15 +155,22 @@ rpm_t SpeakerShooterSubsystem::GetShooterSpeed(){
     return rpm_t(m_shootEncoder1.GetVelocity());
 }
 
-rpm_t SpeakerShooterSubsystem::GetSpeedThreshold() {
-    return m_config.shootSpeed;
+rpm_t SpeakerShooterSubsystem::GetFastSpeedThreshold() {
+    return m_config.shoot.fast.speed;
 }
 
-void SpeakerShooterSubsystem::SetShooterSpeed(rpm_t speed){
+rpm_t SpeakerShooterSubsystem::GetSlowSpeedThreshold() {
+    return m_config.shoot.slow.speed;
+}
+
+void SpeakerShooterSubsystem::SetShooterSpeed(
+    rpm_t speed,
+    units::volt_t feedForward
+) {
     m_shootPid1.SetReference(
         speed.value(),
         rev::ControlType::kVelocity,
         0,
-        std::copysign(m_config.arbFeedForward.value(), speed.value())
+        std::copysign(feedForward.value(), speed.value())
     );
 }
