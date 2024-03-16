@@ -59,7 +59,7 @@ ClimbSubsystem::ClimbSubsystem(std::shared_ptr<cpptoml::table> table)
 }
 
 void ClimbSubsystem::Periodic() { 
-    frc::SmartDashboard::PutBoolean("IsArmDown?", IsArmDown());
+    frc::SmartDashboard::PutBoolean("Is Arm Down?", IsArmDown());
 }
 
 void ClimbSubsystem::ClimbUp(double speed) {
