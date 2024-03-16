@@ -7,12 +7,13 @@ frc2::CommandPtr generatePathFollowCommand(std::vector<frc::Pose2d> path, units:
     int    *currentPoseIndex  = new int(0);
     Vector *movementDirection = new Vector(0, 0);
 
-    c_drivetrain->SetPosition(c_drivetrain->GetHeading(), path[0]);
 
     return frc2::FunctionalCommand{
         [=]() { // Initializer - Start of command
             *currentPoseIndex = 0;
             *movementDirection = Vector(0, 0);
+
+            c_drivetrain->SetPosition(c_drivetrain->GetHeading(), path[0]);
         },
         [=]() { // Execute - Every run of command
             Point currentPoint = c_drivetrain->GetChassisPosition();
