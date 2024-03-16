@@ -190,13 +190,13 @@ void Robot::TeleopPeriodic() {
 
     if (m_operatorController->GetXButtonPressed()) {
         m_shootSpeaker.Schedule();
-    } else if (m_operatorController->GetXButtonReleased() && m_isShootSpeakerInPreheat) {
+    } else if (m_operatorController->GetXButtonReleased()) {
         m_shootSpeaker.Cancel();
     }
 
     if (m_operatorController->GetYButtonPressed()) {
         m_shootSpeakerSlow.Schedule();
-    } else if (m_operatorController->GetYButtonReleased() && m_isShootSpeakerInPreheat) {
+    } else if (m_operatorController->GetYButtonReleased()) {
         m_shootSpeakerSlow.Cancel();
     }
 
