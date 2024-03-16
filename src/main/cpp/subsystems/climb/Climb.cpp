@@ -11,6 +11,7 @@ ClimbSubsystem::ClimbSubsystem(std::shared_ptr<cpptoml::table> table)
         interface::climb::k_winchMotor,
         rev::CANSparkMax::MotorType::kBrushless
     ),
+    m_winchEncoder(m_winch.GetEncoder(rev::SparkRelativeEncoder::Type::kHallSensor)),
     m_lock(interface::climb::k_lockServo),
     m_limitLeft(interface::climb::k_limitLeft),
     m_limitRight(interface::climb::k_limitRight)
@@ -56,10 +57,13 @@ ClimbSubsystem::ClimbSubsystem(std::shared_ptr<cpptoml::table> table)
 
     // (+) speed lifts the robot up, pulls arms down.
     m_winch.SetInverted(true);
+
+    m_winchEncoder.SetPosition(0.0);
 }
 
 void ClimbSubsystem::Periodic() { 
     frc::SmartDashboard::PutBoolean("Is Arm Down?", IsArmDown());
+    frc::SmartDashboard::PutNumber("Climb Arm Position", GetArmPosition());
 }
 
 void ClimbSubsystem::ClimbUp(double speed) {
@@ -75,7 +79,7 @@ void ClimbSubsystem::StopClimb() {
 }
 
 double ClimbSubsystem::GetArmPosition() {
-    return 0.0;
+    return m_winchEncoder.GetPosition();
 }
 
 bool ClimbSubsystem::IsArmUp() {
