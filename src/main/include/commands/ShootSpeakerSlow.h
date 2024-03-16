@@ -1,13 +1,17 @@
 #pragma once
 
+#include "subsystems/intake/Intake.h"
 #include "subsystems/speaker_shooter/SpeakerShooter.h"
 
 #include <frc2/command/Command.h>
 #include <frc2/command/CommandHelper.h>
 
-class PreheatSpeaker: public frc2::CommandHelper<frc2::Command, PreheatSpeaker> {
+class ShootSpeakerSlow : public frc2::CommandHelper<frc2::Command, ShootSpeakerSlow> {
     public:
-        PreheatSpeaker(SpeakerShooterSubsystem * speaker);
+        ShootSpeakerSlow(
+            IntakeSubsystem * intake,
+            SpeakerShooterSubsystem * speaker
+        );
 
         void Initialize() override;
         void Execute() override;
@@ -15,5 +19,6 @@ class PreheatSpeaker: public frc2::CommandHelper<frc2::Command, PreheatSpeaker> 
         bool IsFinished() override;
 
     private:
+        IntakeSubsystem * m_intake = nullptr;
         SpeakerShooterSubsystem * m_speaker = nullptr;
 };

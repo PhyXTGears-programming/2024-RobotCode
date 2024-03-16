@@ -5,9 +5,9 @@
 #include <frc2/command/Command.h>
 #include <frc2/command/CommandHelper.h>
 
-class PreheatSpeaker: public frc2::CommandHelper<frc2::Command, PreheatSpeaker> {
+class PreheatSpeakerSlow : public frc2::CommandHelper<frc2::Command, PreheatSpeakerSlow> {
     public:
-        PreheatSpeaker(SpeakerShooterSubsystem * speaker);
+        PreheatSpeakerSlow(SpeakerShooterSubsystem * speaker);
 
         void Initialize() override;
         void Execute() override;

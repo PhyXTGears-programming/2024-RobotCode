@@ -3,6 +3,7 @@
 
 #include <iostream>
 
+#include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/SubsystemBase.h>
 
 ClimbSubsystem::ClimbSubsystem(std::shared_ptr<cpptoml::table> table)
@@ -10,7 +11,9 @@ ClimbSubsystem::ClimbSubsystem(std::shared_ptr<cpptoml::table> table)
         interface::climb::k_winchMotor,
         rev::CANSparkMax::MotorType::kBrushless
     ),
-    m_lock(interface::climb::k_lockServo)
+    m_lock(interface::climb::k_lockServo),
+    m_limitLeft(interface::climb::k_limitLeft),
+    m_limitRight(interface::climb::k_limitRight)
 {
     bool hasError = false;
 
@@ -55,6 +58,10 @@ ClimbSubsystem::ClimbSubsystem(std::shared_ptr<cpptoml::table> table)
     m_winch.SetInverted(true);
 }
 
+void ClimbSubsystem::Periodic() { 
+    frc::SmartDashboard::PutBoolean("IsArmDown?", IsArmDown());
+}
+
 void ClimbSubsystem::ClimbUp(double speed) {
     m_winch.Set(speed);
 }
@@ -76,7 +83,7 @@ bool ClimbSubsystem::IsArmUp() {
 }
 
 bool ClimbSubsystem::IsArmDown() {
-    return false;
+    return (!m_limitLeft.Get() || !m_limitRight.Get());
 }
 
 bool ClimbSubsystem::IsArmHome() {

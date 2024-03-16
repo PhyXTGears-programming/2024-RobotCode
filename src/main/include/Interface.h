@@ -1,5 +1,7 @@
 #pragma once
 
+#include <frc/I2C.h>
+
 namespace interface {
     namespace {
         // Drivetrain Drive Motors
@@ -41,6 +43,8 @@ namespace interface {
 
         const int k_dio0 = 0;
         const int k_dio1 = 1;
+        const int k_dio2 = 2;
+        const int k_dio3 = 3;
 
         const int k_pwm0 = 0;
         const int k_pwm1 = 1;
@@ -58,12 +62,17 @@ namespace interface {
     }
 
     namespace bling {
+        const frc::I2C::Port k_port = frc::I2C::Port::kOnboard;
+        const int k_address = 0x30;
     }
 
     namespace climb {
         const int k_winchMotor = k_can61;
 
         const int k_lockServo = k_pwm1;
+
+        const int k_limitLeft  = k_dio2;
+        const int k_limitRight = k_dio3;
     }
 
     namespace gate {

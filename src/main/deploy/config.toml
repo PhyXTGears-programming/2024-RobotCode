@@ -7,15 +7,15 @@ servo.retractPulseMicro = 1500
 [bling]
 
 [climb]
-maxSpeed = 0.5
-lockWinchMicros = 1000;
-unlockWinchMicros = 2000;
+maxSpeed = 0.75
+lockWinchMicros = 1000
+unlockWinchMicros = 2000
 
 [drivetrain]
-frontLeftAbsEncoderOffset  =   39.8
-frontRightAbsEncoderOffset = -130.1
-backLeftAbsEncoderOffset   =  -93.3
-backRightAbsEncoderOffset  =  -32.3
+frontLeftAbsEncoderOffset  =   38.1
+frontRightAbsEncoderOffset = -131.8
+backLeftAbsEncoderOffset   =  -96.4
+backRightAbsEncoderOffset  =  -30.6
 
 swerve.turn.kP = 2.0
 swerve.turn.kI = 0.01
@@ -26,11 +26,13 @@ openMicros  =  950
 closeMicros = 1300
 
 [intake]
-intakeSpeed = 0.45
+intakeSpeed = 0.40
 reverseSpeed = 0.2
 
 [speaker]
-shootSpeed = 4300
+shoot.fast.speed = 4500
+shoot.fast.feedForward = 11.0
+shoot.slow.speed = 3000
+shoot.slow.feedForward = 8.0
 reverseSpeed = -500
 distanceThreshold = 0.100
-arbFeedForward = 9.0

@@ -47,11 +47,19 @@ void diagnostic::TestSpeaker::Test01TuneSpeaker() {
         )
         .GetEntry();
 
-    static nt::GenericEntry & dashShootSpeed =
+    static nt::GenericEntry & dashShootSpeedFast =
         *tab
         .Add(
-            "diag/speaker/shoot speed rpm",
-            m_speaker->m_config.shootSpeed.value()
+            "diag/speaker/shoot speed fast rpm",
+            m_speaker->m_config.shoot.fast.speed.value()
+        )
+        .GetEntry();
+
+    static nt::GenericEntry & dashShootSpeedSlow =
+        *tab
+        .Add(
+            "diag/speaker/shoot speed slow rpm",
+            m_speaker->m_config.shoot.slow.speed.value()
         )
         .GetEntry();
 
@@ -119,12 +127,12 @@ void diagnostic::TestSpeaker::Test01TuneSpeaker() {
         static frc2::CommandPtr command = frc2::FunctionalCommand(
             [this, &readPidFromDash] () {
                 {
-                    double speed = dashShootSpeed.GetDouble(-1.0);
+                    double speed = dashShootSpeedFast.GetDouble(-1.0);
 
                     if (-1 < speed) {
-                        m_speaker->m_config.shootSpeed = rpm_t(speed);
+                        m_speaker->m_config.shoot.fast.speed = rpm_t(speed);
                     } else {
-                        std::cerr << "Error: TestSpeaker: cannot read shoot speed from dashboard" << std::endl;
+                        std::cerr << "Error: TestSpeaker: cannot read shoot speed fast from dashboard" << std::endl;
                     }
                 }
 
@@ -133,7 +141,7 @@ void diagnostic::TestSpeaker::Test01TuneSpeaker() {
                 m_speaker->m_shootPid1.SetP(kP);
                 m_speaker->m_shootPid1.SetI(kI);
                 m_speaker->m_shootPid1.SetD(kD);
-                m_speaker->m_config.arbFeedForward = units::volt_t(kF);
+                m_speaker->m_config.shoot.fast.feedForward = units::volt_t(kF);
             },
             [this] () {
                 m_speaker->Shoot();
@@ -146,10 +154,49 @@ void diagnostic::TestSpeaker::Test01TuneSpeaker() {
             },
             { m_speaker }
         ).ToPtr()
-            .WithName("Shoot");
+            .WithName("Shoot Fast");
 
         frc::SmartDashboard::PutData(
-            "diag/speaker/01-tune-speaker/shoot",
+            "diag/speaker/01-tune-speaker/shoot-fast",
+            command.get()
+        );
+    }
+
+    {
+        static frc2::CommandPtr command = frc2::FunctionalCommand(
+            [this, &readPidFromDash] () {
+                {
+                    double speed = dashShootSpeedSlow.GetDouble(-1.0);
+
+                    if (-1 < speed) {
+                        m_speaker->m_config.shoot.slow.speed = rpm_t(speed);
+                    } else {
+                        std::cerr << "Error: TestSpeaker: cannot read shoot speed slow from dashboard" << std::endl;
+                    }
+                }
+
+                readPidFromDash();
+
+                m_speaker->m_shootPid1.SetP(kP);
+                m_speaker->m_shootPid1.SetI(kI);
+                m_speaker->m_shootPid1.SetD(kD);
+                m_speaker->m_config.shoot.slow.feedForward = units::volt_t(kF);
+            },
+            [this] () {
+                m_speaker->Shoot();
+            },
+            [this] (bool interrupted) {
+                m_speaker->StopShooter();
+            },
+            [this] () -> bool {
+                return m_controller->GetStartButtonPressed();
+            },
+            { m_speaker }
+        ).ToPtr()
+            .WithName("Shoot Slow");
+
+        frc::SmartDashboard::PutData(
+            "diag/speaker/01-tune-speaker/shoot-slow",
             command.get()
         );
     }
@@ -172,7 +219,7 @@ void diagnostic::TestSpeaker::Test01TuneSpeaker() {
                 m_speaker->m_shootPid1.SetP(kP);
                 m_speaker->m_shootPid1.SetI(kI);
                 m_speaker->m_shootPid1.SetD(kD);
-                m_speaker->m_config.arbFeedForward = units::volt_t(kF);
+                m_speaker->m_config.shoot.slow.feedForward = units::volt_t(kF);
             },
             [this] () {
                 m_speaker->ReverseShooter();

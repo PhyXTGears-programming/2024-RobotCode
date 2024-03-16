@@ -2,6 +2,7 @@
 
 #include "external/cpptoml.h"
 
+#include <frc/DigitalInput.h>
 #include <frc/Servo.h>
 #include <frc2/command/SubsystemBase.h>
 
@@ -10,6 +11,8 @@
 class ClimbSubsystem : public frc2::SubsystemBase {
     public:
         ClimbSubsystem(std::shared_ptr<cpptoml::table> table);
+
+        void Periodic() override;
 
         // Tells arm to go up | speed is a placeholder
         void ClimbUp(double speed);
@@ -48,6 +51,9 @@ class ClimbSubsystem : public frc2::SubsystemBase {
         frc::Servo m_lock;
 
         bool m_isLockEngaged = true;
+
+        frc::DigitalInput m_limitLeft;
+        frc::DigitalInput m_limitRight;
 
         struct {
             double maxSpeed;

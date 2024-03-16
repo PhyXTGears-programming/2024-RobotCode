@@ -4,12 +4,16 @@
 
 #include "Robot.h"
 
+#include "commands/ClimbUp.h"
 #include "commands/CloseGate.h"
 #include "commands/DriveTeleopCommand.h"
 #include "commands/IntakeSpeaker.h"
 #include "commands/OpenGate.h"
 #include "commands/PreheatSpeaker.h"
+#include "commands/PreheatSpeakerSlow.h"
+#include "commands/RetractAmp.h"
 #include "commands/ShootSpeaker.h"
+#include "commands/ShootSpeakerSlow.h"
 
 #include "external/cpptoml.h"
 
@@ -21,6 +25,9 @@
 #include <frc/Filesystem.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/Commands.h>
+
+#include <wpi/json.h>
+#include <wpi/MemoryBuffer.h>
 
 void Robot::RobotInit() {
     std::shared_ptr<cpptoml::table> toml = nullptr;
@@ -37,13 +44,40 @@ void Robot::RobotInit() {
         // clang-format on
     }
 
-    frc::CameraServer::StartAutomaticCapture();
+    try {
+        std::error_code ec;
+        std::unique_ptr<wpi::MemoryBuffer> fileBuffer =
+            wpi::MemoryBuffer::GetFile(
+                frc::filesystem::GetDeployDirectory() + "/camera.json",
+                ec
+            );
+
+        if (nullptr == fileBuffer || ec) {
+            std::cerr << "Error: Robot: unable to load camera json" << std::endl;
+           
+            auto camera = frc::CameraServer::StartAutomaticCapture();
+            camera.SetConnectionStrategy(cs::VideoSource::ConnectionStrategy::kConnectionKeepOpen);
+            camera.SetResolution(320, 240);
+            camera.SetFPS(20);
+            frc::CameraServer::GetServer().SetSource(camera);
+        } else {
+            wpi::json cameraJson = wpi::json::parse(fileBuffer->begin(), fileBuffer->end());
+
+            auto camera = frc::CameraServer::StartAutomaticCapture();
+            camera.SetConnectionStrategy(cs::VideoSource::ConnectionStrategy::kConnectionKeepOpen);
+            camera.SetConfigJson(cameraJson);
+            frc::CameraServer::GetServer().SetSource(camera);
+        }
+    } catch (...) {
+        std::cerr << "Error: Robot: unknown exception while configuring camera" << std::endl;
+    }
 
     m_driverController = new frc::XboxController(0);
     m_operatorController = new frc::XboxController(1);
 
     m_amp = new AmpShooterSubsystem(toml->get_table("amp"));
-    m_climb = new ClimbSubsystem(nullptr);
+    m_bling = new BlingSubsystem();
+    m_climb = new ClimbSubsystem(toml->get_table("climb"));
     m_drivetrain = new Drivetrain(toml->get_table("drivetrain"));
     m_gate = new GateSubsystem(toml->get_table("gate"));
     m_intake = new IntakeSubsystem(toml->get_table("intake"));
@@ -54,6 +88,8 @@ void Robot::RobotInit() {
     m_closeGate = CloseGate(m_gate).ToPtr().WithName("Close Gate");
     frc::SmartDashboard::PutData("Close Gate", m_closeGate.get());
     m_openGate = OpenGate(m_gate).ToPtr();
+
+    m_retractAmp = RetractAmp(m_amp).ToPtr();
 
     m_intakeSpeaker = IntakeSpeaker(m_intake, m_speaker).ToPtr();
     m_reverseSpeaker = frc2::cmd::StartEnd(
@@ -67,7 +103,14 @@ void Robot::RobotInit() {
         frc2::cmd::RunOnce([this] () { m_isShootSpeakerInPreheat = false; }, {}),
         ShootSpeaker(m_intake, m_speaker).ToPtr().WithTimeout(2_s)
     );
+    m_shootSpeakerSlow = frc2::cmd::Sequence(
+        frc2::cmd::RunOnce([this] () { m_isShootSpeakerInPreheat = true; }, {}),
+        PreheatSpeakerSlow(m_speaker).ToPtr(),
+        frc2::cmd::RunOnce([this] () { m_isShootSpeakerInPreheat = false; }, {}),
+        ShootSpeakerSlow(m_intake, m_speaker).ToPtr().WithTimeout(2_s)
+    );
 
+    m_climbUp = ClimbUp(m_climb, m_bling, m_operatorController).ToPtr();
 
     m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
     m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
@@ -114,6 +157,8 @@ void Robot::AutonomousInit() {
     } else {
         // Default Auto goes here
     }
+
+    m_retractAmp.Schedule();
 }
 
 void Robot::AutonomousPeriodic() {
@@ -127,11 +172,14 @@ void Robot::AutonomousPeriodic() {
 void Robot::TeleopInit() {
     m_driveTeleopCommand.Schedule();
     m_openGate.Schedule();
+    m_retractAmp.Schedule();
 }
 
 void Robot::TeleopPeriodic() {
     // Driver Controls
-
+    if (m_driverController->GetYButtonPressed()) {
+        m_drivetrain->ToggleFieldOriented();
+    }
 
     // Operator Controls
     if (m_operatorController->GetAButtonPressed()) {
@@ -142,8 +190,14 @@ void Robot::TeleopPeriodic() {
 
     if (m_operatorController->GetXButtonPressed()) {
         m_shootSpeaker.Schedule();
-    } else if (m_operatorController->GetXButtonReleased() && m_isShootSpeakerInPreheat) {
+    } else if (m_operatorController->GetXButtonReleased()) {
         m_shootSpeaker.Cancel();
+    }
+
+    if (m_operatorController->GetYButtonPressed()) {
+        m_shootSpeakerSlow.Schedule();
+    } else if (m_operatorController->GetYButtonReleased()) {
+        m_shootSpeakerSlow.Cancel();
     }
 
     if (m_operatorController->GetLeftBumperPressed()) {
@@ -152,12 +206,10 @@ void Robot::TeleopPeriodic() {
         m_reverseSpeaker.Cancel();
     }
 
-    double climbSpeed = -m_operatorController->GetLeftY() * m_climb->GetMaxSpeed();
-
-    if (0.2 > std::abs(climbSpeed)) {
-        m_climb->StopClimb();
+    if (0.1 < std::abs(m_operatorController->GetLeftY())) {
+        m_climbUp.Schedule();
     } else {
-        m_climb->ClimbUp(climbSpeed);
+        m_climbUp.Cancel();
     }
 
     switch (m_operatorController->GetPOV(0)) {

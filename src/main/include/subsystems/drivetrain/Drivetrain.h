@@ -39,6 +39,10 @@ class Drivetrain : public frc2::SubsystemBase {
 
         void UpdateOdometry();
 
+        bool IsFieldOriented();
+        void SetFieldOriented(bool isFieldOriented);
+        void ToggleFieldOriented();
+
         void ResetGyro();
 
         units::radian_t GetHeading();
@@ -57,17 +61,15 @@ class Drivetrain : public frc2::SubsystemBase {
         frc::Translation2d m_backLeftLocation  { -0.287_m, +0.287_m };
         frc::Translation2d m_backRightLocation { -0.287_m, -0.287_m };
 
-    public:
         SwerveModule * m_frontLeft = nullptr;
-
         SwerveModule * m_frontRight = nullptr;
-
         SwerveModule * m_backLeft = nullptr;
-
         SwerveModule * m_backRight = nullptr;
 
         AHRS m_gyro{ frc::SPI::kMXP };
         double m_gyroOffset = 0.0;
+
+        bool m_isFieldOriented = true;
 
         frc::SwerveDriveKinematics<k_numberOfSwerveModules> m_kinematics{
             m_frontLeftLocation,
