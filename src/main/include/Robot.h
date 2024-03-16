@@ -64,7 +64,9 @@ class Robot : public frc::TimedRobot {
 
         frc2::CommandPtr m_climbUp = frc2::cmd::None();
 
-        // Auto 1: Shoot note in speaker and drive forward out of starting zone.
+        frc2::CommandPtr m_autoShootSpeakerAndStay = frc2::cmd::None();
+
+        // Auto 2: Shoot note in speaker and drive forward out of starting zone.
         frc2::CommandPtr m_autoShootSpeakerAndLeave = frc2::cmd::None();
 
         bool m_isShootSpeakerInPreheat = false;
