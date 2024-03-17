@@ -70,5 +70,7 @@ class Robot : public frc::TimedRobot {
         // Auto 2: Shoot note in speaker and drive forward out of starting zone.
         frc2::CommandPtr m_autoShootSpeakerAndLeave = frc2::cmd::None();
 
+        frc2::CommandPtr m_autoShootTwo = frc2::cmd::None();
+
         bool m_isShootSpeakerInPreheat = false;
 };
