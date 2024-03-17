@@ -128,9 +128,31 @@ void Robot::RobotInit() {
         moveForwardsCommand(m_drivetrain)
     );
 
+    m_autoShootTwo = frc2::cmd::Sequence(
+        OpenGate(m_gate).ToPtr(),
+        PreheatSpeaker(m_speaker).ToPtr(),
+        ShootSpeaker(m_intake, m_speaker).ToPtr().WithTimeout(2_s),
+        frc2::cmd::Parallel(
+            moveForwardsCommand(m_drivetrain),
+            frc2::cmd::Sequence(
+                frc2::cmd::Wait(1.5_s),
+                IntakeSpeaker(m_intake, m_speaker).ToPtr().WithTimeout(2.5_s)
+            )
+        ),
+        frc2::cmd::Race(
+            moveBackwardsCommand(m_drivetrain),
+            frc2::cmd::Sequence(
+                IntakeSpeaker(m_intake, m_speaker).ToPtr().WithTimeout(2_s),
+                PreheatSpeaker(m_speaker).ToPtr().Repeatedly()
+            )
+        ),
+        ShootSpeaker(m_intake, m_speaker).ToPtr().WithTimeout(2_s)
+    );
+
     m_chooser.SetDefaultOption(auto_::k_None, auto_::k_None);
     m_chooser.AddOption(auto_::k_ShootSpeakerAndStay, auto_::k_ShootSpeakerAndStay);
     m_chooser.AddOption(auto_::k_ShootSpeakerAndLeave, auto_::k_ShootSpeakerAndLeave);
+    m_chooser.AddOption(auto_::k_ShootTwo, auto_::k_ShootTwo);
     frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
 }
 
@@ -173,6 +195,8 @@ void Robot::AutonomousInit() {
         m_autoShootSpeakerAndStay.Schedule();
     } else if (auto_::k_ShootSpeakerAndLeave == m_autoSelected) {
         m_autoShootSpeakerAndLeave.Schedule();
+    } else if (auto_::k_ShootTwo == m_autoSelected) {
+        m_autoShootTwo.Schedule();
     }
 
     m_retractAmp.Schedule();
