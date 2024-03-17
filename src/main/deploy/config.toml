@@ -32,7 +32,7 @@ reverseSpeed = 0.2
 [speaker]
 shoot.fast.speed = 4500
 shoot.fast.feedForward = 11.0
-shoot.slow.speed = 3000
-shoot.slow.feedForward = 8.0
+shoot.slow.speed = 300
+shoot.slow.feedForward = 2.0
 reverseSpeed = -500
 distanceThreshold = 0.100
