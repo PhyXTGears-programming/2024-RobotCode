@@ -26,7 +26,7 @@ openMicros  =  950
 closeMicros = 1300
 
 [intake]
-intakeSpeed = 0.35
+intakeSpeed = 0.40
 reverseSpeed = 0.2
 
 [speaker]
