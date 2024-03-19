@@ -7,6 +7,7 @@
 #include <frc2/command/SubsystemBase.h>
 
 #include <rev/CANSparkMax.h>
+#include <rev/SparkRelativeEncoder.h>
 
 class ClimbSubsystem : public frc2::SubsystemBase {
     public:
@@ -47,6 +48,8 @@ class ClimbSubsystem : public frc2::SubsystemBase {
 
     private:
         rev::CANSparkMax m_winch;
+
+        rev::SparkRelativeEncoder m_winchEncoder;
 
         frc::Servo m_lock;
 

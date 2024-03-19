@@ -147,7 +147,7 @@ Drivetrain::Drivetrain(std::shared_ptr<cpptoml::table> table) {
     deadline.Start();
 
     while (m_gyro.IsCalibrating()) {
-        if (deadline.AdvanceIfElapsed(10_s)) {
+        if (deadline.AdvanceIfElapsed(30_s)) {
             std::cerr << "Error: Drivetrain: navx calibration deadline elapsed" << std::endl;
             break;
         }
@@ -212,6 +212,11 @@ void Drivetrain::Periodic() {
     frc::SmartDashboard::PutBoolean(
         "Is Field Oriented?",
         IsFieldOriented()
+    );
+
+    frc::SmartDashboard::PutNumber(
+        "Front Left Distance (m)",
+        m_frontLeft->GetPosition().distance.value()
     );
 }
 

@@ -2,6 +2,8 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
+#include "auto.h"
+#include "Constants.h"
 #include "Robot.h"
 
 #include "commands/ClimbUp.h"
@@ -28,6 +30,8 @@
 
 #include <wpi/json.h>
 #include <wpi/MemoryBuffer.h>
+
+namespace auto_ = constants::autonomous;
 
 void Robot::RobotInit() {
     std::shared_ptr<cpptoml::table> toml = nullptr;
@@ -97,6 +101,7 @@ void Robot::RobotInit() {
         [this] () { m_intake->Stop(); },
         { m_intake }
     );
+    m_preheatSpeaker = PreheatSpeaker(m_speaker).ToPtr();
     m_shootSpeaker = frc2::cmd::Sequence(
         frc2::cmd::RunOnce([this] () { m_isShootSpeakerInPreheat = true; }, {}),
         PreheatSpeaker(m_speaker).ToPtr(),
@@ -112,8 +117,42 @@ void Robot::RobotInit() {
 
     m_climbUp = ClimbUp(m_climb, m_bling, m_operatorController).ToPtr();
 
-    m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
-    m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
+    m_autoShootSpeakerAndStay = frc2::cmd::Sequence(
+        PreheatSpeaker(m_speaker).ToPtr(),
+        ShootSpeaker(m_intake, m_speaker).ToPtr().WithTimeout(3_s)
+    );
+
+    m_autoShootSpeakerAndLeave = frc2::cmd::Sequence(
+        PreheatSpeaker(m_speaker).ToPtr(),
+        ShootSpeaker(m_intake, m_speaker).ToPtr().WithTimeout(3_s),
+        moveForwardsCommand(m_drivetrain)
+    );
+
+    m_autoShootTwo = frc2::cmd::Sequence(
+        OpenGate(m_gate).ToPtr(),
+        PreheatSpeaker(m_speaker).ToPtr(),
+        ShootSpeaker(m_intake, m_speaker).ToPtr().WithTimeout(2_s),
+        frc2::cmd::Parallel(
+            moveForwardsCommand(m_drivetrain),
+            frc2::cmd::Sequence(
+                frc2::cmd::Wait(1_s),
+                IntakeSpeaker(m_intake, m_speaker).ToPtr().WithTimeout(2.5_s)
+            )
+        ),
+        frc2::cmd::Race(
+            moveBackwardsCommand(m_drivetrain),
+            frc2::cmd::Sequence(
+                frc2::cmd::Wait(1_s),
+                PreheatSpeaker(m_speaker).ToPtr().Repeatedly()
+            )
+        ).WithTimeout(4_s),
+        ShootSpeaker(m_intake, m_speaker).ToPtr().WithTimeout(2_s)
+    );
+
+    m_chooser.SetDefaultOption(auto_::k_None, auto_::k_None);
+    m_chooser.AddOption(auto_::k_ShootSpeakerAndStay, auto_::k_ShootSpeakerAndStay);
+    m_chooser.AddOption(auto_::k_ShootSpeakerAndLeave, auto_::k_ShootSpeakerAndLeave);
+    m_chooser.AddOption(auto_::k_ShootTwo, auto_::k_ShootTwo);
     frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
 }
 
@@ -148,25 +187,23 @@ void Robot::RobotPeriodic() {
  */
 void Robot::AutonomousInit() {
     m_autoSelected = m_chooser.GetSelected();
-    // m_autoSelected = SmartDashboard::GetString("Auto Selector",
-    //     kAutoNameDefault);
     fmt::print("Auto selected: {}\n", m_autoSelected);
 
-    if (m_autoSelected == kAutoNameCustom) {
-        // Custom Auto goes here
-    } else {
-        // Default Auto goes here
+    if (auto_::k_None == m_autoSelected) {
+        // Do nothing.
+    } else if (auto_::k_ShootSpeakerAndStay == m_autoSelected) {
+        m_autoShootSpeakerAndStay.Schedule();
+    } else if (auto_::k_ShootSpeakerAndLeave == m_autoSelected) {
+        m_autoShootSpeakerAndLeave.Schedule();
+    } else if (auto_::k_ShootTwo == m_autoSelected) {
+        m_autoShootTwo.Schedule();
     }
 
     m_retractAmp.Schedule();
 }
 
 void Robot::AutonomousPeriodic() {
-    if (m_autoSelected == kAutoNameCustom) {
-        // Custom Auto goes here
-    } else {
-        // Default Auto goes here
-    }
+    m_drivetrain->UpdateOdometry(); 
 }
 
 void Robot::TeleopInit() {
@@ -190,13 +227,13 @@ void Robot::TeleopPeriodic() {
 
     if (m_operatorController->GetXButtonPressed()) {
         m_shootSpeaker.Schedule();
-    } else if (m_operatorController->GetXButtonReleased() && m_isShootSpeakerInPreheat) {
+    } else if (m_operatorController->GetXButtonReleased()) {
         m_shootSpeaker.Cancel();
     }
 
     if (m_operatorController->GetYButtonPressed()) {
         m_shootSpeakerSlow.Schedule();
-    } else if (m_operatorController->GetYButtonReleased() && m_isShootSpeakerInPreheat) {
+    } else if (m_operatorController->GetYButtonReleased()) {
         m_shootSpeakerSlow.Cancel();
     }
 
@@ -204,6 +241,12 @@ void Robot::TeleopPeriodic() {
         m_reverseSpeaker.Schedule();
     } else if (m_operatorController->GetLeftBumperReleased()) {
         m_reverseSpeaker.Cancel();
+    }
+
+    if (m_operatorController->GetRightBumperPressed()) {
+        m_preheatSpeaker.Schedule();
+    } else if (m_operatorController->GetRightBumperReleased()) {
+        m_preheatSpeaker.Cancel();
     }
 
     if (0.1 < std::abs(m_operatorController->GetLeftY())) {

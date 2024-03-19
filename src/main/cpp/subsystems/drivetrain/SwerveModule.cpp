@@ -84,8 +84,6 @@ SwerveModule::SwerveModule(
     m_turningPid.SetPositionPIDWrappingMinInput(-std::numbers::pi);
     m_turningPid.SetPositionPIDWrappingMaxInput(std::numbers::pi);
 
-    ResetTurnPosition();
-
     // FIXME: confirm direction of drive motor on robot.
     m_driveMotor.SetInverted(false);
     m_driveMotor.SetIdleMode(rev::CANSparkBase::IdleMode::kBrake);
@@ -111,6 +109,8 @@ SwerveModule::SwerveModule(
     m_drivePid.SetFF(0.0);
 
     m_driveEncoder.SetPosition(0.0);
+
+    ResetTurnPosition();
 }
 
 void SwerveModule::Periodic() {
