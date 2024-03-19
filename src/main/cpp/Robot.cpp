@@ -135,17 +135,17 @@ void Robot::RobotInit() {
         frc2::cmd::Parallel(
             moveForwardsCommand(m_drivetrain),
             frc2::cmd::Sequence(
-                frc2::cmd::Wait(1.5_s),
+                frc2::cmd::Wait(1_s),
                 IntakeSpeaker(m_intake, m_speaker).ToPtr().WithTimeout(2.5_s)
             )
         ),
         frc2::cmd::Race(
             moveBackwardsCommand(m_drivetrain),
             frc2::cmd::Sequence(
-                IntakeSpeaker(m_intake, m_speaker).ToPtr().WithTimeout(2_s),
+                frc2::cmd::Wait(1_s),
                 PreheatSpeaker(m_speaker).ToPtr().Repeatedly()
             )
-        ),
+        ).WithTimeout(4_s),
         ShootSpeaker(m_intake, m_speaker).ToPtr().WithTimeout(2_s)
     );
 
