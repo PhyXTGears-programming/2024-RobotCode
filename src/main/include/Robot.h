@@ -59,6 +59,7 @@ class Robot : public frc::TimedRobot {
 
         frc2::CommandPtr m_intakeSpeaker = frc2::cmd::None();
         frc2::CommandPtr m_reverseSpeaker = frc2::cmd::None();
+        frc2::CommandPtr m_preheatSpeaker = frc2::cmd::None();
         frc2::CommandPtr m_shootSpeaker = frc2::cmd::None();
         frc2::CommandPtr m_shootSpeakerSlow = frc2::cmd::None();
 
@@ -68,6 +69,8 @@ class Robot : public frc::TimedRobot {
 
         // Auto 2: Shoot note in speaker and drive forward out of starting zone.
         frc2::CommandPtr m_autoShootSpeakerAndLeave = frc2::cmd::None();
+
+        frc2::CommandPtr m_autoShootTwo = frc2::cmd::None();
 
         bool m_isShootSpeakerInPreheat = false;
 };

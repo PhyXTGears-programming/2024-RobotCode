@@ -20,11 +20,15 @@ class BlingSubsystem : public frc2::SubsystemBase {
         void BlingOrange         ();//make bling orange
         void BlingPurple         ();//make bling purple
         void BlingFlashBlueBlack ();//flash between blue and black
+
         //PERAMITERS
+
+        void BlingEnableAll      ();//enable all
         void BlingEnableClimber1 ();//enable theLEFT climber arm
         void BlingEnableClimber2 ();//enable the RIGHT climber arm
         void BlingEnableTrap     ();//enable the trap
         void BlingEnableSpeaker  ();//enable the speaker
+
         void BlingLowBrightness  ();//set the brightness to low
         void BlingMidBrightness  ();//set the brightness to mid
         void BlingHighBrightness ();//set the brightness to high

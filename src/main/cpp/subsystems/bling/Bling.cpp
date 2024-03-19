@@ -54,6 +54,10 @@ void BlingSubsystem::BlingFlashBlueBlack() {
 
 
 //PERAMITERS
+void BlingSubsystem::BlingEnableAll() {
+        SendCommand("p 0");
+}
+
 void BlingSubsystem::BlingEnableClimber1() {
         SendCommand("p 1");
 }
