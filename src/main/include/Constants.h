@@ -25,9 +25,11 @@ namespace constants {
     constexpr meters_per_second_t k_slowDriveSpeed = k_normalDriveSpeed * (1.0 - 0.75); // 75% slower.
     constexpr meters_per_second_t k_fastDriveSpeed = 4_mps;
 
-    constexpr radians_per_second_t k_maxTurnSpeed = 180_deg_per_s;
+    constexpr radians_per_second_t k_maxTurnSpeed = 360_deg_per_s;
 
-    constexpr radians_per_second_t k_slowTurnSpeed = k_maxTurnSpeed * (1.0 - 0.5);  // 50% slower.
+    constexpr radians_per_second_t k_normalTurnSpeed = 180_deg_per_s;
+    constexpr radians_per_second_t k_slowTurnSpeed = k_normalTurnSpeed * (1.0 - 0.5);  // 50% slower.
+    constexpr radians_per_second_t k_fastTurnSpeed = k_maxTurnSpeed;
 
     namespace autonomous {
         const std::string k_None = "None";
