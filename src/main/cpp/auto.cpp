@@ -1,5 +1,44 @@
 #include "auto.h"
 
+std::vector<frc::Pose2d> loadPathFromJSON(wpi::json &json) {
+    std::vector<frc::Pose2d> path = {};
+
+    for (int i = 0; i < json.size(); i++) {
+        wpi::json pathPoint = json[std::to_string(i)];
+        float x   = pathPoint.value("x", 0.0);
+        float y   = pathPoint.value("y", 0.0);
+        float rot = pathPoint.value("rot", 0.0);
+        frc::Pose2d pose{units::meter_t{x}, units::meter_t{y}, units::radian_t{rot}};
+        path.push_back(pose);
+    }
+
+    return path;
+}
+
+frc2::CommandPtr loadPathFollowCommandFromFile(Drivetrain *m_drivetrain, std::string_view filename) {
+    try {
+        std::error_code ec;
+        std::unique_ptr<wpi::MemoryBuffer> fileBuffer =
+            wpi::MemoryBuffer::GetFile(
+                filename,
+                ec
+            );
+
+        if (nullptr == fileBuffer || ec) {
+            std::cerr << "Error: Robot: unable to load path json" << std::endl;
+            abort();
+        } else {
+            wpi::json json = wpi::json::parse(fileBuffer->begin(), fileBuffer->end());
+
+            return generatePathFollowCommand(loadPathFromJSON(json), 1.5_mps, m_drivetrain);
+        }
+    } catch (...) {
+        std::cerr << "Error: Robot: unknown exception while configuring path" << std::endl;
+    }
+
+    return frc2::cmd::None();
+}
+
 #define MAX_PATH_POSE_DISTANCE 0.08_m // Meters
 #define ROTATION_DEAD_ZONE     DEG_2_RAD(5) // Radians
 #define ROTATION_SPEED         M_PI_2 // Radians per second

@@ -149,6 +149,8 @@ void Robot::RobotInit() {
         ShootSpeaker(m_intake, m_speaker).ToPtr().WithTimeout(2_s)
     );
 
+    m_autoPathTest = loadPathFollowCommandFromFile(m_drivetrain, frc::filesystem::GetDeployDirectory() + "/path.json");
+
     m_chooser.SetDefaultOption(auto_::k_None, auto_::k_None);
     m_chooser.AddOption(auto_::k_ShootSpeakerAndStay, auto_::k_ShootSpeakerAndStay);
     m_chooser.AddOption(auto_::k_ShootSpeakerAndLeave, auto_::k_ShootSpeakerAndLeave);
