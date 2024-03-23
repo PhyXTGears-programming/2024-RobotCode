@@ -189,7 +189,7 @@ frc2::CommandPtr generatePathFollowCommand(std::vector<PathPoint> path, Drivetra
 
                     units::meter_t distance = units::meter_t{sqrt(pow(pose.X().value() - currentPoint.x, 2.0) + pow(pose.Y().value() - currentPoint.y, 2.0))};
 
-                    if (pose.Type() == TYPE_HALT) {
+                    if (pose.Type() == TYPE_HALT && i != *currentPoseIndex) {
                         *haltPointIndex = i;
                         *currentPoseIndex = i;
                         break;
@@ -204,7 +204,7 @@ frc2::CommandPtr generatePathFollowCommand(std::vector<PathPoint> path, Drivetra
                         *currentPoseIndex = i;
                     }
                 }
-            } else {
+            } else { // Has a halt point, stay at halt point
                 *currentPoseIndex = *haltPointIndex;
             }
 
