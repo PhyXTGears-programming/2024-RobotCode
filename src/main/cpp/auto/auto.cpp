@@ -29,7 +29,13 @@ std::vector<PathPoint> loadPathFromJSON(wpi::json &json) {
         double rot = pathPoint.value("rot", 0.0);
         double vel = pathPoint.value("vel", 0.0);
 
+        PathPointType pointType = TYPE_OTHER;
+        if ("stop" == pathPoint.value("type", "")) {
+            pointType = TYPE_HALT;
+        }
+
         PathPoint point{units::meter_t{x}, units::meter_t{y}, units::radian_t{rot}, units::meters_per_second_t{vel}};
+        point.SetType(pointType);
 
         path.push_back(point);
     }
