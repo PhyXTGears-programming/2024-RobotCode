@@ -165,6 +165,7 @@ void Robot::RobotInit() {
     m_chooser.AddOption(auto_::k_ShootSpeakerAndStay, auto_::k_ShootSpeakerAndStay);
     m_chooser.AddOption(auto_::k_ShootSpeakerAndLeave, auto_::k_ShootSpeakerAndLeave);
     m_chooser.AddOption(auto_::k_ShootTwo, auto_::k_ShootTwo);
+    m_chooser.AddOption(auto_::k_FollowPath, auto_::k_FollowPath);
     frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
 }
 
@@ -209,6 +210,8 @@ void Robot::AutonomousInit() {
         m_autoShootSpeakerAndLeave.Schedule();
     } else if (auto_::k_ShootTwo == m_autoSelected) {
         m_autoShootTwo.Schedule();
+    } else if (auto_::k_FollowPath == m_autoSelected) {
+        m_autoPathTest.Schedule();
     }
 
     m_retractAmp.Schedule();

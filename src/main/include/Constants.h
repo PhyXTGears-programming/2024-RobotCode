@@ -34,6 +34,7 @@ namespace constants {
         const std::string k_ShootSpeakerAndStay = "Shoot Speaker & Stay";
         const std::string k_ShootSpeakerAndLeave = "Shoot Speaker & Leave";
         const std::string k_ShootTwo = "Shoot Two";
+        const std::string k_FollowPath = "Follow Path";
     }
 
     namespace drive {
