@@ -549,19 +549,26 @@ void diagnostic::TestDrivetrain::Test05TuneDrivePid() {
 }
 
 void diagnostic::TestDrivetrain::Test06MeasureDriveConversionFactor() {
+    static double expected = (std::numbers::pi * constants::drive::k_wheelDiameter.value());
     static frc2::CommandPtr command = frc2::FunctionalCommand(
         [this] () {
             m_drivetrain->m_frontLeft->m_driveMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
+            m_drivetrain->m_frontLeft->m_driveEncoder.SetPosition(0.0);
 
             frc::SmartDashboard::PutNumber(
                 "diag/wheel-position-meter",
-                (std::numbers::pi * constants::drive::k_wheelDiameter.value())
+                expected
             );
         },
         [this] () {
             frc::SmartDashboard::PutNumber(
                 "diag/motor-position-meter",
                 m_drivetrain->m_frontLeft->m_driveEncoder.GetPosition()
+            );
+
+            frc::SmartDashboard::PutNumber(
+                "diag/wheel-to-motor-ratio",
+                expected / m_drivetrain->m_frontLeft->m_driveEncoder.GetPosition()
             );
         },
         [] (bool interrupted) {},
