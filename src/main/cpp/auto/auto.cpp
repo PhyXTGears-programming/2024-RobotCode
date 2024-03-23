@@ -5,10 +5,13 @@ std::vector<frc::Pose2d> loadPosePathFromJSON(wpi::json &json) {
 
     for (int i = 0; i < json.size(); i++) {
         wpi::json pathPoint = json[i];
+
         double x   = pathPoint.value("x",   0.0);
         double y   = pathPoint.value("y",   0.0);
         double rot = pathPoint.value("rot", 0.0);
+
         frc::Pose2d pose{units::meter_t{x}, units::meter_t{y}, units::radian_t{rot}};
+
         path.push_back(pose);
     }
 
@@ -20,11 +23,14 @@ std::vector<PathPoint> loadPathFromJSON(wpi::json &json) {
 
     for (int i = 0; i < json.size(); i++) {
         wpi::json pathPoint = json[i];
+
         double x   = pathPoint.value("x",   0.0);
         double y   = pathPoint.value("y",   0.0);
         double rot = pathPoint.value("rot", 0.0);
         double vel = pathPoint.value("vel", 0.0);
+
         PathPoint point{units::meter_t{x}, units::meter_t{y}, units::radian_t{rot}, units::meters_per_second_t{vel}};
+
         path.push_back(point);
     }
 
