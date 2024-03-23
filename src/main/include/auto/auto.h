@@ -2,6 +2,7 @@
 
 #include "subsystems/drivetrain/Drivetrain.h"
 
+#include "auto/PathPoint.h"
 #include "util/geom.h"
 #include "util/vector.h"
 
@@ -27,11 +28,14 @@
 #include <wpi/json.h>
 #include <wpi/MemoryBuffer.h>
 
-std::vector<frc::Pose2d> loadPathFromJSON(wpi::json &path);
+std::vector<frc::Pose2d> loadPosePathFromJSON(wpi::json &path);
+std::vector<PathPoint> loadPathFromJSON(wpi::json &path);
 
+frc2::CommandPtr loadPoseFollowCommandFromFile(Drivetrain *m_drivetrain, std::string_view filename);
 frc2::CommandPtr loadPathFollowCommandFromFile(Drivetrain *m_drivetrain, std::string_view filename);
 
 frc2::CommandPtr generatePathFollowCommand(std::vector<frc::Pose2d> path, units::meters_per_second_t speed, Drivetrain *c_drivetrain);
+frc2::CommandPtr generatePathFollowCommand(std::vector<PathPoint> path, Drivetrain *c_drivetrain);
 
 frc2::CommandPtr moveBackwardsCommand(Drivetrain *c_drivetrain);
 frc2::CommandPtr moveForwardsCommand(Drivetrain *c_drivetrain);
