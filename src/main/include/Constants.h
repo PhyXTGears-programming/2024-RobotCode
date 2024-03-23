@@ -44,7 +44,7 @@ namespace constants {
         constexpr units::meter_t k_wheelDiameter = 3.75_in;
 
         constexpr double k_turnWheelPerMotorRatio  = 21.428571;
-        constexpr double k_driveWheelPerMotorRatio =  0.104056;
+        constexpr double k_driveWheelPerMotorRatio = 0.164062;
 
         constexpr rev_per_min_per_volt_t k_driveRpmPerVolt(78.061404);
         constexpr rev_per_min_per_volt_t k_driveRadPerSecPerVolt = k_driveRpmPerVolt.convert<rad_per_sec_per_volt>();
