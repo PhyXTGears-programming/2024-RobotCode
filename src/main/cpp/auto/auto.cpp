@@ -95,7 +95,7 @@ frc2::CommandPtr loadPathFollowCommandFromFile(Drivetrain *m_drivetrain, std::st
 #define ROTATION_DEAD_ZONE      DEG_2_RAD(5) // Radians
 #define ROTATION_SPEED          M_PI_2 // Radians per second
 #define HALT_DISTANCE_THRESHOLD 0.05 // Meters
-#define MIN_SPEED               0.2_mps
+#define MIN_SPEED               0.375_mps
 frc2::CommandPtr generatePathFollowCommand(std::vector<frc::Pose2d> path, units::meters_per_second_t speed, Drivetrain *c_drivetrain) {
     int    *currentPoseIndex  = new int(0);
     Vector *movementDirection = new Vector(0, 0);
