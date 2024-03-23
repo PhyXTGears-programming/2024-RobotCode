@@ -36,6 +36,8 @@ namespace auto_ = constants::autonomous;
 void Robot::RobotInit() {
     std::shared_ptr<cpptoml::table> toml = nullptr;
 
+    std::cout << std::endl << "Building config" << std::endl;
+
     try {
         toml = cpptoml::parse_file(frc::filesystem::GetDeployDirectory() + "/config.toml");
     } catch (cpptoml::parse_exception & ex) {
@@ -47,6 +49,8 @@ void Robot::RobotInit() {
         abort();
         // clang-format on
     }
+
+    std::cout << std::endl << "Building camera" << std::endl;
 
     try {
         std::error_code ec;
@@ -76,8 +80,12 @@ void Robot::RobotInit() {
         std::cerr << "Error: Robot: unknown exception while configuring camera" << std::endl;
     }
 
+    std::cout << std::endl << "Building joysticks" << std::endl;
+
     m_driverController = new frc::XboxController(0);
     m_operatorController = new frc::XboxController(1);
+
+    std::cout << std::endl << "Building subsystems" << std::endl;
 
     m_amp = new AmpShooterSubsystem(toml->get_table("amp"));
     m_bling = new BlingSubsystem();
@@ -86,6 +94,8 @@ void Robot::RobotInit() {
     m_gate = new GateSubsystem(toml->get_table("gate"));
     m_intake = new IntakeSubsystem(toml->get_table("intake"));
     m_speaker = new SpeakerShooterSubsystem(toml->get_table("speaker"));
+
+    std::cout << std::endl << "Building commands" << std::endl;
 
     m_driveTeleopCommand = DriveTeleopCommand(m_drivetrain, m_driverController).ToPtr();
 

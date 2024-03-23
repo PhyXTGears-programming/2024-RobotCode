@@ -16,6 +16,7 @@ std::vector<frc::Pose2d> loadPathFromJSON(wpi::json &json) {
 }
 
 frc2::CommandPtr loadPathFollowCommandFromFile(Drivetrain *m_drivetrain, std::string_view filename) {
+    std::cout << std::endl << "Building path" << std::endl;
     try {
         std::error_code ec;
         std::unique_ptr<wpi::MemoryBuffer> fileBuffer =
@@ -28,7 +29,9 @@ frc2::CommandPtr loadPathFollowCommandFromFile(Drivetrain *m_drivetrain, std::st
             std::cerr << "Error: Robot: unable to load path json" << std::endl;
             abort();
         } else {
+            std::cout << std::endl << "Got json" << std::endl;
             wpi::json json = wpi::json::parse(fileBuffer->begin(), fileBuffer->end());
+            std::cout << std::endl << "Got json 2" << std::endl;
 
             return generatePathFollowCommand(loadPathFromJSON(json), 1.5_mps, m_drivetrain);
         }
