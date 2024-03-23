@@ -19,6 +19,8 @@ namespace diagnostic {
 
             void Test05TuneDrivePid();
 
+            void Test06MeasureDriveConversionFactor();
+
             Drivetrain * m_drivetrain = nullptr;
             frc::XboxController * m_controller = nullptr;
     };

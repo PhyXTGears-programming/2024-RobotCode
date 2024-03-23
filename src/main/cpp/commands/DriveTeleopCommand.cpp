@@ -49,9 +49,10 @@ void DriveTeleopCommand::Execute() {
 
     meters_per_second_t driveSpeedFactor = constants::k_normalDriveSpeed + driveGain - driveReduce;
 
-    radians_per_second_t turnReduce = leftTrigger * (constants::k_maxTurnSpeed - constants::k_slowTurnSpeed);
+    radians_per_second_t turnReduce = leftTrigger * (constants::k_normalTurnSpeed - constants::k_slowTurnSpeed);
+    radians_per_second_t turnGain   = rightTrigger * (constants::k_fastTurnSpeed - constants::k_normalTurnSpeed);
 
-    radians_per_second_t turnSpeedFactor = constants::k_maxTurnSpeed - turnReduce;
+    radians_per_second_t turnSpeedFactor = constants::k_maxTurnSpeed + turnGain - turnReduce;
 
     // the rotation limit is there in case the driver does not want to spin as fast while driving
     const auto forwardSpeed = driveSpeedFactor

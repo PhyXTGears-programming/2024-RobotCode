@@ -1,3 +1,4 @@
+#include "Constants.h"
 #include "subsystems/drivetrain/Diagnostic.h"
 #include "util/math.h"
 
@@ -543,6 +544,40 @@ void diagnostic::TestDrivetrain::Test05TuneDrivePid() {
 
     frc::SmartDashboard::PutData(
         "diag/05-tune-drive-pid",
+        command.get()
+    );
+}
+
+void diagnostic::TestDrivetrain::Test06MeasureDriveConversionFactor() {
+    static double expected = (std::numbers::pi * constants::drive::k_wheelDiameter.value());
+    static frc2::CommandPtr command = frc2::FunctionalCommand(
+        [this] () {
+            m_drivetrain->m_frontLeft->m_driveMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
+            m_drivetrain->m_frontLeft->m_driveEncoder.SetPosition(0.0);
+
+            frc::SmartDashboard::PutNumber(
+                "diag/wheel-position-meter",
+                expected
+            );
+        },
+        [this] () {
+            frc::SmartDashboard::PutNumber(
+                "diag/motor-position-meter",
+                m_drivetrain->m_frontLeft->m_driveEncoder.GetPosition()
+            );
+
+            frc::SmartDashboard::PutNumber(
+                "diag/wheel-to-motor-ratio",
+                expected / m_drivetrain->m_frontLeft->m_driveEncoder.GetPosition()
+            );
+        },
+        [] (bool interrupted) {},
+        [] () -> bool { return false; },
+        { m_drivetrain }
+    ).ToPtr();
+
+    frc::SmartDashboard::PutData(
+        "diag/06-tune-drive",
         command.get()
     );
 }
