@@ -38,7 +38,7 @@ std::vector<PathPoint> loadPathFromJSON(wpi::json &json) {
 }
 
 frc2::CommandPtr loadPoseFollowCommandFromFile(Drivetrain *m_drivetrain, std::string_view filename) {
-    std::cout << std::endl << "Building path" << std::endl;
+    std::cout << std::endl << "Robot: building path for auto from '" << filename << "'" << std::endl;
     try {
         std::error_code ec;
         std::unique_ptr<wpi::MemoryBuffer> fileBuffer =
@@ -51,12 +51,10 @@ frc2::CommandPtr loadPoseFollowCommandFromFile(Drivetrain *m_drivetrain, std::st
             std::cerr << "Error: Robot: unable to load path json" << std::endl;
             abort();
         } else {
-            std::cout << std::endl << "Got json" << std::endl;
             wpi::json json = wpi::json::parse(fileBuffer->begin(), fileBuffer->end());
-            std::cout << std::endl << "Got json 2" << std::endl;
 
             auto path = loadPosePathFromJSON(json);
-            std::cout << std::endl << "Got path" << std::endl;
+            std::cout << std::endl << "Robot: auto path loaded from '" << filename << "'" << std::endl;
 
             return generatePathFollowCommand(path, 1.5_mps, m_drivetrain);
         }
@@ -68,7 +66,7 @@ frc2::CommandPtr loadPoseFollowCommandFromFile(Drivetrain *m_drivetrain, std::st
 }
 
 frc2::CommandPtr loadPathFollowCommandFromFile(Drivetrain *m_drivetrain, std::string_view filename) {
-    std::cout << std::endl << "Building path" << std::endl;
+    std::cout << std::endl << "Robot: building path for auto from '" << filename << "'" << std::endl;
     try {
         std::error_code ec;
         std::unique_ptr<wpi::MemoryBuffer> fileBuffer =
@@ -78,21 +76,21 @@ frc2::CommandPtr loadPathFollowCommandFromFile(Drivetrain *m_drivetrain, std::st
             );
 
         if (nullptr == fileBuffer || ec) {
-            std::cerr << "Error: Robot: unable to load path json" << std::endl;
+            std::cerr << "Error: Robot: unable to load path json from file '" << filename << "'" << std::endl;
             abort();
         } else {
-            std::cout << std::endl << "Got json" << std::endl;
             wpi::json json = wpi::json::parse(fileBuffer->begin(), fileBuffer->end());
-            std::cout << std::endl << "Got json 2" << std::endl;
 
             std::vector<PathPoint> path = loadPathFromJSON(json);
-            std::cout << std::endl << "Got path" << std::endl;
+            std::cout << std::endl << "Robot: auto path loaded from '" << filename << "'" << std::endl;
 
             return generatePathFollowCommand(path, m_drivetrain);
         }
     } catch (...) {
         std::cerr << "Error: Robot: unknown exception while configuring path" << std::endl;
     }
+
+    std::cout << std::endl << "Robot: skipping auto json load. using cmd::None'" << std::endl;
 
     return frc2::cmd::None();
 }
