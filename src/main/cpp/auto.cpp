@@ -4,9 +4,9 @@ std::vector<frc::Pose2d> loadPathFromJSON(wpi::json &json) {
     std::vector<frc::Pose2d> path = {};
 
     for (int i = 0; i < json.size(); i++) {
-        wpi::json pathPoint = json[std::to_string(i)];
-        float x   = pathPoint.value("x", 0.0);
-        float y   = pathPoint.value("y", 0.0);
+        wpi::json pathPoint = json[i];
+        float x   = pathPoint.value("x",   0.0);
+        float y   = pathPoint.value("y",   0.0);
         float rot = pathPoint.value("rot", 0.0);
         frc::Pose2d pose{units::meter_t{x}, units::meter_t{y}, units::radian_t{rot}};
         path.push_back(pose);
@@ -33,7 +33,10 @@ frc2::CommandPtr loadPathFollowCommandFromFile(Drivetrain *m_drivetrain, std::st
             wpi::json json = wpi::json::parse(fileBuffer->begin(), fileBuffer->end());
             std::cout << std::endl << "Got json 2" << std::endl;
 
-            return generatePathFollowCommand(loadPathFromJSON(json), 1.5_mps, m_drivetrain);
+            auto path = loadPathFromJSON(json);
+            std::cout << std::endl << "Got path" << std::endl;
+
+            return generatePathFollowCommand(path, 1.5_mps, m_drivetrain);
         }
     } catch (...) {
         std::cerr << "Error: Robot: unknown exception while configuring path" << std::endl;
