@@ -91,9 +91,11 @@ frc2::CommandPtr loadPathFollowCommandFromFile(Drivetrain *m_drivetrain, std::st
     return frc2::cmd::None();
 }
 
-#define MAX_PATH_POSE_DISTANCE 0.08_m // Meters
-#define ROTATION_DEAD_ZONE     DEG_2_RAD(5) // Radians
-#define ROTATION_SPEED         M_PI_2 // Radians per second
+#define MAX_PATH_POSE_DISTANCE  0.08_m
+#define ROTATION_DEAD_ZONE      DEG_2_RAD(5) // Radians
+#define ROTATION_SPEED          M_PI_2 // Radians per second
+#define HALT_DISTANCE_THRESHOLD 0.05 // Meters
+#define MIN_SPEED               0.2_mps
 frc2::CommandPtr generatePathFollowCommand(std::vector<frc::Pose2d> path, units::meters_per_second_t speed, Drivetrain *c_drivetrain) {
     int    *currentPoseIndex  = new int(0);
     Vector *movementDirection = new Vector(0, 0);
@@ -168,30 +170,42 @@ frc2::CommandPtr generatePathFollowCommand(std::vector<frc::Pose2d> path, units:
 frc2::CommandPtr generatePathFollowCommand(std::vector<PathPoint> path, Drivetrain *c_drivetrain) {
     int    *currentPoseIndex  = new int(0);
     Vector *movementDirection = new Vector(0, 0);
+    int    *haltPointIndex    = new int(-1);
 
     return frc2::FunctionalCommand{
         [=]() { // Initializer - Start of command
             *currentPoseIndex = 0;
             *movementDirection = Vector(0, 0);
+            *haltPointIndex = -1;
 
             c_drivetrain->SetPosition(c_drivetrain->GetHeading(), path[0].Pose());
         },
         [=]() { // Execute - Every run of command
             Point currentPoint = c_drivetrain->GetChassisPosition();
 
-            for (int i = *currentPoseIndex; i < path.size(); i++) {
-                PathPoint pose = path[i];
+            if (*haltPointIndex == -1) {
+                for (int i = *currentPoseIndex; i < path.size(); i++) {
+                    PathPoint pose = path[i];
 
-                units::meter_t distance = units::meter_t{sqrt(pow(pose.X().value() - currentPoint.x, 2.0) + pow(pose.Y().value() - currentPoint.y, 2.0))};
+                    units::meter_t distance = units::meter_t{sqrt(pow(pose.X().value() - currentPoint.x, 2.0) + pow(pose.Y().value() - currentPoint.y, 2.0))};
 
-                if (distance > MAX_PATH_POSE_DISTANCE) {
-                    *currentPoseIndex = i;
-                    break;
+                    if (pose.Type() == TYPE_HALT) {
+                        *haltPointIndex = i;
+                        *currentPoseIndex = i;
+                        break;
+                    }
+
+                    if (distance > MAX_PATH_POSE_DISTANCE) {
+                        *currentPoseIndex = i;
+                        break;
+                    }
+
+                    if (i == path.size() - 1) {
+                        *currentPoseIndex = i;
+                    }
                 }
-
-                if (i == path.size() - 1) {
-                    *currentPoseIndex = i;
-                }
+            } else {
+                *currentPoseIndex = *haltPointIndex;
             }
 
             // Movement
@@ -205,6 +219,14 @@ frc2::CommandPtr generatePathFollowCommand(std::vector<PathPoint> path, Drivetra
             *movementDirection = directionToTarget;
 
             units::meters_per_second_t speed = selectedPose.Velocity();
+            if (*haltPointIndex == -1) {
+                if (distanceToTarget < HALT_DISTANCE_THRESHOLD) {
+                    // Run point commands
+                    *haltPointIndex = -1;
+                } else {
+                    speed = MIN_SPEED;
+                }
+            }
 
             // Rotation
             double currentHeading = c_drivetrain->GetHeading().value();
