@@ -188,27 +188,37 @@ frc2::CommandPtr generatePathFollowCommand(std::vector<PathPoint> path, Drivetra
             Point currentPoint = c_drivetrain->GetChassisPosition();
 
             if (*haltPointIndex == -1) {
+                // No halt point selected.
+
+                // Search for next appealing point.
                 for (int i = *currentPoseIndex; i < path.size(); i++) {
                     PathPoint pose = path[i];
 
                     units::meter_t distance = units::meter_t{sqrt(pow(pose.X().value() - currentPoint.x, 2.0) + pow(pose.Y().value() - currentPoint.y, 2.0))};
 
                     if (pose.Type() == TYPE_HALT && i != *currentPoseIndex) {
+                        // Found halt point that is not the current point.
                         *haltPointIndex = i;
                         *currentPoseIndex = i;
+
+                        // Break early so we don't look past this stop waypoint.
                         break;
                     }
 
                     if (distance > MAX_PATH_POSE_DISTANCE) {
+                        // Found point just outside max distance.
                         *currentPoseIndex = i;
                         break;
                     }
 
                     if (i == path.size() - 1) {
+                        // No appealing point found before the end of the list.
+                        // Use the last point.
                         *currentPoseIndex = i;
                     }
                 }
-            } else { // Has a halt point, stay at halt point
+            } else {
+                // Halt point already selected.  Maintain approach to halt point.
                 *currentPoseIndex = *haltPointIndex;
             }
 
