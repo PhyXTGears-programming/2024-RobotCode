@@ -45,6 +45,10 @@ void FollowPath::Initialize() {
         m_cmdQueue.push(m_path[0].Command());
     }
 
+    if (m_isAtHaltPose && !m_cmdQueue.empty()) {
+        m_haltPoseIndex = 0;
+    }
+
     m_drivetrain->SetPosition(m_drivetrain->GetHeading(), m_path[0].Pose());
 
     if (!m_cmdQueue.empty()) {
