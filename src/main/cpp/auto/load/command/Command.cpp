@@ -3,6 +3,12 @@
 #include "auto/load/command/Race.h"
 #include "auto/load/command/Sequence.h"
 
+#include "commands/IntakeSpeaker.h"
+#include "commands/PreheatSpeaker.h"
+#include "commands/ShootSpeaker.h"
+
+#include <fmt/core.h>
+
 #include <frc2/command/Commands.h>
 
 std::optional<frc2::CommandPtr> importCommand(
@@ -22,6 +28,17 @@ std::optional<frc2::CommandPtr> importCommand(
         return importRace(json["children"], registry);
     } else if ("Wait 5s" == name) {
         return frc2::cmd::Wait(5_s);
+    } else if ("Intake Note") {
+        fmt::print("Auto: import command: intake note\n");
+        return IntakeSpeaker(registry.intake, registry.speaker).ToPtr();
+    } else if ("Preheat Speaker") {
+        fmt::print("Auto: import command: preheat shooter\n");
+        return PreheatSpeaker(registry.speaker).ToPtr();
+    } else if ("Shoot Speaker") {
+        fmt::print("Auto: import command: shoot speaker\n");
+        return ShootSpeaker(registry.intake, registry.speaker)
+            .ToPtr()
+            .WithTimeout(1.5_s);
     }
 
     return std::nullopt;
