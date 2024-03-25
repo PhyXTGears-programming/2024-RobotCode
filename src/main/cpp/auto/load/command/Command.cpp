@@ -28,13 +28,13 @@ std::optional<frc2::CommandPtr> importCommand(
         return importRace(json["children"], registry);
     } else if ("Wait 5s" == name) {
         return frc2::cmd::Wait(5_s);
-    } else if ("Intake Note") {
+    } else if ("Intake Note" == name) {
         fmt::print("Auto: import command: intake note\n");
         return IntakeSpeaker(registry.intake, registry.speaker).ToPtr();
-    } else if ("Preheat Speaker") {
+    } else if ("Preheat Speaker" == name) {
         fmt::print("Auto: import command: preheat shooter\n");
         return PreheatSpeaker(registry.speaker).ToPtr();
-    } else if ("Shoot Speaker") {
+    } else if ("Shoot Speaker" == name) {
         fmt::print("Auto: import command: shoot speaker\n");
         return ShootSpeaker(registry.intake, registry.speaker)
             .ToPtr()
