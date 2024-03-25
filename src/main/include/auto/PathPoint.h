@@ -4,8 +4,13 @@
 #include "units/angle.h"
 #include "units/length.h"
 
+#include <optional>
+
 #include <frc/geometry/Pose2d.h>
 #include <frc/geometry/Rotation2d.h>
+#include <frc2/command/Command.h>
+#include <frc2/command/CommandPtr.h>
+#include <frc2/command/Commands.h>
 
 enum PathPointType {
     TYPE_OTHER,
@@ -24,6 +29,11 @@ class PathPoint {
         */
         PathPoint(units::meter_t x, units::meter_t y, frc::Rotation2d rotation, units::meters_per_second_t velocity);
 
+        PathPoint(const PathPoint &) = delete;
+        PathPoint(PathPoint &&) = default;
+
+        PathPoint & SetCommand(frc2::CommandPtr && command);
+        PathPoint & SetCommand(std::optional<frc2::CommandPtr> && command);
         PathPoint & SetType(const PathPointType type);
 
         /**
@@ -65,10 +75,23 @@ class PathPoint {
          * TODO: This
         */
         PathPointType Type() const;
+
+        /**
+         * TODO: This
+        */
+        frc2::Command * Command();
+
+        /**
+         * TODO:
+        */
+        bool HasCommand() const;
+
     private:
         units::meter_t x;
         units::meter_t y;
         frc::Rotation2d rotation;
         units::meters_per_second_t velocity;
         PathPointType type;
+
+        std::optional<frc2::CommandPtr> command = std::nullopt;
 };

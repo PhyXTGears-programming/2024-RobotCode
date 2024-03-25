@@ -5,6 +5,7 @@
 #include "subsystems/intake/Intake.h"
 #include "subsystems/speaker_shooter/SpeakerShooter.h"
 
+#include <queue>
 #include <vector>
 
 #include <frc2/command/Command.h>
@@ -31,4 +32,8 @@ class FollowPath : public frc2::CommandHelper<frc2::Command, FollowPath> {
 
         size_t m_currentPoseIndex;
         size_t m_haltPoseIndex;
+        size_t m_lastNearestPoseIndex;
+
+        std::queue<frc2::Command *> m_cmdQueue;
+        bool m_shallHaltForCommand;
 };

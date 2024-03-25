@@ -4,11 +4,13 @@
 #include <iostream>
 #include <numbers>
 
-#define MAX_PATH_POSE_DISTANCE  0.08_m
+#define MAX_PATH_POSE_DISTANCE  6_in
 #define ROTATION_DEAD_ZONE      DEG_2_RAD(5) // Radians
 #define ROTATION_SPEED          M_PI_2 // Radians per second
 #define HALT_DISTANCE_THRESHOLD 0.05 // Meters
 #define MIN_SPEED               0.375_mps
+
+#define NEARBY_DISTANCE_THRESHOLD 3_in
 
 FollowPath::FollowPath(
     std::vector<PathPoint> && path,
@@ -19,7 +21,10 @@ FollowPath::FollowPath(
     m_drivetrain(drivetrain),
     m_path(std::move(path)),
     m_currentPoseIndex(0),
-    m_haltPoseIndex(-1)
+    m_haltPoseIndex(-1),
+    m_lastNearestPoseIndex(0),
+    m_cmdQueue(),
+    m_shallHaltForCommand(false)
 {
     AddRequirements({ drivetrain, intake, speaker });
 }
@@ -27,19 +32,66 @@ FollowPath::FollowPath(
 void FollowPath::Initialize() {
     m_currentPoseIndex = 0;
     m_haltPoseIndex = -1;
+    m_lastNearestPoseIndex = 0;
+
+    // Make sure the queue is empty.
+    while (!m_cmdQueue.empty()) {
+        m_cmdQueue.pop();
+    }
+
+    m_shallHaltForCommand = (TYPE_HALT == m_path[0].Type());
+
+    if(m_path[0].HasCommand()) {
+        m_cmdQueue.push(m_path[0].Command());
+    }
 
     m_drivetrain->SetPosition(m_drivetrain->GetHeading(), m_path[0].Pose());
+
+    if (!m_cmdQueue.empty()) {
+        std::cout << "Auto: FollowPath: queue command: pose 0" << std::endl;
+        std::cout << "Auto: FollowPath: start command" << std::endl;
+        m_cmdQueue.front()->Initialize();
+    }
 }
 
 void FollowPath::Execute() {
     Point currentPoint = m_drivetrain->GetChassisPosition();
 
-    if (-1 == m_haltPoseIndex) {
+    // Run the active command if we have one.
+    if (!m_cmdQueue.empty()) {
+        if (m_cmdQueue.front()->IsFinished()) {
+            std::cout << "Auto: FollowPath: end command" << std::endl;
+            m_cmdQueue.front()->End(false);
+            m_cmdQueue.pop();
+
+            if (!m_cmdQueue.empty()) {
+                // Start next command that was queued.
+                std::cout << "Auto: FollowPath: start command" << std::endl;
+                m_cmdQueue.front()->Initialize();
+            } else {
+                // Let path command drive away.
+                m_shallHaltForCommand = false;
+            }
+        } else {
+            m_cmdQueue.front()->Execute();
+        }
+    } else {
+        // Ensure a bug doesn't leave us waiting for no command to finish.
+        m_shallHaltForCommand = false;
+    }
+
+    if (m_shallHaltForCommand) {
+        // Wait until command is done.
+        // Allow movement to run, just to hold position/heading.
+        // Halt point already selected. Maintain approach to halt point.
+        m_currentPoseIndex = m_haltPoseIndex;
+    } else if ((size_t)-1 == m_haltPoseIndex) {
         // No halt point selected.
 
         // Search for next appealing point.
-        for (int i = m_currentPoseIndex; i < m_path.size(); i += 1) {
-            PathPoint pose = m_path[i];
+        // If any new points visited have a halt condition, then look no further.
+        for (size_t i = m_currentPoseIndex; i < m_path.size(); i += 1) {
+            PathPoint & pose = m_path[i];
 
             if (TYPE_HALT == pose.Type() && i != m_currentPoseIndex) {
                 // Found halt point that is not the current point.
@@ -74,8 +126,47 @@ void FollowPath::Execute() {
         m_currentPoseIndex = m_haltPoseIndex;
     }
 
+    size_t nextNearestPoseIndex = m_lastNearestPoseIndex;
+
+    // If any new nearby points have commands, add those commands to the queue.
+
+    // Collect commands up to current nearest index.
+    for (size_t i = m_lastNearestPoseIndex + 1; i <= m_currentPoseIndex && i < m_path.size(); i += 1) {
+        PathPoint & pose = m_path[i];
+
+        units::meter_t distance = units::meter_t{
+            sqrt(
+                pow(pose.X().value() - currentPoint.x, 2.0)
+                + pow(pose.Y().value() - currentPoint.y, 2.0)
+            )
+        };
+
+        if (distance <= NEARBY_DISTANCE_THRESHOLD) {
+            nextNearestPoseIndex = i;
+        }
+    }
+
+    // If new nearby point found, collect all commands since last nearest point.
+    for (size_t i = m_lastNearestPoseIndex + 1; i <= nextNearestPoseIndex; i += 1) {
+        PathPoint & pose = m_path[i];
+
+        if (pose.HasCommand()) {
+            std::cout << "Auto: FollowPath: queue command: pose " << i << std::endl;
+
+            if (m_cmdQueue.empty()) {
+                // No commands active.  Run command immediately.
+                m_cmdQueue.push(pose.Command());
+                std::cout << "Auto: FollowPath: start command" << std::endl;
+                m_cmdQueue.front()->Initialize();
+            } else {
+                // Another command is active.  Only add to queue.
+                m_cmdQueue.push(pose.Command());
+            }
+        }
+    }
+
     // Movement
-    PathPoint selectedPose = m_path[m_currentPoseIndex];
+    const PathPoint & selectedPose = m_path[m_currentPoseIndex];
 
     Point targetPoint(selectedPose.X().value(), selectedPose.Y().value());
 
@@ -87,7 +178,7 @@ void FollowPath::Execute() {
 
     units::meters_per_second_t speed = selectedPose.Velocity();
 
-    if (-1 == m_haltPoseIndex) {
+    if ((size_t)-1 == m_haltPoseIndex) {
         if (distanceToTarget < HALT_DISTANCE_THRESHOLD) {
             // Run point commands.
             m_haltPoseIndex = -1;
@@ -135,7 +226,7 @@ bool FollowPath::IsFinished() {
     }
 
     Point currentPoint = m_drivetrain->GetChassisPosition();
-    PathPoint selectedPose = m_path[m_currentPoseIndex];
+    const PathPoint & selectedPose = m_path[m_currentPoseIndex];
     Point targetPoint(selectedPose.X().value(), selectedPose.Y().value());
     double distanceToTarget = (targetPoint - currentPoint).len();
 

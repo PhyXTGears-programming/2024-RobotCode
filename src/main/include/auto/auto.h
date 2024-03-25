@@ -35,7 +35,7 @@ frc2::CommandPtr loadPoseFollowCommandFromFile(Drivetrain *m_drivetrain, std::st
 frc2::CommandPtr loadPathFollowCommandFromFile(Drivetrain *m_drivetrain, std::string_view filename);
 
 frc2::CommandPtr generatePathFollowCommand(std::vector<frc::Pose2d> path, units::meters_per_second_t speed, Drivetrain *c_drivetrain);
-frc2::CommandPtr generatePathFollowCommand(std::vector<PathPoint> path, Drivetrain *c_drivetrain);
+frc2::CommandPtr generatePathFollowCommand(std::vector<PathPoint> && path, Drivetrain *c_drivetrain);
 
 frc2::CommandPtr moveBackwardsCommand(Drivetrain *c_drivetrain);
 frc2::CommandPtr moveForwardsCommand(Drivetrain *c_drivetrain);
