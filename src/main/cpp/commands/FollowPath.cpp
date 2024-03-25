@@ -10,7 +10,7 @@
 #define HALT_DISTANCE_THRESHOLD 0.05 // Meters
 #define MIN_SPEED               0.375_mps
 
-#define NEARBY_DISTANCE_THRESHOLD 3_in
+#define NEARBY_DISTANCE_THRESHOLD 12_in
 
 FollowPath::FollowPath(
     std::vector<PathPoint> && path,
