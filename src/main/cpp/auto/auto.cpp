@@ -1,4 +1,7 @@
 #include "auto/auto.h"
+#include "auto/load/command/Command.h"
+
+#include <optional>
 
 std::vector<frc::Pose2d> loadPosePathFromJSON(wpi::json &json) {
     std::vector<frc::Pose2d> path = {};
@@ -18,7 +21,7 @@ std::vector<frc::Pose2d> loadPosePathFromJSON(wpi::json &json) {
     return path;
 }
 
-std::vector<PathPoint> loadPathFromJSON(wpi::json &json) {
+std::vector<PathPoint> loadPathFromJSON(wpi::json &json, SubsystemRegistry & registry) {
     std::vector<PathPoint> path = {};
 
     for (int i = 0; i < json.size(); i++) {
@@ -34,8 +37,11 @@ std::vector<PathPoint> loadPathFromJSON(wpi::json &json) {
             pointType = TYPE_HALT;
         }
 
+        std::optional<frc2::CommandPtr> command = importCommand(json["commands"]["rootNode"], registry);
+
         PathPoint point{units::meter_t{x}, units::meter_t{y}, units::radian_t{rot}, units::meters_per_second_t{vel}};
-        point.SetType(pointType);
+        point.SetType(pointType)
+            .SetCommand(std::move(command));
 
         path.push_back(std::move(point));
     }
@@ -71,7 +77,7 @@ frc2::CommandPtr loadPoseFollowCommandFromFile(Drivetrain *m_drivetrain, std::st
     return frc2::cmd::None();
 }
 
-frc2::CommandPtr loadPathFollowCommandFromFile(Drivetrain *m_drivetrain, std::string_view filename) {
+frc2::CommandPtr loadPathFollowCommandFromFile(std::string_view filename, SubsystemRegistry & registry) {
     std::cout << std::endl << "Robot: building path for auto from '" << filename << "'" << std::endl;
     try {
         std::error_code ec;
@@ -87,10 +93,10 @@ frc2::CommandPtr loadPathFollowCommandFromFile(Drivetrain *m_drivetrain, std::st
         } else {
             wpi::json json = wpi::json::parse(fileBuffer->begin(), fileBuffer->end());
 
-            std::vector<PathPoint> path = loadPathFromJSON(json);
+            std::vector<PathPoint> path = loadPathFromJSON(json, registry);
             std::cout << std::endl << "Robot: auto path loaded from '" << filename << "'" << std::endl;
 
-            return generatePathFollowCommand(std::move(path), m_drivetrain);
+            return generatePathFollowCommand(std::move(path), registry.drivetrain);
         }
     } catch (...) {
         std::cerr << "Error: Robot: unknown exception while configuring path" << std::endl;

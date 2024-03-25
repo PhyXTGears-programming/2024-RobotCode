@@ -3,6 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 
 #include "auto/auto.h"
+#include "auto/load/SubsystemRegistry.h"
 #include "Constants.h"
 #include "Robot.h"
 
@@ -159,7 +160,9 @@ void Robot::RobotInit() {
         ShootSpeaker(m_intake, m_speaker).ToPtr().WithTimeout(2_s)
     );
 
-    m_autoPathTest = loadPathFollowCommandFromFile(m_drivetrain, frc::filesystem::GetDeployDirectory() + "/path.json");
+    SubsystemRegistry registry{ m_drivetrain, m_intake, m_speaker };
+
+    m_autoPathTest = loadPathFollowCommandFromFile(frc::filesystem::GetDeployDirectory() + "/path.json", registry);
 
     m_chooser.SetDefaultOption(auto_::k_None, auto_::k_None);
     m_chooser.AddOption(auto_::k_ShootSpeakerAndStay, auto_::k_ShootSpeakerAndStay);
