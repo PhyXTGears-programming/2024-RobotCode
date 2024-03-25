@@ -1,5 +1,6 @@
 #include "auto/auto.h"
 #include "auto/load/command/Command.h"
+#include "commands/FollowPath.h"
 
 #include <optional>
 
@@ -96,7 +97,12 @@ frc2::CommandPtr loadPathFollowCommandFromFile(std::string_view filename, Subsys
             std::vector<PathPoint> path = loadPathFromJSON(json, registry);
             std::cout << std::endl << "Robot: auto path loaded from '" << filename << "'" << std::endl;
 
-            return generatePathFollowCommand(std::move(path), registry.drivetrain);
+            return FollowPath(
+                std::move(path),
+                registry.drivetrain,
+                registry.intake,
+                registry.speaker
+            ).ToPtr();
         }
     } catch (...) {
         std::cerr << "Error: Robot: unknown exception while configuring path" << std::endl;
