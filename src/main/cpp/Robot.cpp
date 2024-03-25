@@ -162,7 +162,7 @@ void Robot::RobotInit() {
 
     SubsystemRegistry registry{ m_drivetrain, m_intake, m_speaker };
 
-    m_autoPathTest = loadPathFollowCommandFromFile(frc::filesystem::GetDeployDirectory() + "/path.json", registry);
+    m_autoPathTest = loadPathFollowCommandFromFile(frc::filesystem::GetDeployDirectory() + "/path_wait.json", registry);
 
     m_chooser.SetDefaultOption(auto_::k_None, auto_::k_None);
     m_chooser.AddOption(auto_::k_ShootSpeakerAndStay, auto_::k_ShootSpeakerAndStay);
