@@ -38,11 +38,18 @@ std::vector<PathPoint> loadPathFromJSON(wpi::json &json, SubsystemRegistry & reg
             pointType = TYPE_HALT;
         }
 
-        std::optional<frc2::CommandPtr> command = importCommand(json["commands"]["rootNode"], registry);
-
         PathPoint point{units::meter_t{x}, units::meter_t{y}, units::radian_t{rot}, units::meters_per_second_t{vel}};
-        point.SetType(pointType)
-            .SetCommand(std::move(command));
+        point.SetType(pointType);
+
+        if (pathPoint.contains("commands")) {
+            auto commands = pathPoint["commands"];
+
+            if (commands.contains("rootNode")) {
+                std::optional<frc2::CommandPtr> command = importCommand(commands["rootNode"], registry);
+
+                point.SetCommand(std::move(command));
+            }
+        }
 
         path.push_back(std::move(point));
     }
