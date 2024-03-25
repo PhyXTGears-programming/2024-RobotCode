@@ -35,5 +35,5 @@ class FollowPath : public frc2::CommandHelper<frc2::Command, FollowPath> {
         size_t m_lastNearestPoseIndex;
 
         std::queue<frc2::Command *> m_cmdQueue;
-        bool m_shallHaltForCommand;
+        bool m_isAtHaltPose;
 };
