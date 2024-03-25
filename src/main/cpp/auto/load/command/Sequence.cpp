@@ -12,7 +12,7 @@ std::optional<frc2::CommandPtr> importSequence(
 
     switch (json.size()) {
         case 0:
-            return frc2::cmd::None();
+            return std::nullopt;
 
         case 1:
             return importCommand(json[0], registry);
