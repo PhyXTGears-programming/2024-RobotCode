@@ -41,13 +41,6 @@ void FollowPath::Execute() {
         for (int i = m_currentPoseIndex; i < m_path.size(); i += 1) {
             PathPoint pose = m_path[i];
 
-            units::meter_t distance = units::meter_t{
-                sqrt(
-                    pow(pose.X().value() - currentPoint.x, 2.0)
-                    + pow(pose.Y().value() - currentPoint.y, 2.0)
-                )
-            };
-
             if (TYPE_HALT == pose.Type() && i != m_currentPoseIndex) {
                 // Found halt point that is not the current point.
                 m_haltPoseIndex = i;
@@ -56,6 +49,13 @@ void FollowPath::Execute() {
                 // Break early so we don't look past this stop waypoint.
                 break;
             }
+
+            units::meter_t distance = units::meter_t{
+                sqrt(
+                    pow(pose.X().value() - currentPoint.x, 2.0)
+                    + pow(pose.Y().value() - currentPoint.y, 2.0)
+                )
+            };
 
             if (distance > MAX_PATH_POSE_DISTANCE) {
                 // Found point just outside max distance.
