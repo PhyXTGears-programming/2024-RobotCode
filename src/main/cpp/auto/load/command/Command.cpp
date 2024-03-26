@@ -20,7 +20,7 @@ std::optional<frc2::CommandPtr> importCommand(
 
     auto name = json.value("name", "");
 
-    if ("sequential" == name) {
+    if ("sequence" == name) {
         return importSequence(json["children"], registry);
     } else if ("parallel" == name) {
         return importParallel(json["children"], registry);

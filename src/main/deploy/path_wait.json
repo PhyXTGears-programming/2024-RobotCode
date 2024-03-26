@@ -11,7 +11,7 @@
             "rootNode": {
                 "kind": "group",
                 "children": [],
-                "name": "sequential",
+                "name": "sequence",
                 "nodeId": 0
             }
         },
@@ -621,7 +621,7 @@
                         "nodeId": 4
                     }
                 ],
-                "name": "sequential",
+                "name": "sequence",
                 "nodeId": 1
             }
         },
@@ -1152,7 +1152,7 @@
             "rootNode": {
                 "kind": "group",
                 "children": [],
-                "name": "sequential",
+                "name": "sequence",
                 "nodeId": 2
             }
         },
@@ -1701,7 +1701,7 @@
             "rootNode": {
                 "kind": "group",
                 "children": [],
-                "name": "sequential",
+                "name": "sequence",
                 "nodeId": 3
             }
         },
