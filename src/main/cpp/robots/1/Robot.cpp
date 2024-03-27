@@ -40,6 +40,8 @@ using namespace ::robot1;
 namespace auto_ = constants::autonomous;
 
 void robot1::Robot::RobotInit() {
+    // FIXME: Detect robach or botthoven.
+
     std::shared_ptr<cpptoml::table> toml = nullptr;
 
     std::cout << std::endl << "Building config" << std::endl;
