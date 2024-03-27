@@ -110,6 +110,7 @@ SwerveModule::SwerveModule(
 
     m_driveEncoder.SetPosition(0.0);
 
+    m_turningAbsPositionSignal.Refresh();
     m_turningAbsPositionSignal.WaitForUpdate(5_s);
 
     ResetTurnPosition();
