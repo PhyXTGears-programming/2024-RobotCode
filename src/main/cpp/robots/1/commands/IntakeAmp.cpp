@@ -1,6 +1,6 @@
 #include "robots/1/commands/IntakeAmp.h"
 
-using namespace robot1;
+using namespace ::robot1;
 
 robot1::IntakeAmp::IntakeAmp(IntakeSubsystem * intake, AmpShooterSubsystem * amp) {
     AddRequirements(intake);

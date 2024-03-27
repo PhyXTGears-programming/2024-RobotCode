@@ -1,6 +1,6 @@
 #include "robots/1/auto/PathPoint.h"
 
-using namespace robot1;
+using namespace ::robot1;
 
 robot1::PathPoint::PathPoint(
     units::meter_t x,

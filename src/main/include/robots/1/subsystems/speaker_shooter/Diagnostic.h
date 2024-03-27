@@ -5,7 +5,7 @@
 #include <frc/XboxController.h>
 
 namespace robot1::diagnostic {
-    using namespace robot1;
+    using namespace ::robot1;
 
     class TestSpeaker {
         public:

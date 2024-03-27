@@ -11,7 +11,7 @@
 
 #include <frc2/command/Commands.h>
 
-using namespace robot1;
+using namespace ::robot1;
 
 std::optional<frc2::CommandPtr> robot1::importCommand(
     wpi::json & json,

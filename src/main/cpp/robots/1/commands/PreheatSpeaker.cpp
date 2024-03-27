@@ -1,7 +1,7 @@
 #include "robots/1/commands/PreheatSpeaker.h"
 #include "robots/1/subsystems/speaker_shooter/SpeakerShooter.h"
 
-using namespace robot1;
+using namespace ::robot1;
 
 robot1::PreheatSpeaker::PreheatSpeaker(SpeakerShooterSubsystem * speaker) {
     AddRequirements(speaker);

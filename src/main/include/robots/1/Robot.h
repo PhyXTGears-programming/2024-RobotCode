@@ -20,7 +20,7 @@
 #include <frc2/command/Commands.h>
 
 namespace robot1 {
-    using namespace robot1;
+    using namespace ::robot1;
 
     class Robot : public frc::TimedRobot {
         public:

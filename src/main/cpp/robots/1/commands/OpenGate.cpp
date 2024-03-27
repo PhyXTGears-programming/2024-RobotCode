@@ -1,6 +1,6 @@
 #include "robots/1/commands/OpenGate.h"
 
-using namespace robot1;
+using namespace ::robot1;
 
 robot1::OpenGate::OpenGate(GateSubsystem * gate) {
     AddRequirements(gate);

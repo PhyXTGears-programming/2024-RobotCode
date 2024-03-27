@@ -6,6 +6,8 @@
 
 #include <frc2/command/SubsystemBase.h>
 
+using namespace ::robot1;
+
 robot1::AmpShooterSubsystem::AmpShooterSubsystem(
     std::shared_ptr<cpptoml::table> table
 ) :

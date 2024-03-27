@@ -4,7 +4,7 @@
 
 #include <optional>
 
-using namespace robot1;
+using namespace ::robot1;
 
 std::vector<frc::Pose2d> robot1::loadPosePathFromJSON(wpi::json &json) {
     std::vector<frc::Pose2d> path = {};

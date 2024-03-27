@@ -1,7 +1,7 @@
 #include "robots/1/commands/ClimbUp.h"
 #include "robots/1/subsystems/climb/Climb.h"
 
-using namespace robot1;
+using namespace ::robot1;
 
 robot1::ClimbUp::ClimbUp(
     ClimbSubsystem * climb,
