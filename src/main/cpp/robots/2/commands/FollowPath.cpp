@@ -226,7 +226,7 @@ void robot2::FollowPath::End(bool interrupted) {
 }
 
 bool robot2::FollowPath::IsFinished() {
-    if (m_currentPoseIndex != m_path.size() - 1) {
+    if (m_currentPoseIndex != m_path.size() - 1 || !m_cmdQueue.empty()) {
         return false;
     }
 
