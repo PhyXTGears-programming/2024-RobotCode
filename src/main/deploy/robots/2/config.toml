@@ -6,10 +6,10 @@ lockWinchMicros = 1000
 unlockWinchMicros = 2000
 
 [drivetrain]
-frontLeftAbsEncoderOffset  =   38.1
-frontRightAbsEncoderOffset = -131.8
-backLeftAbsEncoderOffset   =  -96.4
-backRightAbsEncoderOffset  =  -30.6
+frontLeftAbsEncoderOffset  =    0.0
+frontRightAbsEncoderOffset =    0.0
+backLeftAbsEncoderOffset   =    0.0
+backRightAbsEncoderOffset  =    0.0
 
 swerve.turn.kP = 2.0
 swerve.turn.kI = 0.01
