@@ -1,4 +1,8 @@
 #include "auto/auto.h"
+#include "auto/load/command/Command.h"
+#include "commands/FollowPath.h"
+
+#include <optional>
 
 std::vector<frc::Pose2d> loadPosePathFromJSON(wpi::json &json) {
     std::vector<frc::Pose2d> path = {};
@@ -18,7 +22,7 @@ std::vector<frc::Pose2d> loadPosePathFromJSON(wpi::json &json) {
     return path;
 }
 
-std::vector<PathPoint> loadPathFromJSON(wpi::json &json) {
+std::vector<PathPoint> loadPathFromJSON(wpi::json &json, SubsystemRegistry & registry) {
     std::vector<PathPoint> path = {};
 
     for (int i = 0; i < json.size(); i++) {
@@ -29,9 +33,25 @@ std::vector<PathPoint> loadPathFromJSON(wpi::json &json) {
         double rot = pathPoint.value("rot", 0.0);
         double vel = pathPoint.value("vel", 0.0);
 
-        PathPoint point{units::meter_t{x}, units::meter_t{y}, units::radian_t{rot}, units::meters_per_second_t{vel}};
+        PathPointType pointType = TYPE_OTHER;
+        if ("stop" == pathPoint.value("type", "")) {
+            pointType = TYPE_HALT;
+        }
 
-        path.push_back(point);
+        PathPoint point{units::meter_t{x}, units::meter_t{y}, units::radian_t{rot}, units::meters_per_second_t{vel}};
+        point.SetType(pointType);
+
+        if (pathPoint.contains("commands")) {
+            auto commands = pathPoint["commands"];
+
+            if (commands.contains("rootNode")) {
+                std::optional<frc2::CommandPtr> command = importCommand(commands["rootNode"], registry);
+
+                point.SetCommand(std::move(command));
+            }
+        }
+
+        path.push_back(std::move(point));
     }
 
     return path;
@@ -65,7 +85,7 @@ frc2::CommandPtr loadPoseFollowCommandFromFile(Drivetrain *m_drivetrain, std::st
     return frc2::cmd::None();
 }
 
-frc2::CommandPtr loadPathFollowCommandFromFile(Drivetrain *m_drivetrain, std::string_view filename) {
+frc2::CommandPtr loadPathFollowCommandFromFile(std::string_view filename, SubsystemRegistry & registry) {
     std::cout << std::endl << "Robot: building path for auto from '" << filename << "'" << std::endl;
     try {
         std::error_code ec;
@@ -81,10 +101,15 @@ frc2::CommandPtr loadPathFollowCommandFromFile(Drivetrain *m_drivetrain, std::st
         } else {
             wpi::json json = wpi::json::parse(fileBuffer->begin(), fileBuffer->end());
 
-            std::vector<PathPoint> path = loadPathFromJSON(json);
+            std::vector<PathPoint> path = loadPathFromJSON(json, registry);
             std::cout << std::endl << "Robot: auto path loaded from '" << filename << "'" << std::endl;
 
-            return generatePathFollowCommand(path, m_drivetrain);
+            return FollowPath(
+                std::move(path),
+                registry.drivetrain,
+                registry.intake,
+                registry.speaker
+            ).ToPtr();
         }
     } catch (...) {
         std::cerr << "Error: Robot: unknown exception while configuring path" << std::endl;
@@ -171,20 +196,20 @@ frc2::CommandPtr generatePathFollowCommand(std::vector<frc::Pose2d> path, units:
     }.ToPtr();
 }
 
-frc2::CommandPtr generatePathFollowCommand(std::vector<PathPoint> path, Drivetrain *c_drivetrain) {
+frc2::CommandPtr generatePathFollowCommand(std::vector<PathPoint> && path, Drivetrain *c_drivetrain) {
     int    *currentPoseIndex  = new int(0);
     Vector *movementDirection = new Vector(0, 0);
     int    *haltPointIndex    = new int(-1);
 
     return frc2::FunctionalCommand{
-        [=]() { // Initializer - Start of command
+        [=, &path]() { // Initializer - Start of command
             *currentPoseIndex = 0;
             *movementDirection = Vector(0, 0);
             *haltPointIndex = -1;
 
             c_drivetrain->SetPosition(c_drivetrain->GetHeading(), path[0].Pose());
         },
-        [=]() { // Execute - Every run of command
+        [=, &path]() { // Execute - Every run of command
             Point currentPoint = c_drivetrain->GetChassisPosition();
 
             if (*haltPointIndex == -1) {
@@ -192,7 +217,7 @@ frc2::CommandPtr generatePathFollowCommand(std::vector<PathPoint> path, Drivetra
 
                 // Search for next appealing point.
                 for (int i = *currentPoseIndex; i < path.size(); i++) {
-                    PathPoint pose = path[i];
+                    PathPoint & pose = path[i];
 
                     units::meter_t distance = units::meter_t{sqrt(pow(pose.X().value() - currentPoint.x, 2.0) + pow(pose.Y().value() - currentPoint.y, 2.0))};
 
@@ -223,7 +248,7 @@ frc2::CommandPtr generatePathFollowCommand(std::vector<PathPoint> path, Drivetra
             }
 
             // Movement
-            PathPoint selectedPose = path[*currentPoseIndex];
+            const PathPoint & selectedPose = path[*currentPoseIndex];
 
             Point targetPoint(selectedPose.X().value(), selectedPose.Y().value());
 
@@ -259,11 +284,11 @@ frc2::CommandPtr generatePathFollowCommand(std::vector<PathPoint> path, Drivetra
         [=](bool done) { // End - On command finish
             c_drivetrain->Drive(0.0_mps, 0.0_mps, 0.0_rad_per_s, true, 20_ms);
         },
-        [=]() { // Is Finished - Returns true if the command should be done
+        [=, &path]() { // Is Finished - Returns true if the command should be done
             if (*currentPoseIndex != path.size() - 1) return false;
 
             Point currentPoint = c_drivetrain->GetChassisPosition();
-            PathPoint selectedPose = path[*currentPoseIndex];
+            const PathPoint & selectedPose = path[*currentPoseIndex];
             Point targetPoint(selectedPose.X().value(), selectedPose.Y().value());
             double distanceToTarget = (targetPoint - currentPoint).len();
 

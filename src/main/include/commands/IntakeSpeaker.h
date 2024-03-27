@@ -8,7 +8,7 @@
 
 class IntakeSpeaker : public frc2::CommandHelper<frc2::Command, IntakeSpeaker> {
     public:
-        IntakeSpeaker(IntakeSubsystem * intake,  SpeakerShooterSubsystem  * amp);
+        IntakeSpeaker(IntakeSubsystem * intake,  SpeakerShooterSubsystem  * speaker);
 
         void Initialize() override;
         void Execute() override;
