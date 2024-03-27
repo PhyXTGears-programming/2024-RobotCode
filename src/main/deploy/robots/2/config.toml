@@ -1,0 +1,44 @@
+[bling]
+
+[climb]
+maxSpeed = 0.75
+lockWinchMicros = 1000
+unlockWinchMicros = 2000
+
+[drivetrain]
+frontLeftAbsEncoderOffset  =   38.1
+frontRightAbsEncoderOffset = -131.8
+backLeftAbsEncoderOffset   =  -96.4
+backRightAbsEncoderOffset  =  -30.6
+
+swerve.turn.kP = 2.0
+swerve.turn.kI = 0.01
+swerve.turn.kD = 3.0
+
+[gate]
+openMicros  =  950
+closeMicros = 1300
+
+[intake]
+intakeSpeed = 0.40
+reverseSpeed = 0.2
+
+[speaker]
+amp.shoot.speed = 300
+amp.shoot.feedForward = 2.0
+amp.tiltLeft.pulseTimeMicros = 1500
+amp.tiltRight.pulseTimeMicros = 1500
+
+speaker.shoot.speed = 4500
+speaker.shoot.feedForward = 11.0
+speaker.tiltLeft.pulseTimeMicros = 1500
+speaker.tiltRight.pulseTimeMicros = 1500
+
+trap.shoot.speed = 300
+trap.shoot.feedForward = 2.0
+trap.tiltLeft.pulseTimeMicros = 1500
+trap.tiltRight.pulseTimeMicros = 1500
+
+reverseSpeed = -500
+
+distanceThreshold = 0.100

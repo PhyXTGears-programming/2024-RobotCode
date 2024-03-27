@@ -2,9 +2,12 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
+#include "Camera.h"
+
 #include "robots/1/auto/auto.h"
 #include "robots/1/auto/load/SubsystemRegistry.h"
 #include "robots/1/Constants.h"
+#include "robots/1/Deploy.h"
 #include "robots/1/Robot.h"
 
 #include "robots/1/commands/ClimbUp.h"
@@ -42,12 +45,16 @@ void robot1::Robot::RobotInit() {
     std::cout << std::endl << "Building config" << std::endl;
 
     try {
-        toml = cpptoml::parse_file(frc::filesystem::GetDeployDirectory() + "/config.toml");
+        toml = cpptoml::parse_file(deploy::GetRobotDirectory() + "/config.toml");
     } catch (cpptoml::parse_exception & ex) {
         // clang-format off
         std::cerr
-            << "Unable to open config file: deploy/config.toml" << std::endl
-            << ex.what() << std::endl;
+            << "Unable to open config file: "
+            << deploy::GetRobotDirectory()
+            << "/config.toml"
+            << std::endl
+            << ex.what()
+            << std::endl;
 
         abort();
         // clang-format on
@@ -55,33 +62,7 @@ void robot1::Robot::RobotInit() {
 
     std::cout << std::endl << "Building camera" << std::endl;
 
-    try {
-        std::error_code ec;
-        std::unique_ptr<wpi::MemoryBuffer> fileBuffer =
-            wpi::MemoryBuffer::GetFile(
-                frc::filesystem::GetDeployDirectory() + "/camera.json",
-                ec
-            );
-
-        if (nullptr == fileBuffer || ec) {
-            std::cerr << "Error: Robot: unable to load camera json" << std::endl;
-           
-            auto camera = frc::CameraServer::StartAutomaticCapture();
-            camera.SetConnectionStrategy(cs::VideoSource::ConnectionStrategy::kConnectionKeepOpen);
-            camera.SetResolution(320, 240);
-            camera.SetFPS(20);
-            frc::CameraServer::GetServer().SetSource(camera);
-        } else {
-            wpi::json cameraJson = wpi::json::parse(fileBuffer->begin(), fileBuffer->end());
-
-            auto camera = frc::CameraServer::StartAutomaticCapture();
-            camera.SetConnectionStrategy(cs::VideoSource::ConnectionStrategy::kConnectionKeepOpen);
-            camera.SetConfigJson(cameraJson);
-            frc::CameraServer::GetServer().SetSource(camera);
-        }
-    } catch (...) {
-        std::cerr << "Error: Robot: unknown exception while configuring camera" << std::endl;
-    }
+    camera::LoadAndStart(deploy::GetRobotDirectory() + "camera.json", 320, 240, 20);
 
     std::cout << std::endl << "Building joysticks" << std::endl;
 
