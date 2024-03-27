@@ -10,7 +10,9 @@ std::optional<frc2::CommandPtr> importParallel(
     // Command :: { name :: String } | { name :: String, children :: List Command }
     // json :: List Command
 
-    switch (json.size()) {
+    const int size = json.size();
+
+    switch (size) {
         case 0:
             return std::nullopt;
 
@@ -20,8 +22,8 @@ std::optional<frc2::CommandPtr> importParallel(
         default:
             std::vector<frc2::CommandPtr> commands;
 
-            for (auto cmdJson : json) {
-                auto cmd = importCommand(cmdJson, registry);
+            for (int i = 0; i < size; i += 1) {
+                auto cmd = importCommand(json[i], registry);
 
                 if (cmd) {
                     commands.emplace_back(std::move(*cmd));
