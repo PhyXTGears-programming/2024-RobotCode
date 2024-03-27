@@ -168,7 +168,7 @@ void Robot::RobotInit() {
         registry
     );
     m_autoBlueSubwoof3nRampCenter = loadPathFollowCommandFromFile(
-        frc::filesystem::GetDeployDirectory() + "/subwoofer-speaker-2n-r-blue.json",
+        frc::filesystem::GetDeployDirectory() + "/subwoofer-speaker-3n-r-c1-blue.json",
         registry
     );
 
