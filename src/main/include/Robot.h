@@ -72,5 +72,9 @@ class Robot : public frc::TimedRobot {
 
         frc2::CommandPtr m_autoShootTwo = frc2::cmd::None();
 
+        frc2::CommandPtr m_autoPathTest = frc2::cmd::None();
+        frc2::CommandPtr m_autoBlueSubwoof2nRamp = frc2::cmd::None();
+        frc2::CommandPtr m_autoBlueSubwoof3nRampCenter = frc2::cmd::None();
+
         bool m_isShootSpeakerInPreheat = false;
 };

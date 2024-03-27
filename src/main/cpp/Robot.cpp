@@ -2,7 +2,8 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-#include "auto.h"
+#include "auto/auto.h"
+#include "auto/load/SubsystemRegistry.h"
 #include "Constants.h"
 #include "Robot.h"
 
@@ -36,6 +37,8 @@ namespace auto_ = constants::autonomous;
 void Robot::RobotInit() {
     std::shared_ptr<cpptoml::table> toml = nullptr;
 
+    std::cout << std::endl << "Building config" << std::endl;
+
     try {
         toml = cpptoml::parse_file(frc::filesystem::GetDeployDirectory() + "/config.toml");
     } catch (cpptoml::parse_exception & ex) {
@@ -47,6 +50,8 @@ void Robot::RobotInit() {
         abort();
         // clang-format on
     }
+
+    std::cout << std::endl << "Building camera" << std::endl;
 
     try {
         std::error_code ec;
@@ -76,8 +81,12 @@ void Robot::RobotInit() {
         std::cerr << "Error: Robot: unknown exception while configuring camera" << std::endl;
     }
 
+    std::cout << std::endl << "Building joysticks" << std::endl;
+
     m_driverController = new frc::XboxController(0);
     m_operatorController = new frc::XboxController(1);
+
+    std::cout << std::endl << "Building subsystems" << std::endl;
 
     m_amp = new AmpShooterSubsystem(toml->get_table("amp"));
     m_bling = new BlingSubsystem();
@@ -86,6 +95,8 @@ void Robot::RobotInit() {
     m_gate = new GateSubsystem(toml->get_table("gate"));
     m_intake = new IntakeSubsystem(toml->get_table("intake"));
     m_speaker = new SpeakerShooterSubsystem(toml->get_table("speaker"));
+
+    std::cout << std::endl << "Building commands" << std::endl;
 
     m_driveTeleopCommand = DriveTeleopCommand(m_drivetrain, m_driverController).ToPtr();
 
@@ -149,10 +160,25 @@ void Robot::RobotInit() {
         ShootSpeaker(m_intake, m_speaker).ToPtr().WithTimeout(2_s)
     );
 
+    SubsystemRegistry registry{ m_drivetrain, m_intake, m_speaker };
+
+    m_autoPathTest = loadPathFollowCommandFromFile(frc::filesystem::GetDeployDirectory() + "/path_wait.json", registry);
+    m_autoBlueSubwoof2nRamp = loadPathFollowCommandFromFile(
+        frc::filesystem::GetDeployDirectory() + "/subwoofer-speaker-2n-r-blue.json",
+        registry
+    );
+    m_autoBlueSubwoof3nRampCenter = loadPathFollowCommandFromFile(
+        frc::filesystem::GetDeployDirectory() + "/subwoofer-speaker-3n-r-c1-blue.json",
+        registry
+    );
+
     m_chooser.SetDefaultOption(auto_::k_None, auto_::k_None);
     m_chooser.AddOption(auto_::k_ShootSpeakerAndStay, auto_::k_ShootSpeakerAndStay);
     m_chooser.AddOption(auto_::k_ShootSpeakerAndLeave, auto_::k_ShootSpeakerAndLeave);
     m_chooser.AddOption(auto_::k_ShootTwo, auto_::k_ShootTwo);
+    m_chooser.AddOption(auto_::k_FollowPath, auto_::k_FollowPath);
+    m_chooser.AddOption(auto_::k_Subwoof2n, auto_::k_Subwoof2n);
+    m_chooser.AddOption(auto_::k_Subwoof3n, auto_::k_Subwoof3n);
     frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
 }
 
@@ -197,6 +223,12 @@ void Robot::AutonomousInit() {
         m_autoShootSpeakerAndLeave.Schedule();
     } else if (auto_::k_ShootTwo == m_autoSelected) {
         m_autoShootTwo.Schedule();
+    } else if (auto_::k_FollowPath == m_autoSelected) {
+        m_autoPathTest.Schedule();
+    } else if (auto_::k_Subwoof2n == m_autoSelected) {
+        m_autoBlueSubwoof2nRamp.Schedule();
+    } else if (auto_::k_Subwoof3n == m_autoSelected) {
+        m_autoBlueSubwoof3nRampCenter.Schedule();
     }
 
     m_retractAmp.Schedule();
