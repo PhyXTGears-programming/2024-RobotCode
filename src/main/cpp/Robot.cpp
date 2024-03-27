@@ -6,7 +6,7 @@
 
 #if ROBOT_ROBACH == ROBOT_ID
     #include "robots/1/Robot.h"
-    using namespace robot1;
+    using namespace ::robot1;
 #elif ROBOT_BOTTHOVEN == ROBOT_ID
 #endif
 

@@ -1,6 +1,6 @@
 #include "robots/1/commands/IntakeSpeaker.h"
 
-using namespace robot1;
+using namespace ::robot1;
 
 robot1::IntakeSpeaker::IntakeSpeaker(IntakeSubsystem * intake,  SpeakerShooterSubsystem  * speaker) {
     AddRequirements(intake); 

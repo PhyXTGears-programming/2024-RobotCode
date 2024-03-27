@@ -16,7 +16,7 @@
 
 #define JOYSTICK_DEADZONE 0.2
 
-using namespace robot1;
+using namespace ::robot1;
 
 using units::meters_per_second_t;
 using units::radians_per_second_t;

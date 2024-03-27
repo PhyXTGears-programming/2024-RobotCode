@@ -1,6 +1,6 @@
 #include "robots/1/commands/CloseGate.h"
 
-using namespace robot1;
+using namespace ::robot1;
 
 robot1::CloseGate::CloseGate(GateSubsystem * gate) {
     AddRequirements(gate);

@@ -12,7 +12,7 @@
 
 #define NEARBY_DISTANCE_THRESHOLD 12_in
 
-using namespace robot1;
+using namespace ::robot1;
 
 robot1::FollowPath::FollowPath(
     std::vector<PathPoint> && path,

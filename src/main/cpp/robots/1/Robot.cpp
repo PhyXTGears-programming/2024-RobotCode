@@ -32,7 +32,7 @@
 #include <wpi/json.h>
 #include <wpi/MemoryBuffer.h>
 
-using namespace robot1;
+using namespace ::robot1;
 
 namespace auto_ = constants::autonomous;
 

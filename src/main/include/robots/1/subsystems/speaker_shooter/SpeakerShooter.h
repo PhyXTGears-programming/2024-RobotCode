@@ -22,7 +22,7 @@
 using rpm_t = units::revolutions_per_minute_t;
 
 namespace robot1 {
-    using namespace robot1;
+    using namespace ::robot1;
 
     class SpeakerShooterSubsystem : public frc2::SubsystemBase { //SubsystemBase is the Parent of SpeakerShooterSubsystem
         public:

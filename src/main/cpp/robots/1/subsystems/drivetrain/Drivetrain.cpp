@@ -17,7 +17,7 @@
 #include <frc/shuffleboard/ShuffleboardLayout.h>
 #include <frc/Timer.h>
 
-using namespace robot1;
+using namespace ::robot1;
 using namespace std::literals::string_view_literals;
 
 using units::degree_t;

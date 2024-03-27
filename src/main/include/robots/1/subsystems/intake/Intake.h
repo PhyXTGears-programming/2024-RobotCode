@@ -8,7 +8,7 @@
 #include <rev/CANSparkMax.h>
 
 namespace robot1 {
-    using namespace robot1;
+    using namespace ::robot1;
 
     class IntakeSubsystem : public frc2::SubsystemBase {
         public:
