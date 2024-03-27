@@ -8,6 +8,8 @@
     #include "robots/1/Robot.h"
     using namespace ::robot1;
 #elif ROBOT_BOTTHOVEN == ROBOT_ID
+    #include "robots/2/Robot.h"
+    using namespace ::robot2;
 #endif
 
 #ifndef RUNNING_FRC_TESTS
