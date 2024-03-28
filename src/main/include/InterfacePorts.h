@@ -54,5 +54,6 @@ namespace interface {
         const int k_pwm0 = 0;
         const int k_pwm1 = 1;
         const int k_pwm2 = 2;
+        const int k_pwm3 = 3;
     }
 }
