@@ -51,7 +51,7 @@ void robot1::FollowPath::Initialize() {
         m_haltPoseIndex = 0;
     }
 
-    m_drivetrain->SetPosition(m_drivetrain->GetHeading(), m_path[0].Pose());
+    m_drivetrain->SetPosition(m_path[0].Rotation().Radians(), m_path[0].Pose());
 
     if (!m_cmdQueue.empty()) {
         std::cout << "Auto: FollowPath: queue command: pose 0" << std::endl;

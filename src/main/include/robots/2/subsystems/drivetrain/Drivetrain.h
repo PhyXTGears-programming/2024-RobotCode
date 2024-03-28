@@ -48,6 +48,8 @@ namespace robot2 {
 
             void ResetGyro();
 
+            void ResetGyroToHeading(units::radian_t heading);
+
             units::radian_t GetHeading();
 
             void ResetPosition();
