@@ -10,7 +10,10 @@
 #include "robots/2/subsystems/gate/Gate.h"
 #include "robots/2/subsystems/speaker_shooter/SpeakerShooter.h"
 
+#include <optional>
 #include <string>
+
+#include <cameraserver/CameraServer.h>
 
 #include <frc/XboxController.h>
 #include <frc/smartdashboard/SendableChooser.h>
@@ -43,6 +46,10 @@ namespace robot2 {
 
             frc::XboxController * m_driverController = nullptr;
             frc::XboxController * m_operatorController = nullptr;
+
+            bool m_usingCameraFront = true;
+            std::optional<cs::UsbCamera> m_cameraFront;
+            std::optional<cs::UsbCamera> m_cameraBack;
 
             BlingSubsystem * m_bling = nullptr;
             ClimbSubsystem * m_climb = nullptr;

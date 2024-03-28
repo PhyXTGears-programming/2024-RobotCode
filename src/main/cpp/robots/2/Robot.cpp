@@ -64,8 +64,16 @@ void robot2::Robot::RobotInit() {
 
     std::cout << std::endl << "Building camera" << std::endl;
 
-    camera::LoadAndStart(deploy::GetRobotDirectory() + "/camera-front.json", 320, 240, 20);
-    camera::LoadAndStart(deploy::GetRobotDirectory() + "/camera-back.json", 320, 240, 20);
+    m_cameraFront = camera::LoadAndStart(deploy::GetRobotDirectory() + "/camera-front.json", 320, 240, 20);
+    m_cameraBack = camera::LoadAndStart(deploy::GetRobotDirectory() + "/camera-back.json", 320, 240, 20);
+
+    if (m_cameraFront) {
+        frc::CameraServer::GetServer().SetSource(*m_cameraFront);
+        m_usingCameraFront = true;
+    } else if (m_cameraBack) {
+        frc::CameraServer::GetServer().SetSource(*m_cameraBack);
+        m_usingCameraFront = false;
+    }
 
     std::cout << std::endl << "Building joysticks" << std::endl;
 
@@ -181,6 +189,16 @@ void robot2::Robot::RobotPeriodic() {
 
     if (m_driverController->GetBButtonPressed()) {
         m_drivetrain->ResetGyro();
+    }
+
+    if (m_driverController->GetRightBumperPressed()) {
+        if (m_usingCameraFront && m_cameraBack) {
+            m_usingCameraFront = false;
+            frc::CameraServer::GetServer().SetSource(*m_cameraBack);
+        } else if (!m_usingCameraFront && m_cameraFront) {
+            m_usingCameraFront = true;
+            frc::CameraServer::GetServer().SetSource(*m_cameraFront);
+        }
     }
 }
 

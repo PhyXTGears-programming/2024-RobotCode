@@ -1,7 +1,10 @@
 #pragma once
 
+#include <optional>
 #include <string>
 
+#include <cameraserver/CameraServer.h>
+
 namespace camera {
-    void LoadAndStart(std::string configFilePath, int resWidth, int resHeight, int fps);
+    std::optional<cs::UsbCamera> LoadAndStart(std::string configFilePath, int resWidth, int resHeight, int fps);
 }
