@@ -83,6 +83,11 @@ void robot2::diagnostic::TestSpeaker::Test01TuneSpeaker() {
         .Add("diag/speaker/kF", kF)
         .GetEntry();
 
+    static nt::GenericEntry & dashTilt =
+        *tab
+        .Add("diag/speaker/tilt", 0.5)
+        .GetEntry();
+
     {
         static frc2::CommandPtr command = frc2::FunctionalCommand(
             [] () {},
@@ -198,6 +203,31 @@ void robot2::diagnostic::TestSpeaker::Test01TuneSpeaker() {
 
         frc::SmartDashboard::PutData(
             "diag/speaker/01-tune-speaker/reverse",
+            command.get()
+        );
+    }
+
+    {
+        static double & tilt = *new double(0.5);
+
+        static frc2::CommandPtr command = frc2::FunctionalCommand(
+            [] () {
+                tilt = dashTilt.GetDouble(0.5);
+            },
+            [this] () {
+                m_speaker->SetTilt(tilt);
+            },
+            [this] (bool interrupted) {
+                m_speaker->SetTilt(0.5);
+            },
+            [this] () -> bool {
+                return m_controller->GetStartButtonPressed();
+            },
+            { m_speaker }
+        ).ToPtr();
+
+        frc::SmartDashboard::PutData(
+            "diag/speaker/01-tun-speaker/tilt",
             command.get()
         );
     }

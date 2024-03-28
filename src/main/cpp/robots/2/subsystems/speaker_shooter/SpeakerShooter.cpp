@@ -34,7 +34,9 @@ robot2::SpeakerShooterSubsystem::SpeakerShooterSubsystem(std::shared_ptr<cpptoml
             m_isNoteDetected = true;
             m_isDetectFlagViewed = false;
         }
-    )
+    ),
+    m_tiltLeft(interface::speaker::k_tiltLeft),
+    m_tiltRight(interface::speaker::k_tiltRight)
 {
     bool hasError = false;
 
@@ -331,4 +333,9 @@ void robot2::SpeakerShooterSubsystem::SetShooterSpeed(
         0,
         std::copysign(feedForward.value(), speed.value())
     );
+}
+
+void robot2::SpeakerShooterSubsystem::SetTilt(double ratio) {
+    m_tiltLeft.SetPulseTime(1.0_ms + 1_ms * std::clamp(ratio, 0.0, 1.0));
+    m_tiltRight.SetPulseTime(2.0_ms - 1_ms * std::clamp(ratio, 0.0, 1.0));
 }

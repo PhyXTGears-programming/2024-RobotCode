@@ -14,6 +14,7 @@
 
 #include <frc/AsynchronousInterrupt.h>
 #include <frc/DigitalInput.h>
+#include <frc/Servo.h>
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/SubsystemBase.h>
 
@@ -50,6 +51,11 @@ namespace robot2 {
 
             units::meter_t GetSpeakerDistance();
 
+            /**
+             * @param ratio Tilt of the shooter: 0.0 is lowest tilt, 1.0 is highest tilt.
+             */
+            void SetTilt(double ratio);
+
         private:
 
             rev::CANSparkMax m_shootMotor1;
@@ -64,6 +70,9 @@ namespace robot2 {
 
             bool m_isNoteDetected = false;
             bool m_isDetectFlagViewed = false;
+
+            frc::Servo m_tiltLeft;
+            frc::Servo m_tiltRight;
 
             // Config settings loaded from TOML.
             struct {
