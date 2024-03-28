@@ -47,7 +47,7 @@ namespace robot2 {
             units::meter_t GetSpeakerDistance();
 
         private:
-        
+
             rev::CANSparkMax m_shootMotor1;
             rev::SparkPIDController m_shootPid1;
             rev::SparkRelativeEncoder m_shootEncoder1;
