@@ -38,6 +38,7 @@ robot2::IntakeSubsystem::IntakeSubsystem(std::shared_ptr<cpptoml::table> table)
         abort();
     }
 
+    m_motorTop.SetInverted(false);
     m_motorBottom.SetInverted(true);
 }
 
