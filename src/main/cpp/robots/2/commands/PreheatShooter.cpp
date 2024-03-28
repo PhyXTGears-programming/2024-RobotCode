@@ -1,7 +1,6 @@
 #include "robots/2/commands/PreheatShooter.h"
 #include "robots/2/subsystems/speaker_shooter/SpeakerShooter.h"
-
-#include "units/math.h"
+#include <units/math.h>
 
 using namespace ::robot2;
 
@@ -25,8 +24,10 @@ void robot2::PreheatShooter::Execute() {
     m_speaker->SetShooterSpeed(m_speed, m_feedForward);
 }
 
-void robot2::PreheatShooter::End(bool interrupted) {}
+void robot2::PreheatShooter::End(bool interrupted) {
+    m_speaker->StopShooter();
+}
 
 bool robot2::PreheatShooter::IsFinished() {
-    return 200_rpm > units::math::abs(m_speaker->GetShooterSpeed() - m_threshold);
+    return m_speaker->GetShooterSpeed() >= m_threshold;
 }
