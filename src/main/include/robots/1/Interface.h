@@ -7,6 +7,8 @@
 namespace robot1::interface {
     using namespace ::interface;
 
+    const int k_robotId = k_dio9;
+
     namespace amp {
         const int k_shootMotor = k_can51;
         const int k_liftMotor  = k_can52;
