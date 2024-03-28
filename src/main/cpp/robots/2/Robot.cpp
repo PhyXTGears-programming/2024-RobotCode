@@ -3,6 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 
 #include "Camera.h"
+#include "RobotConfig.h"
 
 #include "robots/2/auto/auto.h"
 #include "robots/2/auto/load/SubsystemRegistry.h"
@@ -25,6 +26,7 @@
 #include <iostream>
 #include <fmt/core.h>
 
+#include <frc/DigitalInput.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/Commands.h>
 
@@ -33,7 +35,15 @@ using namespace ::robot2;
 namespace auto_ = constants::autonomous;
 
 void robot2::Robot::RobotInit() {
-    // FIXME: Detect robach or botthoven.
+    frc::DigitalInput robotId(interface::k_robotId);
+
+    // Expect LOW on DIO for robot 2.
+    if (false != robotId.Get()) {
+        fmt::println(stderr, "!!!!!");
+        fmt::println(stderr, "Expected code for robot 2.  Found code for robot {}", ROBOT_ID);
+        fmt::println(stderr, "!!!!!");
+        abort();
+    }
 
     std::shared_ptr<cpptoml::table> toml = nullptr;
 
