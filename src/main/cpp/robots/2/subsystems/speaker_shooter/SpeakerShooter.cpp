@@ -339,3 +339,19 @@ void robot2::SpeakerShooterSubsystem::SetTilt(double ratio) {
     m_tiltLeft.SetPulseTime(1.0_ms + 1_ms * std::clamp(ratio, 0.0, 1.0));
     m_tiltRight.SetPulseTime(2.0_ms - 1_ms * std::clamp(ratio, 0.0, 1.0));
 }
+
+void robot2::SpeakerShooterSubsystem::TiltSpeakerFar() {
+    
+}
+
+void robot2::SpeakerShooterSubsystem::TiltSpeakerNear() {
+
+}
+
+void robot2::SpeakerShooterSubsystem::TiltAmp() {
+
+}
+
+void robot2::SpeakerShooterSubsystem::TiltTrap() {
+
+}

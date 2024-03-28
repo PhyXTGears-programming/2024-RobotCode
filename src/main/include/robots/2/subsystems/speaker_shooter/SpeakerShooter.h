@@ -40,6 +40,11 @@ namespace robot2 {
             bool IsNoteDetected();
             bool IsSpeakerNear();
 
+            void TiltSpeakerFar();
+            void TiltSpeakerNear();
+            void TiltAmp();
+            void TiltTrap();
+
             rpm_t GetShooterSpeed();
 
             rpm_t GetAmpSpeedThreshold();
