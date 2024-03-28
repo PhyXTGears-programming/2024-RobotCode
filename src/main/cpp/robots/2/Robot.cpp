@@ -13,13 +13,10 @@
 
 #include "robots/2/commands/ClimbUp.h"
 #include "robots/2/commands/CloseGate.h"
+#include "robots/2/commands/Commands.h"
 #include "robots/2/commands/DriveTeleopCommand.h"
 #include "robots/2/commands/IntakeSpeaker.h"
 #include "robots/2/commands/OpenGate.h"
-#include "robots/2/commands/PreheatSpeaker.h"
-#include "robots/2/commands/PreheatSpeakerSlow.h"
-#include "robots/2/commands/ShootSpeaker.h"
-#include "robots/2/commands/ShootSpeakerSlow.h"
 
 #include "external/cpptoml.h"
 
@@ -98,37 +95,39 @@ void robot2::Robot::RobotInit() {
         [this] () { m_intake->Stop(); },
         { m_intake }
     );
-    m_preheatSpeaker = PreheatSpeaker(m_speaker).ToPtr();
-    m_shootSpeaker = frc2::cmd::Sequence(
+
+    m_preheatSpeaker = cmd::PreheatSpeakerFar(m_speaker);
+
+    m_shootSpeakerFar = frc2::cmd::Sequence(
         frc2::cmd::RunOnce([this] () { m_isShootSpeakerInPreheat = true; }, {}),
-        PreheatSpeaker(m_speaker).ToPtr(),
+        cmd::PreheatSpeakerFar(m_speaker),
         frc2::cmd::RunOnce([this] () { m_isShootSpeakerInPreheat = false; }, {}),
-        ShootSpeaker(m_intake, m_speaker).ToPtr().WithTimeout(2_s)
+        cmd::ShootSpeakerFar(m_intake, m_speaker).WithTimeout(2_s)
     );
-    m_shootSpeakerSlow = frc2::cmd::Sequence(
+    m_shootSpeakerNear = frc2::cmd::Sequence(
         frc2::cmd::RunOnce([this] () { m_isShootSpeakerInPreheat = true; }, {}),
-        PreheatSpeakerSlow(m_speaker).ToPtr(),
+        cmd::PreheatSpeakerNear(m_speaker),
         frc2::cmd::RunOnce([this] () { m_isShootSpeakerInPreheat = false; }, {}),
-        ShootSpeakerSlow(m_intake, m_speaker).ToPtr().WithTimeout(2_s)
+        cmd::ShootSpeakerNear(m_intake, m_speaker).WithTimeout(2_s)
     );
 
     m_climbUp = ClimbUp(m_climb, m_bling, m_operatorController).ToPtr();
 
     m_autoShootSpeakerAndStay = frc2::cmd::Sequence(
-        PreheatSpeaker(m_speaker).ToPtr(),
-        ShootSpeaker(m_intake, m_speaker).ToPtr().WithTimeout(3_s)
+        cmd::PreheatSpeakerNear(m_speaker),
+        cmd::ShootSpeakerNear(m_intake, m_speaker).WithTimeout(3_s)
     );
 
     m_autoShootSpeakerAndLeave = frc2::cmd::Sequence(
-        PreheatSpeaker(m_speaker).ToPtr(),
-        ShootSpeaker(m_intake, m_speaker).ToPtr().WithTimeout(3_s),
+        cmd::PreheatSpeakerNear(m_speaker),
+        cmd::ShootSpeakerNear(m_intake, m_speaker).WithTimeout(3_s),
         moveForwardsCommand(m_drivetrain)
     );
 
     m_autoShootTwo = frc2::cmd::Sequence(
         OpenGate(m_gate).ToPtr(),
-        PreheatSpeaker(m_speaker).ToPtr(),
-        ShootSpeaker(m_intake, m_speaker).ToPtr().WithTimeout(2_s),
+        cmd::PreheatSpeakerNear(m_speaker),
+        cmd::ShootSpeakerNear(m_intake, m_speaker).WithTimeout(2_s),
         frc2::cmd::Parallel(
             moveForwardsCommand(m_drivetrain),
             frc2::cmd::Sequence(
@@ -140,10 +139,10 @@ void robot2::Robot::RobotInit() {
             moveBackwardsCommand(m_drivetrain),
             frc2::cmd::Sequence(
                 frc2::cmd::Wait(1_s),
-                PreheatSpeaker(m_speaker).ToPtr().Repeatedly()
+                cmd::PreheatSpeakerFar(m_speaker).Repeatedly()
             )
         ).WithTimeout(4_s),
-        ShootSpeaker(m_intake, m_speaker).ToPtr().WithTimeout(2_s)
+        cmd::ShootSpeakerNear(m_intake, m_speaker).WithTimeout(2_s)
     );
 
     SubsystemRegistry registry{ m_drivetrain, m_intake, m_speaker };
@@ -241,15 +240,15 @@ void robot2::Robot::TeleopPeriodic() {
     }
 
     if (m_operatorController->GetXButtonPressed()) {
-        m_shootSpeaker.Schedule();
+        m_shootSpeakerFar.Schedule();
     } else if (m_operatorController->GetXButtonReleased()) {
-        m_shootSpeaker.Cancel();
+        m_shootSpeakerFar.Cancel();
     }
 
     if (m_operatorController->GetYButtonPressed()) {
-        m_shootSpeakerSlow.Schedule();
+        m_shootSpeakerNear.Schedule();
     } else if (m_operatorController->GetYButtonReleased()) {
-        m_shootSpeakerSlow.Cancel();
+        m_shootSpeakerNear.Cancel();
     }
 
     if (m_operatorController->GetLeftBumperPressed()) {

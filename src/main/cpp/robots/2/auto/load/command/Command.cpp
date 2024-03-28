@@ -3,9 +3,9 @@
 #include "robots/2/auto/load/command/Race.h"
 #include "robots/2/auto/load/command/Sequence.h"
 
+#include "robots/2/commands/Commands.h"
 #include "robots/2/commands/IntakeSpeaker.h"
-#include "robots/2/commands/PreheatSpeaker.h"
-#include "robots/2/commands/ShootSpeaker.h"
+
 
 #include <fmt/core.h>
 
@@ -35,11 +35,10 @@ std::optional<frc2::CommandPtr> robot2::importCommand(
         return IntakeSpeaker(registry.intake, registry.speaker).ToPtr();
     } else if ("Preheat Speaker" == name) {
         fmt::print("Auto: import command: preheat shooter\n");
-        return PreheatSpeaker(registry.speaker).ToPtr();
+        return cmd::PreheatSpeakerNear(registry.speaker);
     } else if ("Shoot Speaker" == name) {
         fmt::print("Auto: import command: shoot speaker\n");
-        return ShootSpeaker(registry.intake, registry.speaker)
-            .ToPtr()
+        return cmd::ShootSpeakerNear(registry.intake, registry.speaker)
             .WithTimeout(1.5_s);
     }
 

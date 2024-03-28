@@ -8,10 +8,13 @@
 *******************************/
 
 #include "external/cpptoml.h"
+
+#include "robots/2/commands/Commands.h"
 #include "robots/2/subsystems/speaker_shooter/DiagnosticDecl.h"
 
 #include <frc/AsynchronousInterrupt.h>
 #include <frc/DigitalInput.h>
+#include <frc2/command/CommandPtr.h>
 #include <frc2/command/SubsystemBase.h>
 
 #include <units/angular_velocity.h>
@@ -30,8 +33,6 @@ namespace robot2 {
 
             void Periodic() override;
 
-            void Shoot();
-            void SlowShoot();
             void ReverseShooter();
             void StopShooter();
 
@@ -39,8 +40,11 @@ namespace robot2 {
             bool IsSpeakerNear();
 
             rpm_t GetShooterSpeed();
-            rpm_t GetFastSpeedThreshold();
-            rpm_t GetSlowSpeedThreshold();
+
+            rpm_t GetAmpSpeedThreshold();
+            rpm_t GetSpeakerFarSpeedThreshold();
+            rpm_t GetSpeakerNearSpeedThreshold();
+            rpm_t GetTrapSpeedThreshold();
 
             void SetShooterSpeed(rpm_t speed, units::volt_t feedForward);
 
@@ -67,18 +71,64 @@ namespace robot2 {
                     struct {
                         rpm_t speed;
                         units::volt_t feedForward;
-                    } fast;
+                    } shoot;
+                    struct {
+                        units::microsecond_t leftMicros;
+                        units::microsecond_t rightMicros;
+                    } tilt;
+                } amp;
+
+                struct {
+                    struct {
+                        struct {
+                            rpm_t speed;
+                            units::volt_t feedForward;
+                        } shoot;
+                        struct {
+                            units::microsecond_t leftMicros;
+                            units::microsecond_t rightMicros;
+                        } tilt;
+                    } far;
+
+                    struct {
+                        struct {
+                            rpm_t speed;
+                            units::volt_t feedForward;
+                        } shoot;
+                        struct {
+                            units::microsecond_t leftMicros;
+                            units::microsecond_t rightMicros;
+                        } tilt;
+                    } near;
+                } speaker;
+
+                struct {
                     struct {
                         rpm_t speed;
                         units::volt_t feedForward;
-                    } slow;
-                } shoot;
+                    } shoot;
+                    struct {
+                        units::microsecond_t leftMicros;
+                        units::microsecond_t rightMicros;
+                    } tilt;
+                } trap;
+
                 rpm_t reverseSpeed;
                 units::meter_t  distanceThreshold;
                 units::volt_t   feedForwardSlow;
             } m_config;
 
         friend class diagnostic::TestSpeaker;
+
+        friend frc2::CommandPtr cmd::ShootAmp(IntakeSubsystem *, SpeakerShooterSubsystem *);
+        friend frc2::CommandPtr cmd::ShootSpeakerFar(IntakeSubsystem *, SpeakerShooterSubsystem *);
+        friend frc2::CommandPtr cmd::ShootSpeakerNear(IntakeSubsystem *, SpeakerShooterSubsystem *);
+        friend frc2::CommandPtr cmd::ShootTrap(IntakeSubsystem *, SpeakerShooterSubsystem *);
+
+        friend frc2::CommandPtr cmd::PreheatAmp(SpeakerShooterSubsystem *);
+        friend frc2::CommandPtr cmd::PreheatSpeakerFar(SpeakerShooterSubsystem *);
+        friend frc2::CommandPtr cmd::PreheatSpeakerNear(SpeakerShooterSubsystem *);
+        friend frc2::CommandPtr cmd::PreheatTrap(SpeakerShooterSubsystem *);
     };
 
 }

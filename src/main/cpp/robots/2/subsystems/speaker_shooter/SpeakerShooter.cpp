@@ -1,3 +1,5 @@
+#include "robots/2/commands/PreheatShooter.h"
+#include "robots/2/commands/Shoot.h"
 #include "robots/2/Interface.h"
 #include "robots/2/subsystems/speaker_shooter/SpeakerShooter.h"
 
@@ -6,6 +8,8 @@
 
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/SubsystemBase.h>
+
+using namespace ::robot2;
 
 robot2::SpeakerShooterSubsystem::SpeakerShooterSubsystem(std::shared_ptr<cpptoml::table> table)
 :   m_shootMotor1(
@@ -36,49 +40,193 @@ robot2::SpeakerShooterSubsystem::SpeakerShooterSubsystem(std::shared_ptr<cpptoml
 
     // Load configuration values from TOML.
     {
-        // shoot.fast.speed
-        cpptoml::option<double> speed = table->get_qualified_as<double>("shoot.fast.speed");
+        // amp.shoot.speed
+        cpptoml::option<double> speed = table->get_qualified_as<double>("amp.shoot.speed");
 
         if (speed) {
-            m_config.shoot.fast.speed = rpm_t(*speed);
+            m_config.amp.shoot.speed = rpm_t(*speed);
         } else {
-            std::cerr << "Error: speaker shooter cannot find toml property speaker.shoot.fast.speed" << std::endl;
+            std::cerr << "Error: speaker shooter cannot find toml property speaker.amp.shoot.speed" << std::endl;
             hasError = true;
         }
     }
 
     {
-        // shoot.fast.feedForward
-        cpptoml::option<double> feedForward = table->get_qualified_as<double>("shoot.fast.feedForward");
+        // amp.shoot.feedForward
+        cpptoml::option<double> feedForward = table->get_qualified_as<double>("amp.shoot.feedForward");
 
         if (feedForward) {
-            m_config.shoot.fast.feedForward = units::volt_t(*feedForward);
+            m_config.amp.shoot.feedForward = units::volt_t(*feedForward);
         } else {
-            std::cerr << "Error: speaker shooter cannot find toml property speaker.shoot.fast.feedForward" << std::endl;
+            std::cerr << "Error: speaker shooter cannot find toml property speaker.amp.shoot.feedForward" << std::endl;
             hasError = true;
         }
     }
 
     {
-        // shoot.slow.speed
-        cpptoml::option<double> speed = table->get_qualified_as<double>("shoot.slow.speed");
+        // amp.tilt.leftMicros
+        cpptoml::option<double> pulseTime = table->get_qualified_as<double>("amp.tilt.leftMicros");
+
+        if (pulseTime) {
+            m_config.amp.tilt.leftMicros = units::microsecond_t(*pulseTime);
+        } else {
+            std::cerr << "Error: speaker shooter cannot find toml property speaker.amp.tilt.leftMicros" << std::endl;
+            hasError = true;
+        }
+    }
+
+    {
+        // amp.tilt.rightMicros
+        cpptoml::option<double> pulseTime = table->get_qualified_as<double>("amp.tilt.rightMicros");
+
+        if (pulseTime) {
+            m_config.amp.tilt.rightMicros = units::microsecond_t(*pulseTime);
+        } else {
+            std::cerr << "Error: speaker shooter cannot find toml property speaker.amp.tilt.rightMicros" << std::endl;
+            hasError = true;
+        }
+    }
+
+    {
+        // speaker.far.shoot.speed
+        cpptoml::option<double> speed = table->get_qualified_as<double>("speaker.far.shoot.speed");
 
         if (speed) {
-            m_config.shoot.slow.speed = rpm_t(*speed);
+            m_config.speaker.far.shoot.speed = rpm_t(*speed);
         } else {
-            std::cerr << "Error: speaker shooter cannot find toml property speaker.shoot.slow.speed" << std::endl;
+            std::cerr << "Error: speaker shooter cannot find toml property speaker.speaker.far.shoot.speed" << std::endl;
             hasError = true;
         }
     }
 
     {
-        // shoot.slow.feedForward
-        cpptoml::option<double> feedForward = table->get_qualified_as<double>("shoot.slow.feedForward");
+        // speaker.far.shoot.feedForward
+        cpptoml::option<double> feedForward = table->get_qualified_as<double>("speaker.far.shoot.feedForward");
 
         if (feedForward) {
-            m_config.shoot.slow.feedForward = units::volt_t(*feedForward);
+            m_config.speaker.far.shoot.feedForward = units::volt_t(*feedForward);
         } else {
-            std::cerr << "Error: speaker shooter cannot find toml property speaker.shoot.slow.feedForward" << std::endl;
+            std::cerr << "Error: speaker shooter cannot find toml property speaker.speaker.far.shoot.feedForward" << std::endl;
+            hasError = true;
+        }
+    }
+
+    {
+        // speaker.far.tilt.leftMicros
+        cpptoml::option<double> pulseTime = table->get_qualified_as<double>("speaker.far.tilt.leftMicros");
+
+        if (pulseTime) {
+            m_config.speaker.far.tilt.leftMicros = units::microsecond_t(*pulseTime);
+        } else {
+            std::cerr << "Error: speaker shooter cannot find toml property speaker.speaker.far.tilt.leftMicros" << std::endl;
+            hasError = true;
+        }
+    }
+
+    {
+        // speaker.far.tilt.rightMicros
+        cpptoml::option<double> pulseTime = table->get_qualified_as<double>("speaker.far.tilt.rightMicros");
+
+        if (pulseTime) {
+            m_config.speaker.far.tilt.rightMicros = units::microsecond_t(*pulseTime);
+        } else {
+            std::cerr << "Error: speaker shooter cannot find toml property speaker.speaker.far.tilt.rightMicros" << std::endl;
+            hasError = true;
+        }
+    }
+
+    {
+        // speaker.near.shoot.speed
+        cpptoml::option<double> speed = table->get_qualified_as<double>("speaker.near.shoot.speed");
+
+        if (speed) {
+            m_config.speaker.near.shoot.speed = rpm_t(*speed);
+        } else {
+            std::cerr << "Error: speaker shooter cannot find toml property speaker.speaker.near.shoot.speed" << std::endl;
+            hasError = true;
+        }
+    }
+
+    {
+        // speaker.near.shoot.feedForward
+        cpptoml::option<double> feedForward = table->get_qualified_as<double>("speaker.near.shoot.feedForward");
+
+        if (feedForward) {
+            m_config.speaker.near.shoot.feedForward = units::volt_t(*feedForward);
+        } else {
+            std::cerr << "Error: speaker shooter cannot find toml property speaker.speaker.near.shoot.feedForward" << std::endl;
+            hasError = true;
+        }
+    }
+
+    {
+        // speaker.near.tilt.leftMicros
+        cpptoml::option<double> pulseTime = table->get_qualified_as<double>("speaker.near.tilt.leftMicros");
+
+        if (pulseTime) {
+            m_config.speaker.near.tilt.leftMicros = units::microsecond_t(*pulseTime);
+        } else {
+            std::cerr << "Error: speaker shooter cannot find toml property speaker.speaker.near.tilt.leftMicros" << std::endl;
+            hasError = true;
+        }
+    }
+
+    {
+        // speaker.near.tilt.rightMicros
+        cpptoml::option<double> pulseTime = table->get_qualified_as<double>("speaker.near.tilt.rightMicros");
+
+        if (pulseTime) {
+            m_config.speaker.near.tilt.rightMicros = units::microsecond_t(*pulseTime);
+        } else {
+            std::cerr << "Error: speaker shooter cannot find toml property speaker.speaker.near.tilt.rightMicros" << std::endl;
+            hasError = true;
+        }
+    }
+
+    {
+        // trap.shoot.speed
+        cpptoml::option<double> speed = table->get_qualified_as<double>("trap.shoot.speed");
+
+        if (speed) {
+            m_config.trap.shoot.speed = rpm_t(*speed);
+        } else {
+            std::cerr << "Error: speaker shooter cannot find toml property speaker.trap.shoot.speed" << std::endl;
+            hasError = true;
+        }
+    }
+
+    {
+        // trap.shoot.feedForward
+        cpptoml::option<double> feedForward = table->get_qualified_as<double>("trap.shoot.feedForward");
+
+        if (feedForward) {
+            m_config.trap.shoot.feedForward = units::volt_t(*feedForward);
+        } else {
+            std::cerr << "Error: speaker shooter cannot find toml property speaker.trap.shoot.feedForward" << std::endl;
+            hasError = true;
+        }
+    }
+
+    {
+        // trap.tilt.leftMicros
+        cpptoml::option<double> pulseTime = table->get_qualified_as<double>("trap.tilt.leftMicros");
+
+        if (pulseTime) {
+            m_config.trap.tilt.leftMicros = units::microsecond_t(*pulseTime);
+        } else {
+            std::cerr << "Error: speaker shooter cannot find toml property speaker.trap.tilt.leftMicros" << std::endl;
+            hasError = true;
+        }
+    }
+
+    {
+        // trap.tilt.rightMicros
+        cpptoml::option<double> pulseTime = table->get_qualified_as<double>("trap.tilt.rightMicros");
+
+        if (pulseTime) {
+            m_config.trap.tilt.rightMicros = units::microsecond_t(*pulseTime);
+        } else {
+            std::cerr << "Error: speaker shooter cannot find toml property speaker.trap.tilt.rightMicros" << std::endl;
             hasError = true;
         }
     }
@@ -129,24 +277,10 @@ void robot2::SpeakerShooterSubsystem::Periodic() {
     frc::SmartDashboard::PutNumber("Speaker Shoot rpm", GetShooterSpeed().value());
 }
 
-void robot2::SpeakerShooterSubsystem::Shoot() {
-    SetShooterSpeed(
-        m_config.shoot.fast.speed,
-        m_config.shoot.fast.feedForward
-    );
-}
-
-void robot2::SpeakerShooterSubsystem::SlowShoot() {
-    SetShooterSpeed(
-        m_config.shoot.slow.speed,
-        m_config.shoot.slow.feedForward
-    );
-}
-
 void robot2::SpeakerShooterSubsystem::ReverseShooter() {
     SetShooterSpeed(
         m_config.reverseSpeed,
-        m_config.shoot.slow.feedForward
+        m_config.amp.shoot.feedForward
     );
 }
 
@@ -171,12 +305,20 @@ rpm_t robot2::SpeakerShooterSubsystem::GetShooterSpeed(){
     return rpm_t(m_shootEncoder1.GetVelocity());
 }
 
-rpm_t robot2::SpeakerShooterSubsystem::GetFastSpeedThreshold() {
-    return m_config.shoot.fast.speed;
+rpm_t robot2::SpeakerShooterSubsystem::GetAmpSpeedThreshold() {
+    return m_config.amp.shoot.speed;
 }
 
-rpm_t robot2::SpeakerShooterSubsystem::GetSlowSpeedThreshold() {
-    return m_config.shoot.slow.speed;
+rpm_t robot2::SpeakerShooterSubsystem::GetSpeakerFarSpeedThreshold() {
+    return m_config.speaker.far.shoot.speed;
+}
+
+rpm_t robot2::SpeakerShooterSubsystem::GetSpeakerNearSpeedThreshold() {
+    return m_config.speaker.near.shoot.speed;
+}
+
+rpm_t robot2::SpeakerShooterSubsystem::GetTrapSpeedThreshold() {
+    return m_config.trap.shoot.speed;
 }
 
 void robot2::SpeakerShooterSubsystem::SetShooterSpeed(
