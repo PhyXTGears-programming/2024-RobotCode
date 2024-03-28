@@ -37,8 +37,8 @@ namespace robot2::constants {
         const std::string k_ShootSpeakerAndLeave = "Shoot Speaker & Leave";
         const std::string k_ShootTwo = "Shoot Two";
         const std::string k_FollowPath = "Follow Path";
-        const std::string k_Subwoof2n = "Subwoofer 2n";
-        const std::string k_Subwoof3n = "Subwoofer 3n";
+        const std::string k_Blue3nR21 = "Blue 3n R21";
+        const std::string k_Red3nR21 = "Red 3n R21";
     }
 
     namespace drive {

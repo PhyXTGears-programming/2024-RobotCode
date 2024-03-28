@@ -72,8 +72,8 @@ namespace robot2 {
             frc2::CommandPtr m_autoShootTwo = frc2::cmd::None();
 
             frc2::CommandPtr m_autoPathTest = frc2::cmd::None();
-            frc2::CommandPtr m_autoBlueSubwoof2nRamp = frc2::cmd::None();
-            frc2::CommandPtr m_autoBlueSubwoof3nRampCenter = frc2::cmd::None();
+            frc2::CommandPtr m_autoBlueSubwoof3nR21 = frc2::cmd::None();
+            frc2::CommandPtr m_autoRedSubwoof3nR21 = frc2::cmd::None();
 
             bool m_isShootSpeakerInPreheat = false;
     };

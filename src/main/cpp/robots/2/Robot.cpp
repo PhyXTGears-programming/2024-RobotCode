@@ -147,13 +147,12 @@ void robot2::Robot::RobotInit() {
 
     SubsystemRegistry registry{ m_drivetrain, m_intake, m_speaker };
 
-    m_autoPathTest = loadPathFollowCommandFromFile(deploy::GetRobotDirectory() + "/path_wait.json", registry);
-    m_autoBlueSubwoof2nRamp = loadPathFollowCommandFromFile(
-        deploy::GetRobotDirectory() + "/subwoofer-speaker-2n-r-blue.json",
+    m_autoBlueSubwoof3nR21 = loadPathFollowCommandFromFile(
+        deploy::GetRobotDirectory() + "/subwoofer-speaker-3n-r21-blue.json",
         registry
     );
-    m_autoBlueSubwoof3nRampCenter = loadPathFollowCommandFromFile(
-        deploy::GetRobotDirectory() + "/subwoofer-speaker-3n-r-c1-blue.json",
+    m_autoRedSubwoof3nR21 = loadPathFollowCommandFromFile(
+        deploy::GetRobotDirectory() + "/subwoofer-speaker-3n-r21-red.json",
         registry
     );
 
@@ -161,9 +160,9 @@ void robot2::Robot::RobotInit() {
     m_chooser.AddOption(auto_::k_ShootSpeakerAndStay, auto_::k_ShootSpeakerAndStay);
     m_chooser.AddOption(auto_::k_ShootSpeakerAndLeave, auto_::k_ShootSpeakerAndLeave);
     m_chooser.AddOption(auto_::k_ShootTwo, auto_::k_ShootTwo);
-    m_chooser.AddOption(auto_::k_FollowPath, auto_::k_FollowPath);
-    m_chooser.AddOption(auto_::k_Subwoof2n, auto_::k_Subwoof2n);
-    m_chooser.AddOption(auto_::k_Subwoof3n, auto_::k_Subwoof3n);
+    //m_chooser.AddOption(auto_::k_FollowPath, auto_::k_FollowPath);
+    m_chooser.AddOption(auto_::k_Blue3nR21, auto_::k_Blue3nR21);
+    m_chooser.AddOption(auto_::k_Red3nR21,  auto_::k_Red3nR21);
     frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
 }
 
@@ -210,10 +209,10 @@ void robot2::Robot::AutonomousInit() {
         m_autoShootTwo.Schedule();
     } else if (auto_::k_FollowPath == m_autoSelected) {
         m_autoPathTest.Schedule();
-    } else if (auto_::k_Subwoof2n == m_autoSelected) {
-        m_autoBlueSubwoof2nRamp.Schedule();
-    } else if (auto_::k_Subwoof3n == m_autoSelected) {
-        m_autoBlueSubwoof3nRampCenter.Schedule();
+    } else if (auto_::k_Blue3nR21 == m_autoSelected) {
+        m_autoBlueSubwoof3nR21.Schedule();
+    } else if (auto_::k_Red3nR21 == m_autoSelected) {
+        m_autoRedSubwoof3nR21.Schedule();
     }
 }
 
