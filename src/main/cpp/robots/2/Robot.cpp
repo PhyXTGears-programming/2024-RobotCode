@@ -64,8 +64,8 @@ void robot2::Robot::RobotInit() {
 
     std::cout << std::endl << "Building camera" << std::endl;
 
-    m_cameraFront = camera::LoadAndStart(deploy::GetRobotDirectory() + "/camera-front.json", 320, 240, 20);
-    m_cameraBack = camera::LoadAndStart(deploy::GetRobotDirectory() + "/camera-back.json", 320, 240, 20);
+    // m_cameraFront = camera::LoadAndStart(0, deploy::GetRobotDirectory() + "/camera-front.json", 320, 240, 15);
+    m_cameraBack = camera::LoadAndStart(1, deploy::GetRobotDirectory() + "/camera-back.json", 320, 240, 15);
 
     if (m_cameraFront) {
         frc::CameraServer::GetServer().SetSource(*m_cameraFront);
