@@ -55,11 +55,14 @@ robot2::SwerveModule::SwerveModule(
     ctre::phoenix6::configs::MagnetSensorConfigs configMagnetSensor{};
     configMagnetSensor
         .WithAbsoluteSensorRange(ctre::phoenix6::signals::AbsoluteSensorRangeValue::Signed_PlusMinusHalf)
-        .WithSensorDirection(ctre::phoenix6::signals::SensorDirectionValue::CounterClockwise_Positive);
+        .WithSensorDirection(ctre::phoenix6::signals::SensorDirectionValue::CounterClockwise_Positive)
+        .WithMagnetOffset(0.0);
 
     configCanCoder.WithMagnetSensor(configMagnetSensor);
 
-    m_turningAbsEncoder.GetConfigurator().Apply(configCanCoder);
+    m_turningAbsEncoder.GetConfigurator().Apply(ctre::phoenix6::configs::CANcoderConfiguration(), 5_s);
+    m_turningAbsEncoder.GetConfigurator().Apply(configCanCoder, 5_s);
+    m_turningAbsEncoder.GetConfigurator().Refresh(configMagnetSensor, 5_s);
 
     m_turningEncoder.SetPositionConversionFactor(
         2.0 * std::numbers::pi                          // radians per motor turn
