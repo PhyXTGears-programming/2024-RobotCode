@@ -200,6 +200,12 @@ void robot2::Robot::RobotPeriodic() {
             frc::CameraServer::GetServer().SetSource(*m_cameraFront);
         }
     }
+
+    if (m_speaker->IsNoteDetected()) {
+        m_bling->NotifyNotePresent();
+    } else {
+        m_bling->NotifyNoteAbsent();
+    }
 }
 
 /**

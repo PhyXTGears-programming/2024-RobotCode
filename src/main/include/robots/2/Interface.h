@@ -8,7 +8,7 @@ namespace robot2::interface {
     const int k_robotId = k_dio9;
 
     namespace bling {
-        // Put DIO assignment here.
+        const int k_noteSignal = k_dio4;
     }
 
     namespace climb {

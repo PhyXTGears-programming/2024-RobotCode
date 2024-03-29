@@ -2,7 +2,7 @@
 
 #include "robots/2/Interface.h"
 
-#include <frc/I2C.h>
+#include <frc/DigitalOutput.h>
 #include <frc2/command/SubsystemBase.h>
 
 namespace robot2 {
@@ -42,7 +42,11 @@ namespace robot2 {
             void BlingMidTimeout     ();//keep LEDs on for 3.5 seconds
             void BlingHighTimeout    ();//keep LEDs on for 5 seconds
 
+            void NotifyNoteAbsent  ();
+            void NotifyNotePresent ();
+
         private:
+            frc::DigitalOutput m_noteSignal;
     };
 
 }

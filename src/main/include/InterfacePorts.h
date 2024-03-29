@@ -48,6 +48,7 @@ namespace interface {
         const int k_dio1 = 1;
         const int k_dio2 = 2;
         const int k_dio3 = 3;
+        const int k_dio4 = 4;
 
         const int k_dio9 = 9;
 
