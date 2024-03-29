@@ -318,6 +318,11 @@ frc2::CommandPtr robot2::moveBackwardsCommand(Drivetrain *c_drivetrain) {
         frc::Pose2d(-1.3_m, 0.0_m, 0.0_rad),
         frc::Pose2d(-1.4_m, 0.0_m, 0.0_rad),
         frc::Pose2d(-1.5_m, 0.0_m, 0.0_rad),
+        frc::Pose2d(-1.6_m, 0.0_m, 0.0_rad),
+        frc::Pose2d(-1.7_m, 0.0_m, 0.0_rad),
+        frc::Pose2d(-1.8_m, 0.0_m, 0.0_rad),
+        frc::Pose2d(-1.9_m, 0.0_m, 0.0_rad),
+        frc::Pose2d(-2.0_m, 0.0_m, 0.0_rad),
 
     };
     
@@ -342,6 +347,11 @@ frc2::CommandPtr robot2::moveForwardsCommand(Drivetrain *c_drivetrain) {
         frc::Pose2d(1.3_m, 0.0_m, 0.0_rad),
         frc::Pose2d(1.4_m, 0.0_m, 0.0_rad),
         frc::Pose2d(1.5_m, 0.0_m, 0.0_rad),
+        frc::Pose2d(1.6_m, 0.0_m, 0.0_rad),
+        frc::Pose2d(1.7_m, 0.0_m, 0.0_rad),
+        frc::Pose2d(1.8_m, 0.0_m, 0.0_rad),
+        frc::Pose2d(1.9_m, 0.0_m, 0.0_rad),
+        frc::Pose2d(2.0_m, 0.0_m, 0.0_rad),
 
     };
     
