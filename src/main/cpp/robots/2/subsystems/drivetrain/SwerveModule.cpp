@@ -114,6 +114,9 @@ robot2::SwerveModule::SwerveModule(
     m_turningAbsPositionSignal.Refresh();
     m_turningAbsPositionSignal.WaitForUpdate(5_s);
 
+    m_turningAbsPositionSignal.Refresh();
+    m_turningAbsPositionSignal.WaitForUpdate(5_s);
+
     ResetTurnPosition();
 }
 
