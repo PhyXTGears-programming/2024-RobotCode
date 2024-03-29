@@ -106,6 +106,13 @@ void robot2::Robot::RobotInit() {
 
     m_preheatSpeaker = cmd::PreheatSpeakerFar(m_speaker);
 
+    m_shootAmp = frc2::cmd::Sequence(
+        frc2::cmd::RunOnce([this] () { m_isShootSpeakerInPreheat = true; }, {}),
+        cmd::PreheatAmp(m_speaker),
+        frc2::cmd::RunOnce([this] () { m_isShootSpeakerInPreheat = false; }, {}),
+        cmd::ShootAmp(m_intake, m_speaker).WithTimeout(2_s)
+    );
+
     m_shootSpeakerFar = frc2::cmd::Sequence(
         frc2::cmd::RunOnce([this] () { m_isShootSpeakerInPreheat = true; }, {}),
         cmd::PreheatSpeakerFar(m_speaker),
@@ -117,6 +124,13 @@ void robot2::Robot::RobotInit() {
         cmd::PreheatSpeakerNear(m_speaker),
         frc2::cmd::RunOnce([this] () { m_isShootSpeakerInPreheat = false; }, {}),
         cmd::ShootSpeakerNear(m_intake, m_speaker).WithTimeout(2_s)
+    );
+
+    m_shootTrap = frc2::cmd::Sequence(
+        frc2::cmd::RunOnce([this] () { m_isShootSpeakerInPreheat = true; }, {}),
+        cmd::PreheatTrap(m_speaker),
+        frc2::cmd::RunOnce([this] () { m_isShootSpeakerInPreheat = false; }, {}),
+        cmd::ShootTrap(m_intake, m_speaker).WithTimeout(2_s)
     );
 
     m_climbUp = ClimbUp(m_climb, m_bling, m_operatorController).ToPtr();
@@ -266,16 +280,22 @@ void robot2::Robot::TeleopPeriodic() {
         m_intakeSpeaker.Cancel();
     }
 
+    if (m_operatorController->GetBButtonPressed()) {
+        m_shootTrap.Schedule();
+    } else if (m_operatorController->GetBButtonReleased()) {
+        m_shootTrap.Cancel();
+    }
+
     if (m_operatorController->GetXButtonPressed()) {
-        m_shootSpeakerFar.Schedule();
+        m_shootSpeakerNear.Schedule();
     } else if (m_operatorController->GetXButtonReleased()) {
-        m_shootSpeakerFar.Cancel();
+        m_shootSpeakerNear.Cancel();
     }
 
     if (m_operatorController->GetYButtonPressed()) {
-        m_shootSpeakerNear.Schedule();
+        m_shootAmp.Schedule();
     } else if (m_operatorController->GetYButtonReleased()) {
-        m_shootSpeakerNear.Cancel();
+        m_shootAmp.Cancel();
     }
 
     if (m_operatorController->GetLeftBumperPressed()) {

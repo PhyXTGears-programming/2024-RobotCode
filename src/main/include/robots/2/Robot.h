@@ -63,11 +63,14 @@ namespace robot2 {
             frc2::CommandPtr m_closeGate = frc2::cmd::None();
             frc2::CommandPtr m_openGate = frc2::cmd::None();
 
-            frc2::CommandPtr m_intakeSpeaker = frc2::cmd::None();
+            frc2::CommandPtr m_intakeSpeaker  = frc2::cmd::None();
             frc2::CommandPtr m_reverseSpeaker = frc2::cmd::None();
             frc2::CommandPtr m_preheatSpeaker = frc2::cmd::None();
-            frc2::CommandPtr m_shootSpeakerFar = frc2::cmd::None();
+
+            frc2::CommandPtr m_shootAmp         = frc2::cmd::None();
+            frc2::CommandPtr m_shootSpeakerFar  = frc2::cmd::None();
             frc2::CommandPtr m_shootSpeakerNear = frc2::cmd::None();
+            frc2::CommandPtr m_shootTrap        = frc2::cmd::None();
 
             frc2::CommandPtr m_climbUp = frc2::cmd::None();
 
