@@ -55,6 +55,8 @@ namespace robot2 {
         units::radian_t GetTurnAbsPositionRaw();
 
         void UpdateDashboard();
+
+        void SetTurnBrake(bool isEnabled);
     private:
         static constexpr auto kModuleMaxAnglarVelocity =
             std::numbers::pi * 1_rad_per_s; // radians per second 

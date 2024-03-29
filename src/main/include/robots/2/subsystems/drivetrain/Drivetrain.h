@@ -60,6 +60,8 @@ namespace robot2 {
 
             Point GetChassisPosition();
 
+            void SetTurnBrake(bool isEnabled);
+
         private:
             frc::Translation2d m_frontLeftLocation { +0.287_m, +0.287_m };
             frc::Translation2d m_frontRightLocation{ +0.287_m, -0.287_m };

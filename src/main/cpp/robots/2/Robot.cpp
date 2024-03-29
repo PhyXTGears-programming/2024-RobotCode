@@ -232,6 +232,8 @@ void robot2::Robot::AutonomousInit() {
     } else if (auto_::k_Red3nR21 == m_autoSelected) {
         m_autoRedSubwoof3nR21.Schedule();
     }
+
+    m_drivetrain->SetTurnBrake(true);
 }
 
 void robot2::Robot::AutonomousPeriodic() {
@@ -239,6 +241,8 @@ void robot2::Robot::AutonomousPeriodic() {
 }
 
 void robot2::Robot::TeleopInit() {
+    m_drivetrain->SetTurnBrake(true);
+
     m_driveTeleopCommand.Schedule();
     m_openGate.Schedule();
 }

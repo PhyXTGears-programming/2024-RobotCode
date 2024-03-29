@@ -46,7 +46,9 @@ robot2::SwerveModule::SwerveModule(
     m_turningAbsPositionSignal(m_turningAbsEncoder.GetAbsolutePosition())
 {
     m_turningMotor.SetInverted(true);
-    m_turningMotor.SetIdleMode(rev::CANSparkBase::IdleMode::kBrake);
+    // Set coast mode so we can straighten the wheels at start of match.
+    // Will switch to brake mode later.
+    m_turningMotor.SetIdleMode(rev::CANSparkBase::IdleMode::kCoast);
     m_turningMotor.SetSmartCurrentLimit(30);
 
     ctre::phoenix6::configs::CANcoderConfiguration configCanCoder{};
@@ -208,3 +210,10 @@ void robot2::SwerveModule::UpdateDashboard() {
     );
 }
 
+void robot2::SwerveModule::SetTurnBrake(bool isEnabled) {
+    if (isEnabled) {
+        m_turningMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+    } else {
+        m_turningMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
+    }
+}
