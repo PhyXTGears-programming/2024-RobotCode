@@ -86,7 +86,6 @@ robot2::SwerveModule::SwerveModule(
     m_turningPid.SetPositionPIDWrappingMinInput(-std::numbers::pi);
     m_turningPid.SetPositionPIDWrappingMaxInput(std::numbers::pi);
 
-    // FIXME: confirm direction of drive motor on robot.
     m_driveMotor.SetInverted(false);
     m_driveMotor.SetIdleMode(rev::CANSparkBase::IdleMode::kBrake);
     m_driveMotor.SetSmartCurrentLimit(40);
