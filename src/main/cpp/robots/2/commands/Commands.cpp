@@ -16,8 +16,7 @@ frc2::CommandPtr robot2::cmd::ShootAmp(
         speaker,
         speaker->m_config.amp.shoot.speed,
         speaker->m_config.amp.shoot.feedForward,
-        speaker->m_config.amp.tilt.leftMicros,
-        speaker->m_config.amp.tilt.rightMicros
+        speaker->m_config.amp.tilt
     ).ToPtr();
 }
 
@@ -31,8 +30,7 @@ frc2::CommandPtr robot2::cmd::ShootSpeakerFar(
         speaker,
         speaker->m_config.speaker.far.shoot.speed,
         speaker->m_config.speaker.far.shoot.feedForward,
-        speaker->m_config.speaker.far.tilt.leftMicros,
-        speaker->m_config.speaker.far.tilt.rightMicros
+        speaker->m_config.speaker.far.tilt
     ).ToPtr();
 }
 
@@ -45,8 +43,7 @@ frc2::CommandPtr robot2::cmd::ShootSpeakerNear(
         speaker,
         speaker->m_config.speaker.near.shoot.speed,
         speaker->m_config.speaker.near.shoot.feedForward,
-        speaker->m_config.speaker.near.tilt.leftMicros,
-        speaker->m_config.speaker.near.tilt.rightMicros
+        speaker->m_config.speaker.near.tilt
     ).ToPtr();
 }
 
@@ -59,8 +56,7 @@ frc2::CommandPtr robot2::cmd::ShootTrap(
         speaker,
         speaker->m_config.trap.shoot.speed,
         speaker->m_config.trap.shoot.feedForward,
-        speaker->m_config.trap.tilt.leftMicros,
-        speaker->m_config.trap.tilt.rightMicros
+        speaker->m_config.trap.tilt
     ).ToPtr();
 }
 
@@ -71,7 +67,8 @@ frc2::CommandPtr robot2::cmd::PreheatAmp(
         speaker,
         speaker->m_config.amp.shoot.speed,
         speaker->m_config.amp.shoot.feedForward,
-        speaker->m_config.amp.shoot.speed
+        speaker->m_config.amp.shoot.speed,
+        speaker->m_config.amp.tilt
     ).ToPtr();
 }
 
@@ -82,7 +79,8 @@ frc2::CommandPtr robot2::cmd::PreheatSpeakerFar(
         speaker,
         speaker->m_config.speaker.far.shoot.speed,
         speaker->m_config.speaker.far.shoot.feedForward,
-        speaker->m_config.speaker.far.shoot.speed
+        speaker->m_config.speaker.far.shoot.speed,
+        speaker->m_config.speaker.far.tilt
     ).ToPtr();
 }
 
@@ -93,7 +91,8 @@ frc2::CommandPtr robot2::cmd::PreheatSpeakerNear(
         speaker,
         speaker->m_config.speaker.near.shoot.speed,
         speaker->m_config.speaker.near.shoot.feedForward,
-        speaker->m_config.speaker.near.shoot.speed
+        speaker->m_config.speaker.near.shoot.speed,
+        speaker->m_config.speaker.near.tilt
     ).ToPtr();
 }
 
@@ -104,6 +103,7 @@ frc2::CommandPtr robot2::cmd::PreheatTrap(
         speaker,
         speaker->m_config.trap.shoot.speed,
         speaker->m_config.trap.shoot.feedForward,
-        speaker->m_config.trap.shoot.speed
+        speaker->m_config.trap.shoot.speed,
+        speaker->m_config.trap.tilt
     ).ToPtr();
 }

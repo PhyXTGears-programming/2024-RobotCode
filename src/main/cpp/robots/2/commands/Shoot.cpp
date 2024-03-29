@@ -8,15 +8,13 @@ robot2::Shoot::Shoot(
     SpeakerShooterSubsystem * speaker,
     rpm_t speed,
     units::volt_t feedForward,
-    units::microsecond_t leftMicros,
-    units::microsecond_t rightMicros
+    double tilt
 ) :
     m_intake(intake),
     m_speaker(speaker),
     m_speed(speed),
     m_feedForward(feedForward),
-    m_leftMicros(leftMicros),
-    m_rightMicros(rightMicros)
+    m_tilt(std::clamp(tilt, 0.0, 0.8))
 {
     AddRequirements(intake);
     AddRequirements(speaker);
@@ -25,6 +23,7 @@ robot2::Shoot::Shoot(
 void robot2::Shoot::Initialize() {}
 
 void robot2::Shoot::Execute() {
+    m_speaker->SetTilt(m_tilt);
     m_speaker->SetShooterSpeed(m_speed, m_feedForward);
     m_intake->IntakeSpeakerShooter();
 }

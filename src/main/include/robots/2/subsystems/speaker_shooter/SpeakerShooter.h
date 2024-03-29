@@ -86,10 +86,7 @@ namespace robot2 {
                         rpm_t speed;
                         units::volt_t feedForward;
                     } shoot;
-                    struct {
-                        units::microsecond_t leftMicros;
-                        units::microsecond_t rightMicros;
-                    } tilt;
+                    double tilt;
                 } amp;
 
                 struct {
@@ -98,10 +95,7 @@ namespace robot2 {
                             rpm_t speed;
                             units::volt_t feedForward;
                         } shoot;
-                        struct {
-                            units::microsecond_t leftMicros;
-                            units::microsecond_t rightMicros;
-                        } tilt;
+                        double tilt;
                     } far;
 
                     struct {
@@ -109,10 +103,7 @@ namespace robot2 {
                             rpm_t speed;
                             units::volt_t feedForward;
                         } shoot;
-                        struct {
-                            units::microsecond_t leftMicros;
-                            units::microsecond_t rightMicros;
-                        } tilt;
+                        double tilt;
                     } near;
                 } speaker;
 
@@ -121,10 +112,7 @@ namespace robot2 {
                         rpm_t speed;
                         units::volt_t feedForward;
                     } shoot;
-                    struct {
-                        units::microsecond_t leftMicros;
-                        units::microsecond_t rightMicros;
-                    } tilt;
+                    double tilt;
                 } trap;
 
                 rpm_t reverseSpeed;
