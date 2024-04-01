@@ -20,8 +20,8 @@ openMicros  =  950
 closeMicros = 1300
 
 [intake]
-intakeSpeed = 0.90
-reverseSpeed = 0.2
+intakeSpeed = 0.60
+reverseSpeed = 0.20
 
 [speaker]
 amp.shoot.speed = 300
