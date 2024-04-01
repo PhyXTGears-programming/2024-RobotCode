@@ -97,7 +97,7 @@ void robot2::Robot::RobotInit() {
     frc::SmartDashboard::PutData("Close Gate", m_closeGate.get());
     m_openGate = OpenGate(m_gate).ToPtr();
 
-    m_intakeSpeaker = IntakeSpeaker(m_intake, m_speaker).ToPtr();
+    m_intakeSpeaker = cmd::Intake(m_intake, m_speaker);
     m_reverseSpeaker = frc2::cmd::StartEnd(
         [this] () { m_intake->ReverseSpeakerShooter(); },
         [this] () { m_intake->Stop(); },
@@ -154,7 +154,7 @@ void robot2::Robot::RobotInit() {
             moveForwardsCommand(m_drivetrain),
             frc2::cmd::Sequence(
                 frc2::cmd::Wait(1_s),
-                IntakeSpeaker(m_intake, m_speaker).ToPtr().WithTimeout(2.5_s)
+                cmd::Intake(m_intake, m_speaker).WithTimeout(2.5_s)
             )
         ),
         frc2::cmd::Race(

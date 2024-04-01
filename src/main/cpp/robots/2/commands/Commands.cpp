@@ -1,11 +1,29 @@
 #include "robots/2/commands/Commands.h"
+#include "robots/2/commands/IntakeSpeaker.h"
 #include "robots/2/commands/PreheatShooter.h"
 #include "robots/2/commands/Shoot.h"
 
 #include "robots/2/subsystems/intake/Intake.h"
 #include "robots/2/subsystems/speaker_shooter/SpeakerShooter.h"
 
+#include <frc2/command/Commands.h>
+
 using namespace ::robot2;
+
+frc2::CommandPtr robot2::cmd::Intake(
+    IntakeSubsystem * intake,
+    SpeakerShooterSubsystem * speaker
+) {
+    return frc2::cmd::Sequence(
+        IntakeSpeaker(intake, speaker).ToPtr(),
+        frc2::cmd::Wait(0.5_s),
+        frc2::cmd::StartEnd(
+            [=] () { intake->ReverseSpeakerShooter(); },
+            [=] () { intake->Stop(); },
+            { intake }
+        ).WithTimeout(1.5_s)
+    );
+}
 
 frc2::CommandPtr robot2::cmd::ShootAmp(
     IntakeSubsystem * intake,
