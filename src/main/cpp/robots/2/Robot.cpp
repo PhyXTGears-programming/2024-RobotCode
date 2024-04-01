@@ -185,6 +185,31 @@ void robot2::Robot::RobotInit() {
         registry
     );
 
+    m_autoRedSubBot3nR3C5 = loadPathFollowCommandFromFile(
+        deploy::GetRobotDirectory() + "/sub-bot-3n-r3-c5-red.json",
+        registry
+    );
+
+    m_autoRedSubBot1nC5 = loadPathFollowCommandFromFile(
+        deploy::GetRobotDirectory() + "/sub-bot-1n-c5-red.json",
+        registry
+    );
+
+    m_autoRedSubBot0nR3 = loadPathFollowCommandFromFile(
+        deploy::GetRobotDirectory() + "/sub-bot-0n-red.json",
+        registry
+    );
+
+    m_autoBlueSubBot1nC5 = loadPathFollowCommandFromFile(
+        deploy::GetRobotDirectory() + "/sub-bot-1n-c5-blue.json",
+        registry
+    );
+
+    m_autoBlueSubBot0n = loadPathFollowCommandFromFile(
+       deploy::GetRobotDirectory() + "/sub-bot-0n-blue.json",
+       registry
+    );
+
     m_chooser.SetDefaultOption(auto_::k_None, auto_::k_None);
     m_chooser.AddOption(auto_::k_ShootSpeakerAndStay, auto_::k_ShootSpeakerAndStay);
     m_chooser.AddOption(auto_::k_ShootSpeakerAndLeave, auto_::k_ShootSpeakerAndLeave);
@@ -192,6 +217,10 @@ void robot2::Robot::RobotInit() {
     //m_chooser.AddOption(auto_::k_FollowPath, auto_::k_FollowPath);
     m_chooser.AddOption(auto_::k_Blue3nR21, auto_::k_Blue3nR21);
     m_chooser.AddOption(auto_::k_Red3nR21,  auto_::k_Red3nR21);
+    m_chooser.AddOption(auto_::k_Red3nR3C5, auto_::k_Red3nR3C5);
+    m_chooser.AddOption(auto_::k_Red1nC5, auto_::k_Red1nC5);
+    m_chooser.AddOption(auto_::k_Red0n, auto_::k_Red0n);
+    m_chooser.AddOption(auto_::k_Blue1nC5, auto_::k_Blue1nC5);
     frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
 }
 
@@ -258,6 +287,16 @@ void robot2::Robot::AutonomousInit() {
         m_autoBlueSubwoof3nR21.Schedule();
     } else if (auto_::k_Red3nR21 == m_autoSelected) {
         m_autoRedSubwoof3nR21.Schedule();
+    } else if (auto_::k_Red3nR3C5 == m_autoSelected) {
+        m_autoRedSubBot3nR3C5.Schedule();
+    } else if (auto_::k_Red1nC5 == m_autoSelected) {
+        m_autoRedSubBot1nC5.Schedule();
+    } else if (auto_::k_Red0n == m_autoSelected) {
+        m_autoRedSubBot0nR3.Schedule();
+    } else if (auto_::k_Blue1nC5 == m_autoSelected) {
+        m_autoBlueSubBot1nC5.Schedule();
+    } else if (auto_::k_Blue0n == m_autoSelected) {
+        m_autoBlueSubBot0n.Schedule();
     }
 
     m_drivetrain->SetTurnBrake(true);
