@@ -64,8 +64,8 @@ void robot2::Robot::RobotInit() {
 
     std::cout << std::endl << "Building camera" << std::endl;
 
-    m_cameraFront = camera::LoadAndStart(deploy::GetRobotDirectory() + "/camera-front.json", 320, 240, 20);
-    m_cameraBack = camera::LoadAndStart(deploy::GetRobotDirectory() + "/camera-back.json", 320, 240, 20);
+    // m_cameraFront = camera::LoadAndStart(0, deploy::GetRobotDirectory() + "/camera-front.json", 320, 240, 15);
+    m_cameraBack = camera::LoadAndStart(1, deploy::GetRobotDirectory() + "/camera-back.json", 320, 240, 15);
 
     if (m_cameraFront) {
         frc::CameraServer::GetServer().SetSource(*m_cameraFront);
@@ -97,7 +97,14 @@ void robot2::Robot::RobotInit() {
     frc::SmartDashboard::PutData("Close Gate", m_closeGate.get());
     m_openGate = OpenGate(m_gate).ToPtr();
 
-    m_intakeSpeaker = IntakeSpeaker(m_intake, m_speaker).ToPtr();
+    m_intakeSpeaker = cmd::Intake(m_intake, m_speaker);
+
+    m_overrideIntake = frc2::cmd::StartEnd(
+        [this] () { m_intake->IntakeSpeakerShooter(); },
+        [this] () { m_intake->Stop(); },
+        { m_intake }
+    );
+
     m_reverseSpeaker = frc2::cmd::StartEnd(
         [this] () { m_intake->ReverseSpeakerShooter(); },
         [this] () { m_intake->Stop(); },
@@ -105,6 +112,13 @@ void robot2::Robot::RobotInit() {
     );
 
     m_preheatSpeaker = cmd::PreheatSpeakerFar(m_speaker);
+
+    m_shootAmp = frc2::cmd::Sequence(
+        frc2::cmd::RunOnce([this] () { m_isShootSpeakerInPreheat = true; }, {}),
+        cmd::PreheatAmp(m_speaker),
+        frc2::cmd::RunOnce([this] () { m_isShootSpeakerInPreheat = false; }, {}),
+        cmd::ShootAmp(m_intake, m_speaker).WithTimeout(2_s)
+    );
 
     m_shootSpeakerFar = frc2::cmd::Sequence(
         frc2::cmd::RunOnce([this] () { m_isShootSpeakerInPreheat = true; }, {}),
@@ -117,6 +131,13 @@ void robot2::Robot::RobotInit() {
         cmd::PreheatSpeakerNear(m_speaker),
         frc2::cmd::RunOnce([this] () { m_isShootSpeakerInPreheat = false; }, {}),
         cmd::ShootSpeakerNear(m_intake, m_speaker).WithTimeout(2_s)
+    );
+
+    m_shootTrap = frc2::cmd::Sequence(
+        frc2::cmd::RunOnce([this] () { m_isShootSpeakerInPreheat = true; }, {}),
+        cmd::PreheatTrap(m_speaker),
+        frc2::cmd::RunOnce([this] () { m_isShootSpeakerInPreheat = false; }, {}),
+        cmd::ShootTrap(m_intake, m_speaker).WithTimeout(2_s)
     );
 
     m_climbUp = ClimbUp(m_climb, m_bling, m_operatorController).ToPtr();
@@ -140,7 +161,7 @@ void robot2::Robot::RobotInit() {
             moveForwardsCommand(m_drivetrain),
             frc2::cmd::Sequence(
                 frc2::cmd::Wait(1_s),
-                IntakeSpeaker(m_intake, m_speaker).ToPtr().WithTimeout(2.5_s)
+                cmd::Intake(m_intake, m_speaker).WithTimeout(2.5_s)
             )
         ),
         frc2::cmd::Race(
@@ -164,6 +185,31 @@ void robot2::Robot::RobotInit() {
         registry
     );
 
+    m_autoRedSubBot3nR3C5 = loadPathFollowCommandFromFile(
+        deploy::GetRobotDirectory() + "/sub-bot-3n-r3-c5-red.json",
+        registry
+    );
+
+    m_autoRedSubBot1nC5 = loadPathFollowCommandFromFile(
+        deploy::GetRobotDirectory() + "/sub-bot-1n-c5-red.json",
+        registry
+    );
+
+    m_autoRedSubBot0nR3 = loadPathFollowCommandFromFile(
+        deploy::GetRobotDirectory() + "/sub-bot-0n-red.json",
+        registry
+    );
+
+    m_autoBlueSubBot1nC5 = loadPathFollowCommandFromFile(
+        deploy::GetRobotDirectory() + "/sub-bot-1n-c5-blue.json",
+        registry
+    );
+
+    m_autoBlueSubBot0n = loadPathFollowCommandFromFile(
+       deploy::GetRobotDirectory() + "/sub-bot-0n-blue.json",
+       registry
+    );
+
     m_chooser.SetDefaultOption(auto_::k_None, auto_::k_None);
     m_chooser.AddOption(auto_::k_ShootSpeakerAndStay, auto_::k_ShootSpeakerAndStay);
     m_chooser.AddOption(auto_::k_ShootSpeakerAndLeave, auto_::k_ShootSpeakerAndLeave);
@@ -171,6 +217,10 @@ void robot2::Robot::RobotInit() {
     //m_chooser.AddOption(auto_::k_FollowPath, auto_::k_FollowPath);
     m_chooser.AddOption(auto_::k_Blue3nR21, auto_::k_Blue3nR21);
     m_chooser.AddOption(auto_::k_Red3nR21,  auto_::k_Red3nR21);
+    m_chooser.AddOption(auto_::k_Red3nR3C5, auto_::k_Red3nR3C5);
+    m_chooser.AddOption(auto_::k_Red1nC5, auto_::k_Red1nC5);
+    m_chooser.AddOption(auto_::k_Red0n, auto_::k_Red0n);
+    m_chooser.AddOption(auto_::k_Blue1nC5, auto_::k_Blue1nC5);
     frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
 }
 
@@ -199,6 +249,12 @@ void robot2::Robot::RobotPeriodic() {
             m_usingCameraFront = true;
             frc::CameraServer::GetServer().SetSource(*m_cameraFront);
         }
+    }
+
+    if (m_speaker->IsNoteDetected()) {
+        m_bling->NotifyNotePresent();
+    } else {
+        m_bling->NotifyNoteAbsent();
     }
 }
 
@@ -231,7 +287,19 @@ void robot2::Robot::AutonomousInit() {
         m_autoBlueSubwoof3nR21.Schedule();
     } else if (auto_::k_Red3nR21 == m_autoSelected) {
         m_autoRedSubwoof3nR21.Schedule();
+    } else if (auto_::k_Red3nR3C5 == m_autoSelected) {
+        m_autoRedSubBot3nR3C5.Schedule();
+    } else if (auto_::k_Red1nC5 == m_autoSelected) {
+        m_autoRedSubBot1nC5.Schedule();
+    } else if (auto_::k_Red0n == m_autoSelected) {
+        m_autoRedSubBot0nR3.Schedule();
+    } else if (auto_::k_Blue1nC5 == m_autoSelected) {
+        m_autoBlueSubBot1nC5.Schedule();
+    } else if (auto_::k_Blue0n == m_autoSelected) {
+        m_autoBlueSubBot0n.Schedule();
     }
+
+    m_drivetrain->SetTurnBrake(true);
 }
 
 void robot2::Robot::AutonomousPeriodic() {
@@ -239,6 +307,8 @@ void robot2::Robot::AutonomousPeriodic() {
 }
 
 void robot2::Robot::TeleopInit() {
+    m_drivetrain->SetTurnBrake(true);
+
     m_driveTeleopCommand.Schedule();
     m_openGate.Schedule();
 }
@@ -256,22 +326,34 @@ void robot2::Robot::TeleopPeriodic() {
         m_intakeSpeaker.Cancel();
     }
 
+    if (m_operatorController->GetBButtonPressed()) {
+        m_shootTrap.Schedule();
+    } else if (m_operatorController->GetBButtonReleased()) {
+        m_shootTrap.Cancel();
+    }
+
     if (m_operatorController->GetXButtonPressed()) {
-        m_shootSpeakerFar.Schedule();
+        m_shootSpeakerNear.Schedule();
     } else if (m_operatorController->GetXButtonReleased()) {
-        m_shootSpeakerFar.Cancel();
+        m_shootSpeakerNear.Cancel();
     }
 
     if (m_operatorController->GetYButtonPressed()) {
-        m_shootSpeakerNear.Schedule();
+        m_shootAmp.Schedule();
     } else if (m_operatorController->GetYButtonReleased()) {
-        m_shootSpeakerNear.Cancel();
+        m_shootAmp.Cancel();
     }
 
     if (m_operatorController->GetLeftBumperPressed()) {
         m_reverseSpeaker.Schedule();
     } else if (m_operatorController->GetLeftBumperReleased()) {
         m_reverseSpeaker.Cancel();
+    }
+
+    if (m_operatorController->GetLeftTriggerAxis() > 0.5) {
+        m_overrideIntake.Schedule();
+    } else if (m_operatorController->GetLeftTriggerAxis() < 0.5) {
+        m_overrideIntake.Cancel();
     }
 
     if (m_operatorController->GetRightBumperPressed()) {

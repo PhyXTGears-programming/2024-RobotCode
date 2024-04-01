@@ -2,7 +2,9 @@
 
 using namespace ::robot2;
 
-robot2::BlingSubsystem::BlingSubsystem() {}
+robot2::BlingSubsystem::BlingSubsystem()
+:   m_noteSignal(interface::bling::k_noteSignal)
+{}
 
 void robot2::BlingSubsystem::SendCommand(std::string command) {
     static uint8_t end[1] = { '\0' };
@@ -97,4 +99,12 @@ void robot2::BlingSubsystem::BlingMidTimeout(){
 
 void robot2::BlingSubsystem::BlingHighTimeout(){
         SendCommand("p 33");
+}
+
+void robot2::BlingSubsystem::NotifyNoteAbsent() {
+    m_noteSignal.Set(true);
+}
+
+void robot2::BlingSubsystem::NotifyNotePresent() {
+    m_noteSignal.Set(false);
 }

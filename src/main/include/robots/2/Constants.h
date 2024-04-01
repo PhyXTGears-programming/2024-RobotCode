@@ -39,6 +39,11 @@ namespace robot2::constants {
         const std::string k_FollowPath = "Follow Path";
         const std::string k_Blue3nR21 = "Blue 3n R21";
         const std::string k_Red3nR21 = "Red 3n R21";
+        const std::string k_Red3nR3C5 = "Red 3n R3 C5";
+        const std::string k_Red1nC5 = "Red Sub Bot 1n C5";
+        const std::string k_Red0n = "Red Sub Bot 0n";
+        const std::string k_Blue1nC5 = "Blue Sub Bot 1n C5";
+        const std::string k_Blue0n = "Blue Sub Bot 0n";
     }
 
     namespace drive {

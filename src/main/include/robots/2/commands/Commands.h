@@ -12,6 +12,8 @@ namespace robot2::cmd {
 
     using namespace ::robot2;
 
+    frc2::CommandPtr Intake(IntakeSubsystem *, SpeakerShooterSubsystem *);
+
     frc2::CommandPtr ShootAmp(IntakeSubsystem *, SpeakerShooterSubsystem *);
     frc2::CommandPtr ShootSpeakerFar(IntakeSubsystem *, SpeakerShooterSubsystem *);
     frc2::CommandPtr ShootSpeakerNear(IntakeSubsystem *, SpeakerShooterSubsystem *);

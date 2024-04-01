@@ -302,4 +302,9 @@ Point robot2::Drivetrain::GetChassisPosition() {
     return Point(translation.X().value(), translation.Y().value());
 }
 
-
+void robot2::Drivetrain::SetTurnBrake(bool isEnabled) {
+    m_frontLeft->SetTurnBrake(isEnabled);
+    m_frontRight->SetTurnBrake(isEnabled);
+    m_backLeft->SetTurnBrake(isEnabled);
+    m_backRight->SetTurnBrake(isEnabled);
+}

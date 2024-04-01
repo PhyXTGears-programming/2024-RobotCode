@@ -6,5 +6,5 @@
 #include <cameraserver/CameraServer.h>
 
 namespace camera {
-    std::optional<cs::UsbCamera> LoadAndStart(std::string configFilePath, int resWidth, int resHeight, int fps);
+    std::optional<cs::UsbCamera> LoadAndStart(int camId, std::string configFilePath, int resWidth, int resHeight, int fps);
 }

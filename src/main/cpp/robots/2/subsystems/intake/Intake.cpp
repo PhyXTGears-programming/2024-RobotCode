@@ -38,6 +38,9 @@ robot2::IntakeSubsystem::IntakeSubsystem(std::shared_ptr<cpptoml::table> table)
         abort();
     }
 
+    m_motorTop.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+    m_motorBottom.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+
     m_motorTop.SetInverted(false);
     m_motorBottom.SetInverted(true);
 }

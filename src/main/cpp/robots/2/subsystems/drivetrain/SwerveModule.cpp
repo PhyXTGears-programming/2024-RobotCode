@@ -46,18 +46,23 @@ robot2::SwerveModule::SwerveModule(
     m_turningAbsPositionSignal(m_turningAbsEncoder.GetAbsolutePosition())
 {
     m_turningMotor.SetInverted(true);
-    m_turningMotor.SetIdleMode(rev::CANSparkBase::IdleMode::kBrake);
+    // Set coast mode so we can straighten the wheels at start of match.
+    // Will switch to brake mode later.
+    m_turningMotor.SetIdleMode(rev::CANSparkBase::IdleMode::kCoast);
     m_turningMotor.SetSmartCurrentLimit(30);
 
     ctre::phoenix6::configs::CANcoderConfiguration configCanCoder{};
     ctre::phoenix6::configs::MagnetSensorConfigs configMagnetSensor{};
     configMagnetSensor
         .WithAbsoluteSensorRange(ctre::phoenix6::signals::AbsoluteSensorRangeValue::Signed_PlusMinusHalf)
-        .WithSensorDirection(ctre::phoenix6::signals::SensorDirectionValue::CounterClockwise_Positive);
+        .WithSensorDirection(ctre::phoenix6::signals::SensorDirectionValue::CounterClockwise_Positive)
+        .WithMagnetOffset(0.0);
 
     configCanCoder.WithMagnetSensor(configMagnetSensor);
 
-    m_turningAbsEncoder.GetConfigurator().Apply(configCanCoder);
+    m_turningAbsEncoder.GetConfigurator().Apply(ctre::phoenix6::configs::CANcoderConfiguration(), 5_s);
+    m_turningAbsEncoder.GetConfigurator().Apply(configCanCoder, 5_s);
+    m_turningAbsEncoder.GetConfigurator().Refresh(configMagnetSensor, 5_s);
 
     m_turningEncoder.SetPositionConversionFactor(
         2.0 * std::numbers::pi                          // radians per motor turn
@@ -84,7 +89,6 @@ robot2::SwerveModule::SwerveModule(
     m_turningPid.SetPositionPIDWrappingMinInput(-std::numbers::pi);
     m_turningPid.SetPositionPIDWrappingMaxInput(std::numbers::pi);
 
-    // FIXME: confirm direction of drive motor on robot.
     m_driveMotor.SetInverted(false);
     m_driveMotor.SetIdleMode(rev::CANSparkBase::IdleMode::kBrake);
     m_driveMotor.SetSmartCurrentLimit(40);
@@ -109,6 +113,9 @@ robot2::SwerveModule::SwerveModule(
     m_drivePid.SetFF(0.0);
 
     m_driveEncoder.SetPosition(0.0);
+
+    m_turningAbsPositionSignal.Refresh();
+    m_turningAbsPositionSignal.WaitForUpdate(5_s);
 
     m_turningAbsPositionSignal.Refresh();
     m_turningAbsPositionSignal.WaitForUpdate(5_s);
@@ -208,3 +215,10 @@ void robot2::SwerveModule::UpdateDashboard() {
     );
 }
 
+void robot2::SwerveModule::SetTurnBrake(bool isEnabled) {
+    if (isEnabled) {
+        m_turningMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+    } else {
+        m_turningMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
+    }
+}

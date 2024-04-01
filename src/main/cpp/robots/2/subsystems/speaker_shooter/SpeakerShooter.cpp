@@ -214,6 +214,9 @@ robot2::SpeakerShooterSubsystem::SpeakerShooterSubsystem(std::shared_ptr<cpptoml
 
     m_shootPid1.SetFeedbackDevice(m_shootEncoder1);
 
+    m_shootMotor1.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+    m_shootMotor2.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+
     // Shoot motor 2 shall follow motor 1 in reverse direction.
     m_shootMotor2.Follow(m_shootMotor1, true);
 

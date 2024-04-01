@@ -63,11 +63,15 @@ namespace robot2 {
             frc2::CommandPtr m_closeGate = frc2::cmd::None();
             frc2::CommandPtr m_openGate = frc2::cmd::None();
 
-            frc2::CommandPtr m_intakeSpeaker = frc2::cmd::None();
+            frc2::CommandPtr m_intakeSpeaker  = frc2::cmd::None();
+            frc2::CommandPtr m_overrideIntake = frc2::cmd::None();
             frc2::CommandPtr m_reverseSpeaker = frc2::cmd::None();
             frc2::CommandPtr m_preheatSpeaker = frc2::cmd::None();
-            frc2::CommandPtr m_shootSpeakerFar = frc2::cmd::None();
+
+            frc2::CommandPtr m_shootAmp         = frc2::cmd::None();
+            frc2::CommandPtr m_shootSpeakerFar  = frc2::cmd::None();
             frc2::CommandPtr m_shootSpeakerNear = frc2::cmd::None();
+            frc2::CommandPtr m_shootTrap        = frc2::cmd::None();
 
             frc2::CommandPtr m_climbUp = frc2::cmd::None();
 
@@ -80,7 +84,12 @@ namespace robot2 {
 
             frc2::CommandPtr m_autoPathTest = frc2::cmd::None();
             frc2::CommandPtr m_autoBlueSubwoof3nR21 = frc2::cmd::None();
-            frc2::CommandPtr m_autoRedSubwoof3nR21 = frc2::cmd::None();
+            frc2::CommandPtr m_autoRedSubwoof3nR21  = frc2::cmd::None();
+            frc2::CommandPtr m_autoRedSubBot3nR3C5  = frc2::cmd::None();
+            frc2::CommandPtr m_autoRedSubBot1nC5  = frc2::cmd::None();
+            frc2::CommandPtr m_autoRedSubBot0nR3    = frc2::cmd::None();
+            frc2::CommandPtr m_autoBlueSubBot1nC5 = frc2::cmd::None();
+            frc2::CommandPtr m_autoBlueSubBot0n   = frc2::cmd::None();
 
             bool m_isShootSpeakerInPreheat = false;
     };
