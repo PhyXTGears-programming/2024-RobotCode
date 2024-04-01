@@ -98,6 +98,13 @@ void robot2::Robot::RobotInit() {
     m_openGate = OpenGate(m_gate).ToPtr();
 
     m_intakeSpeaker = cmd::Intake(m_intake, m_speaker);
+
+    m_overrideIntake = frc2::cmd::StartEnd(
+        [this] () { m_intake->IntakeSpeakerShooter(); },
+        [this] () { m_intake->Stop(); },
+        { m_intake }
+    );
+
     m_reverseSpeaker = frc2::cmd::StartEnd(
         [this] () { m_intake->ReverseSpeakerShooter(); },
         [this] () { m_intake->Stop(); },
@@ -302,6 +309,12 @@ void robot2::Robot::TeleopPeriodic() {
         m_reverseSpeaker.Schedule();
     } else if (m_operatorController->GetLeftBumperReleased()) {
         m_reverseSpeaker.Cancel();
+    }
+
+    if (m_operatorController->GetLeftTriggerAxis() > 0.5) {
+        m_overrideIntake.Schedule();
+    } else if (m_operatorController->GetLeftTriggerAxis() < 0.5) {
+        m_overrideIntake.Cancel();
     }
 
     if (m_operatorController->GetRightBumperPressed()) {

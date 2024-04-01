@@ -64,6 +64,7 @@ namespace robot2 {
             frc2::CommandPtr m_openGate = frc2::cmd::None();
 
             frc2::CommandPtr m_intakeSpeaker  = frc2::cmd::None();
+            frc2::CommandPtr m_overrideIntake = frc2::cmd::None();
             frc2::CommandPtr m_reverseSpeaker = frc2::cmd::None();
             frc2::CommandPtr m_preheatSpeaker = frc2::cmd::None();
 
