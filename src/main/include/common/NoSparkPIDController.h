@@ -1,7 +1,7 @@
 #pragma once
 
 #include <rev/CANSparkMax.h>
-#include "NoSparkRelativeEncoder.h"
+#include "common/NoSparkRelativeEncoder.h"
 
 class NoSparkPIDController {
     public:

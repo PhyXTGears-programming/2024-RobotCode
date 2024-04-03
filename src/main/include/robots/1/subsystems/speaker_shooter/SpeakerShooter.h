@@ -7,9 +7,9 @@
  is parent of (other line of code)
 *******************************/
 
-#include "NoSparkMax.h"
-#include "NoSparkRelativeEncoder.h"
-#include "NoSparkPIDController.h"
+#include "common/NoSparkMax.h"
+#include "common/NoSparkRelativeEncoder.h"
+#include "common/NoSparkPIDController.h"
 
 #include "external/cpptoml.h"
 #include "robots/1/subsystems/speaker_shooter/DiagnosticDecl.h"

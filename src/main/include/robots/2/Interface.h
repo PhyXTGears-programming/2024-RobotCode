@@ -1,6 +1,6 @@
 #pragma once
 
-#include "InterfacePorts.h"
+#include "common/InterfacePorts.h"
 
 namespace robot2::interface {
     using namespace ::interface;

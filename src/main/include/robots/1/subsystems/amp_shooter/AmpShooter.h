@@ -1,7 +1,7 @@
 #pragma once
 
 #include "external/cpptoml.h"
-#include "NoSparkMax.h"
+#include "common/NoSparkMax.h"
 
 #include <frc/DigitalInput.h>
 #include <frc/Servo.h>

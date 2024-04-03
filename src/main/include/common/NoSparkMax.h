@@ -1,7 +1,7 @@
 #pragma once
 
-#include "NoSparkRelativeEncoder.h"
-#include "NoSparkPIDController.h"
+#include "common/NoSparkRelativeEncoder.h"
+#include "common/NoSparkPIDController.h"
 
 #include <rev/CANSparkMax.h>
 #include <rev/CANSparkMaxLowLevel.h>
