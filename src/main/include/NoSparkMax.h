@@ -1,18 +1,33 @@
 #pragma once
 
+#include "NoSparkRelativeEncoder.h"
+#include "NoSparkPIDController.h"
+
 #include <rev/CANSparkMax.h>
+#include <rev/CANSparkMaxLowLevel.h>
+#include <rev/SparkRelativeEncoder.h>
 
 struct NoSparkMax {
-    NoSparkMax(int, rev::CANSparkMax::MotorType) {};
+    public:
+        NoSparkMax(int, rev::CANSparkMax::MotorType) {};
+        NoSparkMax(int, rev::CANSparkMaxLowLevel::MotorType) {};
 
-    void Set(double) {};
-    void SetIdleMode(rev::CANSparkMax::IdleMode) {};
-    void SetInverted(bool) {};
-    void SetSmartCurrentLimit(int) {};
+        void Set(double) {};
+        void SetIdleMode(rev::CANSparkMax::IdleMode) {};
+        void SetInverted(bool) {};
+        void SetSmartCurrentLimit(int) {};
 
-    void StopMotor() {};
+        void StopMotor() {};
 
-    void EnableVoltageCompensation(double) {};
+        void EnableVoltageCompensation(double) {};
 
-    double GetOutputCurrent() { return 0.0; };
+        double GetOutputCurrent() { return 0.0; };
+
+        bool GetInverted() { return false; };
+
+        void Follow(NoSparkMax &, bool) {};
+
+        NoSparkRelativeEncoder GetEncoder(rev::SparkRelativeEncoder::Type) { return std::move(NoSparkRelativeEncoder()); };
+
+        NoSparkPIDController GetPIDController() { return NoSparkPIDController(); };
 };
