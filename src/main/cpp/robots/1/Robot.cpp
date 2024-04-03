@@ -74,7 +74,7 @@ void robot1::Robot::RobotInit() {
 
     std::cout << std::endl << "Building camera" << std::endl;
 
-    camera::LoadAndStart(0, deploy::GetRobotDirectory() + "camera.json", 320, 240, 20);
+    camera::LoadAndStart(0, deploy::GetRobotDirectory() + "/camera.json", 320, 240, 20);
 
     std::cout << std::endl << "Building joysticks" << std::endl;
 
