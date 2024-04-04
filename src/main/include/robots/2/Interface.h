@@ -51,6 +51,8 @@ namespace robot2::interface {
         const int k_motor1 = k_can31;
         const int k_motor2 = k_can32;
 
+        const int k_feedMotor = k_can33;
+
         const int k_distanceSensorLeft = k_can34;
         const int k_distanceSensorRight = k_can33;
 
