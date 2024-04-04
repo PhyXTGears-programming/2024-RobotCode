@@ -1,9 +1,5 @@
 #pragma once
 
-#include "common/NoSparkMax.h"
-#include "common/NoSparkRelativeEncoder.h"
-#include "common/NoSparkPIDController.h"
-
 #include "external/cpptoml.h"
 #include "robots/1/subsystems/intake/DiagnosticDecl.h"
 
@@ -29,8 +25,8 @@ namespace robot1 {
             void Stop();
 
         private:
-            NoSparkMax m_motorBottom;
-            NoSparkMax m_motorTop;
+            rev::CANSparkMax m_motorBottom;
+            rev::CANSparkMax m_motorTop;
 
             struct {
                 double intakeSpeed;
