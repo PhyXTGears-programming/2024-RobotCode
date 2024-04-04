@@ -124,7 +124,8 @@ frc2::CommandPtr robot2::loadPathFollowCommandFromFile(std::string_view filename
 
 #define MAX_PATH_POSE_DISTANCE  0.08_m
 #define ROTATION_DEAD_ZONE      DEG_2_RAD(5) // Radians
-#define ROTATION_SPEED          M_PI_2 // Radians per second
+#define MAX_ROTATION_SPEED      M_PI / 2.0 // Radians per second
+#define MIN_ROTATION_SPEED      M_PI / 8.0 // Radians per second
 #define HALT_DISTANCE_THRESHOLD 0.05 // Meters
 #define MIN_SPEED               0.375_mps
 frc2::CommandPtr robot2::generatePathFollowCommand(std::vector<frc::Pose2d> path, units::meters_per_second_t speed, Drivetrain *c_drivetrain) {
@@ -175,7 +176,7 @@ frc2::CommandPtr robot2::generatePathFollowCommand(std::vector<frc::Pose2d> path
 
             double rotationSpeed = 0.0;
             if (abs(headingDelta) > ROTATION_DEAD_ZONE) {
-                rotationSpeed = std::copysign(std::clamp(std::abs(headingDelta) / std::numbers::pi, 0.05, 1.0), headingDelta) * ROTATION_SPEED;
+                rotationSpeed = std::copysign(std::clamp(std::abs(headingDelta) / std::numbers::pi, 0.05, 1.0), headingDelta) * MAX_ROTATION_SPEED;
             }
             units::radians_per_second_t rotationSpeedRadians{rotationSpeed};
 
@@ -277,7 +278,7 @@ frc2::CommandPtr robot2::generatePathFollowCommand(std::vector<PathPoint> && pat
 
             double rotationSpeed = 0.0;
             if (abs(headingDelta) > ROTATION_DEAD_ZONE) {
-                rotationSpeed = std::copysign(std::clamp(std::abs(headingDelta) / std::numbers::pi, 0.05, 1.0), headingDelta) * ROTATION_SPEED;
+                rotationSpeed = std::copysign(std::clamp(std::abs(headingDelta) / std::numbers::pi, MIN_ROTATION_SPEED / MAX_ROTATION_SPEED, 1.0), headingDelta) * MAX_ROTATION_SPEED;
             }
             units::radians_per_second_t rotationSpeedRadians{rotationSpeed};
 
