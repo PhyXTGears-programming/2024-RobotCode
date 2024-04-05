@@ -157,15 +157,7 @@ void robot1::Robot::RobotInit() {
 
     SubsystemRegistry registry{ m_drivetrain, m_intake, m_speaker };
 
-    m_autoPathTest = loadPathFollowCommandFromFile(frc::filesystem::GetDeployDirectory() + "/path_wait.json", registry);
-    m_autoBlueSubwoof2nRamp = loadPathFollowCommandFromFile(
-        frc::filesystem::GetDeployDirectory() + "/subwoofer-speaker-2n-r-blue.json",
-        registry
-    );
-    m_autoBlueSubwoof3nRampCenter = loadPathFollowCommandFromFile(
-        frc::filesystem::GetDeployDirectory() + "/subwoofer-speaker-3n-r-c1-blue.json",
-        registry
-    );
+    m_autoPathTest = loadPathFollowCommandFromFile(deploy::GetRobotDirectory() + "/pathTest.json", registry);
 
     m_chooser.SetDefaultOption(auto_::k_None, auto_::k_None);
     m_chooser.AddOption(auto_::k_ShootSpeakerAndStay, auto_::k_ShootSpeakerAndStay);
@@ -174,6 +166,7 @@ void robot1::Robot::RobotInit() {
     m_chooser.AddOption(auto_::k_FollowPath, auto_::k_FollowPath);
     m_chooser.AddOption(auto_::k_Subwoof2n, auto_::k_Subwoof2n);
     m_chooser.AddOption(auto_::k_Subwoof3n, auto_::k_Subwoof3n);
+    m_chooser.AddOption(auto_::k_pathTest, auto_::k_pathTest);
     frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
 }
 
@@ -224,6 +217,8 @@ void robot1::Robot::AutonomousInit() {
         m_autoBlueSubwoof2nRamp.Schedule();
     } else if (auto_::k_Subwoof3n == m_autoSelected) {
         m_autoBlueSubwoof3nRampCenter.Schedule();
+    } else if (auto_::k_pathTest == m_autoSelected) {
+        m_autoPathTest.Schedule();
     }
 
     m_retractAmp.Schedule();

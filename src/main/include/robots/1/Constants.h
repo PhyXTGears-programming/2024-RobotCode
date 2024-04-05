@@ -39,6 +39,7 @@ namespace robot1::constants {
         const std::string k_FollowPath = "Follow Path";
         const std::string k_Subwoof2n = "Subwoofer 2n";
         const std::string k_Subwoof3n = "Subwoofer 3n";
+        const std::string k_pathTest = "Path Test";
     }
 
     namespace drive {
