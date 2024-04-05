@@ -51,6 +51,7 @@ void robot1::FollowPath::Initialize() {
         m_haltPoseIndex = 0;
     }
 
+    m_drivetrain->ResetGyroToHeading(m_path[0].Rotation().Radians());
     m_drivetrain->SetPosition(m_path[0].Rotation().Radians(), m_path[0].Pose());
 
     if (!m_cmdQueue.empty()) {

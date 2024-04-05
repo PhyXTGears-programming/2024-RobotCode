@@ -237,6 +237,10 @@ void robot1::Drivetrain::ResetGyro() {
     m_gyroOffset = -m_gyro.GetYaw();
 }
 
+void robot1::Drivetrain::ResetGyroToHeading(units::radian_t heading) {
+    m_gyroOffset = (heading - GetHeading()).convert<units::degree>().value();
+}
+
 radian_t robot1::Drivetrain::GetHeading() {
     return -degree_t(m_gyro.GetYaw() + m_gyroOffset);
 }

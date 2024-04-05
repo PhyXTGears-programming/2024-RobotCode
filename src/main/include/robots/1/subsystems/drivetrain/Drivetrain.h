@@ -47,6 +47,7 @@ namespace robot1 {
             void ToggleFieldOriented();
 
             void ResetGyro();
+            void ResetGyroToHeading(units::radian_t heading);
 
             units::radian_t GetHeading();
 
