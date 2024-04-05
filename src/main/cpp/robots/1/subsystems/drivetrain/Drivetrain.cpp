@@ -219,6 +219,11 @@ void robot1::Drivetrain::Periodic() {
         "Front Left Distance (m)",
         m_frontLeft->GetPosition().distance.value()
     );
+
+    frc::SmartDashboard::PutNumber(
+        "Robot Heading",
+        GetHeading().convert<units::degree>().value()
+    );
 }
 
 bool robot1::Drivetrain::IsFieldOriented() {
