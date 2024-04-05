@@ -44,6 +44,7 @@ namespace robot2::constants {
         const std::string k_Red0n = "Red Sub Bot 0n";
         const std::string k_Blue1nC5 = "Blue Sub Bot 1n C5";
         const std::string k_Blue0n = "Blue Sub Bot 0n";
+        const std::string k_BlueScatter = "Blue Scatter";
     }
 
     namespace drive {

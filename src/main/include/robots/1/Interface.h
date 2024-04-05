@@ -1,6 +1,6 @@
 #pragma once
 
-#include "InterfacePorts.h"
+#include "common/InterfacePorts.h"
 
 #include <frc/I2C.h>
 

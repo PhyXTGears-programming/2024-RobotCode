@@ -19,4 +19,5 @@ void robot1::DropAmp::End(bool interrupted) {
 }
 
 bool robot1::DropAmp::IsFinished() {
+    return true;
 }

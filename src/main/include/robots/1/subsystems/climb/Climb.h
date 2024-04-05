@@ -1,5 +1,9 @@
 #pragma once
 
+#include "common/NoSparkMax.h"
+#include "common/NoSparkRelativeEncoder.h"
+#include "common/NoSparkPIDController.h"
+
 #include "external/cpptoml.h"
 
 #include <frc/DigitalInput.h>
@@ -49,9 +53,9 @@ namespace robot1 {
             double GetMaxSpeed();
 
         private:
-            rev::CANSparkMax m_winch;
+            NoSparkMax m_winch;
 
-            rev::SparkRelativeEncoder m_winchEncoder;
+            NoSparkRelativeEncoder m_winchEncoder;
 
             frc::Servo m_lock;
 

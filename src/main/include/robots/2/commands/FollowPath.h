@@ -1,6 +1,6 @@
 #pragma once
 
-#include "robots/2/auto/PathPoint.h"
+#include "common/auto/PathPoint.h"
 #include "robots/2/subsystems/drivetrain/Drivetrain.h"
 #include "robots/2/subsystems/intake/Intake.h"
 #include "robots/2/subsystems/speaker_shooter/SpeakerShooter.h"

@@ -86,10 +86,11 @@ namespace robot2 {
             frc2::CommandPtr m_autoBlueSubwoof3nR21 = frc2::cmd::None();
             frc2::CommandPtr m_autoRedSubwoof3nR21  = frc2::cmd::None();
             frc2::CommandPtr m_autoRedSubBot3nR3C5  = frc2::cmd::None();
-            frc2::CommandPtr m_autoRedSubBot1nC5  = frc2::cmd::None();
+            frc2::CommandPtr m_autoRedSubBot1nC5    = frc2::cmd::None();
             frc2::CommandPtr m_autoRedSubBot0nR3    = frc2::cmd::None();
-            frc2::CommandPtr m_autoBlueSubBot1nC5 = frc2::cmd::None();
-            frc2::CommandPtr m_autoBlueSubBot0n   = frc2::cmd::None();
+            frc2::CommandPtr m_autoBlueSubBot1nC5   = frc2::cmd::None();
+            frc2::CommandPtr m_autoBlueSubBot0n     = frc2::cmd::None();
+            frc2::CommandPtr m_autoBlueScatter      = frc2::cmd::None();
 
             bool m_isShootSpeakerInPreheat = false;
     };

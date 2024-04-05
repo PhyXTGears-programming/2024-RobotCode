@@ -1,7 +1,7 @@
 #pragma once
 
 #include "robots/1/auto/load/SubsystemRegistry.h"
-#include "robots/1/auto/PathPoint.h"
+#include "common/auto/PathPoint.h"
 #include "robots/1/subsystems/drivetrain/Drivetrain.h"
 #include "util/geom.h"
 #include "util/vector.h"

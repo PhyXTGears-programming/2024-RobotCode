@@ -219,6 +219,11 @@ void robot1::Drivetrain::Periodic() {
         "Front Left Distance (m)",
         m_frontLeft->GetPosition().distance.value()
     );
+
+    frc::SmartDashboard::PutNumber(
+        "Robot Heading",
+        GetHeading().convert<units::degree>().value()
+    );
 }
 
 bool robot1::Drivetrain::IsFieldOriented() {
@@ -235,6 +240,10 @@ void robot1::Drivetrain::ToggleFieldOriented() {
  
 void robot1::Drivetrain::ResetGyro() {
     m_gyroOffset = -m_gyro.GetYaw();
+}
+
+void robot1::Drivetrain::ResetGyroToHeading(units::radian_t heading) {
+    m_gyroOffset = (heading - GetHeading()).convert<units::degree>().value();
 }
 
 radian_t robot1::Drivetrain::GetHeading() {

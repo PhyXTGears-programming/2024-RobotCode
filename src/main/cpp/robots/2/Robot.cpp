@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-#include "Camera.h"
+#include "common/Camera.h"
 #include "RobotConfig.h"
 
 #include "robots/2/auto/auto.h"
@@ -210,6 +210,11 @@ void robot2::Robot::RobotInit() {
        registry
     );
 
+    m_autoBlueScatter = loadPathFollowCommandFromFile(
+        deploy::GetRobotDirectory() + "/scatter-blue.json",
+        registry
+    );
+
     m_chooser.SetDefaultOption(auto_::k_None, auto_::k_None);
     m_chooser.AddOption(auto_::k_ShootSpeakerAndStay, auto_::k_ShootSpeakerAndStay);
     m_chooser.AddOption(auto_::k_ShootSpeakerAndLeave, auto_::k_ShootSpeakerAndLeave);
@@ -221,6 +226,7 @@ void robot2::Robot::RobotInit() {
     m_chooser.AddOption(auto_::k_Red1nC5, auto_::k_Red1nC5);
     m_chooser.AddOption(auto_::k_Red0n, auto_::k_Red0n);
     m_chooser.AddOption(auto_::k_Blue1nC5, auto_::k_Blue1nC5);
+    m_chooser.AddOption(auto_::k_BlueScatter, auto_::k_BlueScatter);
     frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
 }
 
@@ -297,6 +303,8 @@ void robot2::Robot::AutonomousInit() {
         m_autoBlueSubBot1nC5.Schedule();
     } else if (auto_::k_Blue0n == m_autoSelected) {
         m_autoBlueSubBot0n.Schedule();
+    } else if(auto_::k_BlueScatter == m_autoSelected) {
+        m_autoBlueScatter.Schedule();
     }
 
     m_drivetrain->SetTurnBrake(true);
