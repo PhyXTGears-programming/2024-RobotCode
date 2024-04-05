@@ -106,9 +106,15 @@ void robot2::Robot::RobotInit() {
     );
 
     m_reverseSpeaker = frc2::cmd::StartEnd(
-        [this] () { m_intake->ReverseSpeakerShooter(); },
-        [this] () { m_intake->Stop(); },
-        { m_intake }
+        [this] () {
+            m_intake->ReverseSpeakerShooter();
+            m_speaker->ReverseFeed();
+        },
+        [this] () {
+            m_intake->Stop();
+            m_speaker->StopFeed();
+        },
+        { m_intake, m_speaker }
     );
 
     m_preheatSpeaker = cmd::PreheatSpeakerFar(m_speaker);
@@ -117,46 +123,46 @@ void robot2::Robot::RobotInit() {
         frc2::cmd::RunOnce([this] () { m_isShootSpeakerInPreheat = true; }, {}),
         cmd::PreheatAmp(m_speaker),
         frc2::cmd::RunOnce([this] () { m_isShootSpeakerInPreheat = false; }, {}),
-        cmd::ShootAmp(m_intake, m_speaker).WithTimeout(2_s)
+        cmd::ShootAmp(m_speaker).WithTimeout(2_s)
     );
 
     m_shootSpeakerFar = frc2::cmd::Sequence(
         frc2::cmd::RunOnce([this] () { m_isShootSpeakerInPreheat = true; }, {}),
         cmd::PreheatSpeakerFar(m_speaker),
         frc2::cmd::RunOnce([this] () { m_isShootSpeakerInPreheat = false; }, {}),
-        cmd::ShootSpeakerFar(m_intake, m_speaker).WithTimeout(2_s)
+        cmd::ShootSpeakerFar(m_speaker).WithTimeout(2_s)
     );
     m_shootSpeakerNear = frc2::cmd::Sequence(
         frc2::cmd::RunOnce([this] () { m_isShootSpeakerInPreheat = true; }, {}),
         cmd::PreheatSpeakerNear(m_speaker),
         frc2::cmd::RunOnce([this] () { m_isShootSpeakerInPreheat = false; }, {}),
-        cmd::ShootSpeakerNear(m_intake, m_speaker).WithTimeout(2_s)
+        cmd::ShootSpeakerNear(m_speaker).WithTimeout(2_s)
     );
 
     m_shootTrap = frc2::cmd::Sequence(
         frc2::cmd::RunOnce([this] () { m_isShootSpeakerInPreheat = true; }, {}),
         cmd::PreheatTrap(m_speaker),
         frc2::cmd::RunOnce([this] () { m_isShootSpeakerInPreheat = false; }, {}),
-        cmd::ShootTrap(m_intake, m_speaker).WithTimeout(2_s)
+        cmd::ShootTrap(m_speaker).WithTimeout(2_s)
     );
 
     m_climbUp = ClimbUp(m_climb, m_bling, m_operatorController).ToPtr();
 
     m_autoShootSpeakerAndStay = frc2::cmd::Sequence(
         cmd::PreheatSpeakerNear(m_speaker),
-        cmd::ShootSpeakerNear(m_intake, m_speaker).WithTimeout(3_s)
+        cmd::ShootSpeakerNear(m_speaker).WithTimeout(3_s)
     );
 
     m_autoShootSpeakerAndLeave = frc2::cmd::Sequence(
         cmd::PreheatSpeakerNear(m_speaker),
-        cmd::ShootSpeakerNear(m_intake, m_speaker).WithTimeout(3_s),
+        cmd::ShootSpeakerNear(m_speaker).WithTimeout(3_s),
         moveForwardsCommand(m_drivetrain)
     );
 
     m_autoShootTwo = frc2::cmd::Sequence(
         OpenGate(m_gate).ToPtr(),
         cmd::PreheatSpeakerNear(m_speaker),
-        cmd::ShootSpeakerNear(m_intake, m_speaker).WithTimeout(2_s),
+        cmd::ShootSpeakerNear(m_speaker).WithTimeout(2_s),
         frc2::cmd::Parallel(
             moveForwardsCommand(m_drivetrain),
             frc2::cmd::Sequence(
@@ -171,7 +177,7 @@ void robot2::Robot::RobotInit() {
                 cmd::PreheatSpeakerFar(m_speaker).Repeatedly()
             )
         ).WithTimeout(4_s),
-        cmd::ShootSpeakerNear(m_intake, m_speaker).WithTimeout(2_s)
+        cmd::ShootSpeakerNear(m_speaker).WithTimeout(2_s)
     );
 
     SubsystemRegistry registry{ m_drivetrain, m_intake, m_speaker };
@@ -257,7 +263,7 @@ void robot2::Robot::RobotPeriodic() {
         }
     }
 
-    if (m_speaker->IsNoteDetected()) {
+    if (m_speaker->IsNoteDetectedBottom()) {
         m_bling->NotifyNotePresent();
     } else {
         m_bling->NotifyNoteAbsent();

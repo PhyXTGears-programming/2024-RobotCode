@@ -134,10 +134,10 @@ namespace robot2 {
 
         friend class diagnostic::TestSpeaker;
 
-        friend frc2::CommandPtr cmd::ShootAmp(IntakeSubsystem *, SpeakerShooterSubsystem *);
-        friend frc2::CommandPtr cmd::ShootSpeakerFar(IntakeSubsystem *, SpeakerShooterSubsystem *);
-        friend frc2::CommandPtr cmd::ShootSpeakerNear(IntakeSubsystem *, SpeakerShooterSubsystem *);
-        friend frc2::CommandPtr cmd::ShootTrap(IntakeSubsystem *, SpeakerShooterSubsystem *);
+        friend frc2::CommandPtr cmd::ShootAmp(SpeakerShooterSubsystem *);
+        friend frc2::CommandPtr cmd::ShootSpeakerFar(SpeakerShooterSubsystem *);
+        friend frc2::CommandPtr cmd::ShootSpeakerNear(SpeakerShooterSubsystem *);
+        friend frc2::CommandPtr cmd::ShootTrap(SpeakerShooterSubsystem *);
 
         friend frc2::CommandPtr cmd::PreheatAmp(SpeakerShooterSubsystem *);
         friend frc2::CommandPtr cmd::PreheatSpeakerFar(SpeakerShooterSubsystem *);

@@ -4,19 +4,16 @@
 using namespace ::robot2;
 
 robot2::Shoot::Shoot(
-    IntakeSubsystem * intake,
     SpeakerShooterSubsystem * speaker,
     rpm_t speed,
     units::volt_t feedForward,
     double tilt
 ) :
-    m_intake(intake),
     m_speaker(speaker),
     m_speed(speed),
     m_feedForward(feedForward),
     m_tilt(std::clamp(tilt, 0.0, 0.8))
 {
-    AddRequirements(intake);
     AddRequirements(speaker);
 }
 

@@ -38,7 +38,7 @@ std::optional<frc2::CommandPtr> robot2::importCommand(
         return cmd::PreheatSpeakerNear(registry.speaker);
     } else if ("Shoot Speaker" == name) {
         fmt::print("Auto: import command: shoot speaker\n");
-        return cmd::ShootSpeakerNear(registry.intake, registry.speaker)
+        return cmd::ShootSpeakerNear(registry.speaker)
             .WithTimeout(1.5_s);
     }
 

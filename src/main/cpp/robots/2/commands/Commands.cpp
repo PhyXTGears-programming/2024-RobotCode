@@ -15,22 +15,14 @@ frc2::CommandPtr robot2::cmd::Intake(
     SpeakerShooterSubsystem * speaker
 ) {
     return frc2::cmd::Sequence(
-        IntakeSpeaker(intake, speaker).ToPtr(),
-        frc2::cmd::Wait(0.5_s),
-        frc2::cmd::StartEnd(
-            [=] () { intake->ReverseSpeakerShooter(); },
-            [=] () { intake->Stop(); },
-            { intake }
-        ).WithTimeout(1.5_s)
+        IntakeSpeaker(intake, speaker).ToPtr()
     );
 }
 
 frc2::CommandPtr robot2::cmd::ShootAmp(
-    IntakeSubsystem * intake,
     SpeakerShooterSubsystem * speaker
 ) {
     return Shoot(
-        intake,
         speaker,
         speaker->m_config.amp.shoot.speed,
         speaker->m_config.amp.shoot.feedForward,
@@ -40,11 +32,9 @@ frc2::CommandPtr robot2::cmd::ShootAmp(
 
 
 frc2::CommandPtr robot2::cmd::ShootSpeakerFar(
-    IntakeSubsystem * intake,
     SpeakerShooterSubsystem * speaker
 ) {
     return Shoot(
-        intake,
         speaker,
         speaker->m_config.speaker.far.shoot.speed,
         speaker->m_config.speaker.far.shoot.feedForward,
@@ -53,11 +43,9 @@ frc2::CommandPtr robot2::cmd::ShootSpeakerFar(
 }
 
 frc2::CommandPtr robot2::cmd::ShootSpeakerNear(
-    IntakeSubsystem * intake,
     SpeakerShooterSubsystem * speaker
 ) {
     return Shoot(
-        intake,
         speaker,
         speaker->m_config.speaker.near.shoot.speed,
         speaker->m_config.speaker.near.shoot.feedForward,
@@ -66,11 +54,9 @@ frc2::CommandPtr robot2::cmd::ShootSpeakerNear(
 }
 
 frc2::CommandPtr robot2::cmd::ShootTrap(
-    IntakeSubsystem * intake,
     SpeakerShooterSubsystem * speaker
 ) {
     return Shoot(
-        intake,
         speaker,
         speaker->m_config.trap.shoot.speed,
         speaker->m_config.trap.shoot.feedForward,

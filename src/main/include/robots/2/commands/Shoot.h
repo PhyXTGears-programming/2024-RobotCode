@@ -13,7 +13,6 @@ namespace robot2 {
     class Shoot : public frc2::CommandHelper<frc2::Command, Shoot> {
         public:
             Shoot(
-                IntakeSubsystem * intake,
                 SpeakerShooterSubsystem * speaker,
                 rpm_t speed,
                 units::volt_t feedForward,
@@ -26,7 +25,6 @@ namespace robot2 {
             bool IsFinished() override;
 
         private:
-            IntakeSubsystem * m_intake = nullptr;
             SpeakerShooterSubsystem * m_speaker = nullptr;
 
             rpm_t m_speed;
