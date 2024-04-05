@@ -117,7 +117,6 @@ namespace robot2 {
 
                 rpm_t reverseSpeed;
                 units::meter_t  distanceThreshold;
-                units::volt_t   feedForwardSlow;
             } m_config;
 
         friend class diagnostic::TestSpeaker;
