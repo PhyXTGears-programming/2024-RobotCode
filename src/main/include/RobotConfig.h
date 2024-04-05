@@ -7,4 +7,4 @@
 
 
 // Select which robot to build software for here.
-#define ROBOT_ID        ROBOT_ROBACH
+#define ROBOT_ID        ROBOT_BOTTHOVEN
