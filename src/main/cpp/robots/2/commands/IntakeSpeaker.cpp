@@ -25,5 +25,5 @@ void robot2::IntakeSpeaker::End(bool interrupted) {
 }
 
 bool robot2::IntakeSpeaker::IsFinished() {
-    return m_speaker->IsNoteDetected();
+    return m_speaker->IsNoteDetectedBottom();
 }

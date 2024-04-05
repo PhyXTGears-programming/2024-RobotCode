@@ -56,7 +56,8 @@ namespace robot2::interface {
         const int k_distanceSensorLeft = k_can34;
         const int k_distanceSensorRight = k_can33;
 
-        const int k_noteSensor = k_dio0;
+        const int k_noteSensorBottom = k_dio0;
+        const int k_noteSensorTop    = k_dio1;
 
         const int k_tiltLeft = k_pwm2;
         const int k_tiltRight = k_pwm3;

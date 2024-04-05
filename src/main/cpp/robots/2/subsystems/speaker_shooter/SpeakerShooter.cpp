@@ -31,9 +31,10 @@ robot2::SpeakerShooterSubsystem::SpeakerShooterSubsystem(std::shared_ptr<cpptoml
         interface::speaker::k_feedMotor,
         rev::CANSparkMax::MotorType::kBrushless
     ),
-    m_noteSensor(interface::speaker::k_noteSensor),
+    m_noteSensorBottom(interface::speaker::k_noteSensorBottom),
+    m_noteSensorTop(interface::speaker::k_noteSensorTop),
     m_noteInterrupt(
-        m_noteSensor,
+        m_noteSensorBottom,
         [this] (bool, bool) {
             m_isNoteDetected = true;
             m_isDetectFlagViewed = false;
@@ -270,7 +271,7 @@ void robot2::SpeakerShooterSubsystem::Periodic() {
         m_isDetectFlagViewed = false;
     }
 
-    frc::SmartDashboard::PutBoolean("Speaker Note Detected", IsNoteDetected());
+    frc::SmartDashboard::PutBoolean("Speaker Note Detected", IsNoteDetectedBottom());
     frc::SmartDashboard::PutNumber("Speaker Shoot rpm", GetShooterSpeed().value());
 }
 
@@ -285,9 +286,13 @@ void robot2::SpeakerShooterSubsystem::StopShooter() {
     m_shootMotor1.StopMotor();
 }
 
-bool robot2::SpeakerShooterSubsystem::IsNoteDetected() {
+bool robot2::SpeakerShooterSubsystem::IsNoteDetectedBottom() {
     m_isDetectFlagViewed = true;
-    return m_isNoteDetected || !m_noteSensor.Get();
+    return m_isNoteDetected || !m_noteSensorBottom.Get();
+}
+
+bool robot2::SpeakerShooterSubsystem::IsNoteDetectedTop() {
+    return !m_noteSensorTop.Get();
 }
 
 units::meter_t robot2::SpeakerShooterSubsystem::GetSpeakerDistance(){

@@ -37,7 +37,8 @@ namespace robot2 {
             void ReverseShooter();
             void StopShooter();
 
-            bool IsNoteDetected();
+            bool IsNoteDetectedBottom();
+            bool IsNoteDetectedTop();
             bool IsSpeakerNear();
 
             void TiltSpeakerFar();
@@ -77,7 +78,8 @@ namespace robot2 {
 
             rev::CANSparkMax m_feedMotor;
 
-            frc::DigitalInput m_noteSensor;
+            frc::DigitalInput m_noteSensorBottom;
+            frc::DigitalInput m_noteSensorTop;
             frc::AsynchronousInterrupt m_noteInterrupt;
 
             bool m_isNoteDetected = false;

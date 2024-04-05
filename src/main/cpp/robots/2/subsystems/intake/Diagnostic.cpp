@@ -154,7 +154,7 @@ void robot2::diagnostic::TestIntake::Test01TuneIntake() {
         static frc2::CommandPtr command = frc2::FunctionalCommand(
             [] () {},
             [this] () {
-                dashSpeakerDetectNote.SetBoolean(m_speaker->IsNoteDetected());
+                dashSpeakerDetectNote.SetBoolean(m_speaker->IsNoteDetectedTop());
             },
             [this] (bool interrupted) {},
             [this] () -> bool {
