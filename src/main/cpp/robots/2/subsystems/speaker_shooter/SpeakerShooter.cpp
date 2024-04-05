@@ -14,7 +14,7 @@ using namespace ::robot2;
 robot2::SpeakerShooterSubsystem::SpeakerShooterSubsystem(std::shared_ptr<cpptoml::table> table)
 :   m_shootMotor1(
         interface::speaker::k_motor1,
-        rev::CANSparkMaxLowLevel::MotorType::kBrushless
+        rev::CANSparkMax::MotorType::kBrushless
     ),
     m_shootPid1(m_shootMotor1.GetPIDController()),
     m_shootEncoder1(m_shootMotor1.GetEncoder(
@@ -22,11 +22,15 @@ robot2::SpeakerShooterSubsystem::SpeakerShooterSubsystem(std::shared_ptr<cpptoml
     )),
     m_shootMotor2(
         interface::speaker::k_motor2,
-        rev::CANSparkMaxLowLevel::MotorType::kBrushless
+        rev::CANSparkMax::MotorType::kBrushless
     ),
     m_shootEncoder2(m_shootMotor2.GetEncoder(
         rev::SparkRelativeEncoder::Type::kHallSensor
     )),
+    m_feedMotor(
+        interface::speaker::k_feedMotor,
+        rev::CANSparkMax::MotorType::kBrushless
+    ),
     m_noteSensor(interface::speaker::k_noteSensor),
     m_noteInterrupt(
         m_noteSensor,
@@ -208,6 +212,39 @@ robot2::SpeakerShooterSubsystem::SpeakerShooterSubsystem(std::shared_ptr<cpptoml
         }
     }
 
+    {
+        cpptoml::option<double> speed = table->get_qualified_as<double>("feed.intakeSpeed");
+
+        if (speed) {
+            m_config.feed.intakeSpeed = *speed;
+        } else {
+            std::cerr << "Error: speaker shooter cannot find toml property speaker.feed.intakeSpeed" << std::endl;
+            hasError = true;
+        }
+    }
+
+    {
+        cpptoml::option<double> speed = table->get_qualified_as<double>("feed.reverseSpeed");
+
+        if (speed) {
+            m_config.feed.reverseSpeed = *speed;
+        } else {
+            std::cerr << "Error: speaker shooter cannot find toml property speaker.feed.reverseSpeed" << std::endl;
+            hasError = true;
+        }
+    }
+
+    {
+        cpptoml::option<double> speed = table->get_qualified_as<double>("feed.shootSpeed");
+
+        if (speed) {
+            m_config.feed.shootSpeed = *speed;
+        } else {
+            std::cerr << "Error: speaker shooter cannot find toml property speaker.feed.shootSpeed" << std::endl;
+            hasError = true;
+        }
+    }
+
     if (hasError) {
         abort();
     }
@@ -219,6 +256,9 @@ robot2::SpeakerShooterSubsystem::SpeakerShooterSubsystem(std::shared_ptr<cpptoml
 
     // Shoot motor 2 shall follow motor 1 in reverse direction.
     m_shootMotor2.Follow(m_shootMotor1, true);
+
+    m_feedMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+    m_feedMotor.SetInverted(true);
 
     m_noteInterrupt.SetInterruptEdges(false, true);
     m_noteInterrupt.Enable();
@@ -309,4 +349,20 @@ void robot2::SpeakerShooterSubsystem::TiltAmp() {
 
 void robot2::SpeakerShooterSubsystem::TiltTrap() {
     SetTilt(m_config.trap.tilt);
+}
+
+void robot2::SpeakerShooterSubsystem::IntakeNote() {
+    m_feedMotor.Set(m_config.feed.intakeSpeed);
+}
+
+void robot2::SpeakerShooterSubsystem::FeedNote() {
+    m_feedMotor.Set(m_config.feed.shootSpeed);
+}
+
+void robot2::SpeakerShooterSubsystem::StopFeed() {
+    m_feedMotor.Set(0.0);
+}
+
+void robot2::SpeakerShooterSubsystem::ReverseFeed() {
+    m_feedMotor.Set(m_config.feed.reverseSpeed);
 }

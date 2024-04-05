@@ -25,11 +25,11 @@ void robot2::Shoot::Initialize() {}
 void robot2::Shoot::Execute() {
     m_speaker->SetTilt(m_tilt);
     m_speaker->SetShooterSpeed(m_speed, m_feedForward);
-    m_intake->IntakeSpeakerShooter();
+    m_speaker->FeedNote();
 }
 
 void robot2::Shoot::End(bool interrupted) {
-    m_intake->Stop();
+    m_speaker->StopFeed();
     m_speaker->StopShooter();
 }
 

@@ -56,6 +56,11 @@ namespace robot2 {
 
             units::meter_t GetSpeakerDistance();
 
+            void IntakeNote();
+            void FeedNote();
+            void StopFeed();
+            void ReverseFeed();
+
             /**
              * @param ratio Tilt of the shooter: 0.0 is lowest tilt, 1.0 is highest tilt.
              */
@@ -69,6 +74,8 @@ namespace robot2 {
 
             rev::CANSparkMax m_shootMotor2;
             rev::SparkRelativeEncoder m_shootEncoder2;
+
+            rev::CANSparkMax m_feedMotor;
 
             frc::DigitalInput m_noteSensor;
             frc::AsynchronousInterrupt m_noteInterrupt;
@@ -114,6 +121,12 @@ namespace robot2 {
                     } shoot;
                     double tilt;
                 } trap;
+
+                struct {
+                    double intakeSpeed;
+                    double reverseSpeed;
+                    double shootSpeed;
+                } feed;
 
                 rpm_t reverseSpeed;
                 units::meter_t  distanceThreshold;
