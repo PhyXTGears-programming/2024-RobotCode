@@ -24,8 +24,8 @@ intakeSpeed = 1.00
 reverseSpeed = 0.20
 
 [speaker]
-amp.shoot.speed = 250
-amp.shoot.feedForward = 1.5
+amp.shoot.speed = 300
+amp.shoot.feedForward = 1.4
 amp.tilt = 0.6
 
 speaker.far.shoot.speed = 3600
