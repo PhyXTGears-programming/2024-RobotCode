@@ -4,11 +4,11 @@
 #include <iostream>
 #include <numbers>
 
-#define MAX_PATH_POSE_DISTANCE  6_in
+#define MAX_PATH_POSE_DISTANCE  4_in
 #define ROTATION_DEAD_ZONE      DEG_2_RAD(5) // Radians
 #define ROTATION_SPEED          M_PI_2 // Radians per second
 #define HALT_DISTANCE_THRESHOLD 0.05 // Meters
-#define MIN_SPEED               0.375_mps
+#define MIN_SPEED               0.5_mps
 
 #define NEARBY_DISTANCE_THRESHOLD 12_in
 
