@@ -6,7 +6,10 @@
 #include "robots/2/subsystems/drivetrain/SwerveModule.h"
 #include "util/math.h"
 
+#include <chrono>
+#include <fmt/core.h>
 #include <numbers>
+#include <thread>
 
 #include <frc/geometry/Rotation2d.h>
 #include <frc/smartdashboard/SmartDashboard.h>
@@ -60,9 +63,22 @@ robot2::SwerveModule::SwerveModule(
 
     configCanCoder.WithMagnetSensor(configMagnetSensor);
 
-    m_turningAbsEncoder.GetConfigurator().Apply(ctre::phoenix6::configs::CANcoderConfiguration(), 5_s);
-    m_turningAbsEncoder.GetConfigurator().Apply(configCanCoder, 5_s);
-    m_turningAbsEncoder.GetConfigurator().Refresh(configMagnetSensor, 5_s);
+    while (true) {
+        ctre::phoenix::StatusCode sc = m_turningAbsEncoder.GetConfigurator().Apply(configCanCoder, 5_s);
+
+        if (sc.IsOK()) {
+            break;
+        } else {
+            fmt::println(
+                stderr,
+                "!!! ERROR !!! swerve module: failed to apply config to abs encoder for module {}: status code {}: description {}",
+                m_name,
+                sc.GetName(),
+                sc.GetDescription()
+            );
+            std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        }
+    }
 
     m_turningEncoder.SetPositionConversionFactor(
         2.0 * std::numbers::pi                          // radians per motor turn
@@ -114,11 +130,24 @@ robot2::SwerveModule::SwerveModule(
 
     m_driveEncoder.SetPosition(0.0);
 
-    m_turningAbsPositionSignal.Refresh();
-    m_turningAbsPositionSignal.WaitForUpdate(5_s);
+    while (true) {
+        m_turningAbsPositionSignal.WaitForUpdate(5_s);
 
-    m_turningAbsPositionSignal.Refresh();
-    m_turningAbsPositionSignal.WaitForUpdate(5_s);
+        ctre::phoenix::StatusCode sc = m_turningAbsPositionSignal.GetStatus();
+
+        if (sc.IsOK()) {
+            break;
+        } else {
+            fmt::println(
+                stderr,
+                "!!! ERROR !!! swerve module: failed to update measurement from abs encoder for module {}: status code {}: description {}",
+                m_name,
+                sc.GetName(),
+                sc.GetDescription()
+            );
+            std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        }
+    };
 
     ResetTurnPosition();
 }
