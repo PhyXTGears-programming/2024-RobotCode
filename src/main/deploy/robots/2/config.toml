@@ -40,7 +40,7 @@ trap.shoot.speed = 1500
 trap.shoot.feedForward = 5.0
 trap.tilt = 0.8
 
-feed.intakeSpeed = 1.0
+feed.intakeSpeed = 0.8
 feed.reverseSpeed = -0.40
 feed.shootSpeed = 1.0
 
