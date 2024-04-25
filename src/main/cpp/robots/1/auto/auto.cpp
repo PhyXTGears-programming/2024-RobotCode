@@ -110,7 +110,8 @@ frc2::CommandPtr robot1::loadPathFollowCommandFromFile(std::string_view filename
                 std::move(path),
                 registry.drivetrain,
                 registry.intake,
-                registry.speaker
+                registry.speaker,
+                4_mps
             ).ToPtr();
         }
     } catch (...) {

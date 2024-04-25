@@ -19,7 +19,8 @@ namespace robot1 {
                 std::vector<PathPoint> && path,
                 Drivetrain * drivetrain,
                 IntakeSubsystem * intake,
-                SpeakerShooterSubsystem * speaker
+                SpeakerShooterSubsystem * speaker,
+                units::meters_per_second_t maxSpeed
             );
 
             void Initialize() override;
@@ -38,6 +39,8 @@ namespace robot1 {
 
             std::queue<frc2::Command *> m_cmdQueue;
             bool m_isAtHaltPose;
+
+            units::meters_per_second_t m_maxSpeed = 4_mps;
     };
 
 }
