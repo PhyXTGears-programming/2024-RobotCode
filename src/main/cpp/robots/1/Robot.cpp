@@ -291,7 +291,9 @@ void robot1::Robot::TeleopPeriodic() {
     }
 }
 
-void robot1::Robot::DisabledInit() {}
+void robot1::Robot::DisabledInit() {
+    frc2::CommandScheduler::GetInstance().CancelAll();
+}
 
 void robot1::Robot::DisabledPeriodic() {}
 
