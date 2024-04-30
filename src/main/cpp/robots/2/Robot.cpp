@@ -117,7 +117,7 @@ void robot2::Robot::RobotInit() {
         { m_intake, m_speaker }
     );
 
-    m_preheatSpeaker = cmd::PreheatSpeakerFar(m_speaker);
+    m_preheatSpeaker = cmd::PreheatSpeakerFar(m_speaker).Repeatedly();
 
     m_shootAmp = frc2::cmd::Sequence(
         frc2::cmd::RunOnce([this] () { m_isShootSpeakerInPreheat = true; }, {}),
