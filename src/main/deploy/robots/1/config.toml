@@ -1,0 +1,38 @@
+[amp]
+liftCurrentThreshold = 0.0
+
+servo.extendPulseMicro = 1900
+servo.retractPulseMicro = 1500
+
+[bling]
+
+[climb]
+maxSpeed = 0.75
+lockWinchMicros = 1000
+unlockWinchMicros = 2000
+
+[drivetrain]
+frontLeftAbsEncoderOffset  =   38.1
+frontRightAbsEncoderOffset = -131.8
+backLeftAbsEncoderOffset   =  -96.4
+backRightAbsEncoderOffset  =  -30.6
+
+swerve.turn.kP = 2.0
+swerve.turn.kI = 0.01
+swerve.turn.kD = 3.0
+
+[gate]
+openMicros  =  950
+closeMicros = 1300
+
+[intake]
+intakeSpeed = 0.40
+reverseSpeed = 0.2
+
+[speaker]
+shoot.fast.speed = 4500
+shoot.fast.feedForward = 11.0
+shoot.slow.speed = 300
+shoot.slow.feedForward = 2.0
+reverseSpeed = -500
+distanceThreshold = 0.100
