@@ -3,7 +3,9 @@
 #include "robots/1/auto/load/command/Race.h"
 #include "robots/1/auto/load/command/Sequence.h"
 
+#include "robots/1/commands/Cancel.h"
 #include "robots/1/commands/IntakeSpeaker.h"
+#include "robots/1/commands/PreheatIndefinite.h"
 #include "robots/1/commands/PreheatSpeaker.h"
 #include "robots/1/commands/ShootSpeaker.h"
 
@@ -12,6 +14,8 @@
 #include <frc2/command/Commands.h>
 
 using namespace ::robot1;
+
+bool stopPreheat;
 
 std::optional<frc2::CommandPtr> robot1::importCommand(
     wpi::json & json,
@@ -41,6 +45,12 @@ std::optional<frc2::CommandPtr> robot1::importCommand(
         return ShootSpeaker(registry.intake, registry.speaker)
             .ToPtr()
             .WithTimeout(1.5_s);
+    } else if ("Preheat Indefinite" == name) {
+        fmt::print("Auto: import command: preheat indefinite\n");
+        return PreheatIndefinite(registry.speaker, stopPreheat).ToPtr();
+    } else if ("Cancel Preheat" == name) {
+        fmt::print("Auto: import command: cancel preheat\n");
+        return Cancel(stopPreheat).ToPtr();
     }
 
     return std::nullopt;

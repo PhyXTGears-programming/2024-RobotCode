@@ -18,7 +18,8 @@ robot1::FollowPath::FollowPath(
     std::vector<PathPoint> && path,
     Drivetrain * drivetrain,
     IntakeSubsystem * intake,
-    SpeakerShooterSubsystem * speaker
+    SpeakerShooterSubsystem * speaker,
+    units::meters_per_second_t maxSpeed
 ) :
     m_drivetrain(drivetrain),
     m_path(std::move(path)),
@@ -26,7 +27,8 @@ robot1::FollowPath::FollowPath(
     m_haltPoseIndex(-1),
     m_lastNearestPoseIndex(0),
     m_cmdQueue(),
-    m_isAtHaltPose(false)
+    m_isAtHaltPose(false),
+    m_maxSpeed(maxSpeed)
 {
     AddRequirements({ drivetrain, intake, speaker });
 }
@@ -183,6 +185,7 @@ void robot1::FollowPath::Execute() {
     Vector movementDirection = directionToTarget;
 
     units::meters_per_second_t speed = selectedPose.Velocity();
+    if (speed > m_maxSpeed) speed = m_maxSpeed;
 
     if ((size_t)-1 != m_haltPoseIndex) {
         if (distanceToTarget < HALT_DISTANCE_THRESHOLD) {
