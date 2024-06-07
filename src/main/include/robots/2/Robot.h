@@ -73,6 +73,9 @@ namespace robot2 {
             frc2::CommandPtr m_shootSpeakerNear = frc2::cmd::None();
             frc2::CommandPtr m_shootTrap        = frc2::cmd::None();
 
+            frc2::CommandPtr m_tiltSpeaker = frc2::cmd::None();
+            frc2::CommandPtr m_tiltStage   = frc2::cmd::None();
+
             frc2::CommandPtr m_climbUp = frc2::cmd::None();
 
             frc2::CommandPtr m_autoShootSpeakerAndStay = frc2::cmd::None();

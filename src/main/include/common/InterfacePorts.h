@@ -44,6 +44,14 @@ namespace interface {
 
         const int k_can61 = 61;
 
+        // Shooter Tilt
+
+        const int k_can36 = 36;
+        const int k_can37 = 37;
+
+        const int k_ai0 = 0;
+        const int k_ai1 = 1;
+
         const int k_dio0 = 0;
         const int k_dio1 = 1;
         const int k_dio2 = 2;
@@ -56,5 +64,6 @@ namespace interface {
         const int k_pwm1 = 1;
         const int k_pwm2 = 2;
         const int k_pwm3 = 3;
+
     }
 }
