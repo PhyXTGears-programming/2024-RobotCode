@@ -52,12 +52,12 @@ namespace robot1 {
 
         private:
         
-            NoSparkMax m_shootMotor1;
-            NoSparkPIDController m_shootPid1;
-            NoSparkRelativeEncoder m_shootEncoder1;
+            rev::CANSparkMax m_shootMotor1;
+            rev::SparkPIDController m_shootPid1;
+            rev::SparkRelativeEncoder m_shootEncoder1;
 
-            NoSparkMax m_shootMotor2;
-            NoSparkRelativeEncoder m_shootEncoder2;
+            rev::CANSparkMax m_shootMotor2;
+            rev::SparkRelativeEncoder m_shootEncoder2;
 
             frc::DigitalInput m_noteSensor;
             frc::AsynchronousInterrupt m_noteInterrupt;

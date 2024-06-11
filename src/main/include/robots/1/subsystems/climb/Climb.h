@@ -53,9 +53,9 @@ namespace robot1 {
             double GetMaxSpeed();
 
         private:
-            NoSparkMax m_winch;
+            rev::CANSparkMax m_winch;
 
-            NoSparkRelativeEncoder m_winchEncoder;
+            rev::SparkRelativeEncoder m_winchEncoder;
 
             frc::Servo m_lock;
 
