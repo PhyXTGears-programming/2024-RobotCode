@@ -9,6 +9,7 @@
 #include "robots/2/subsystems/intake/Intake.h"
 #include "robots/2/subsystems/gate/Gate.h"
 #include "robots/2/subsystems/speaker_shooter/SpeakerShooter.h"
+#include "robots/2/subsystems/shooter_tilt/ShooterTilt.h"
 
 #include <optional>
 #include <string>
@@ -57,6 +58,7 @@ namespace robot2 {
             GateSubsystem * m_gate = nullptr;
             IntakeSubsystem * m_intake = nullptr;
             SpeakerShooterSubsystem * m_speaker = nullptr;
+            ShooterTiltSubsystem * m_tilt = nullptr;
 
             frc2::CommandPtr m_driveTeleopCommand = frc2::cmd::None();
 

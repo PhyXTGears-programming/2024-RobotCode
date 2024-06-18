@@ -26,6 +26,7 @@
 #include <frc/DigitalInput.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/Commands.h>
+#include <frc2/command/FunctionalCommand.h>
 
 using namespace ::robot2;
 
@@ -88,6 +89,7 @@ void robot2::Robot::RobotInit() {
     m_gate = new GateSubsystem(toml->get_table("gate"));
     m_intake = new IntakeSubsystem(toml->get_table("intake"));
     m_speaker = new SpeakerShooterSubsystem(toml->get_table("speaker"));
+    m_tilt = new ShooterTiltSubsystem(toml->get_table("tilt"));
 
     std::cout << std::endl << "Building commands" << std::endl;
 
@@ -145,6 +147,38 @@ void robot2::Robot::RobotInit() {
         frc2::cmd::RunOnce([this] () { m_isShootSpeakerInPreheat = false; }, {}),
         cmd::ShootTrap(m_speaker).WithTimeout(2_s)
     );
+
+    m_tiltSpeaker = frc2::FunctionalCommand{
+        [] () {},
+        [this] () {
+            m_tilt->GotoSpeakerPosition();
+        },
+        [this] (bool isInterrupted) {
+            m_tilt->SetTiltSpeed(0.0);
+        },
+        [this] () -> bool {
+            double diff = m_tilt->GetSpeakerPosition() - m_tilt->GetPosition();
+
+            return 0.001 > std::abs(diff);
+        },
+        { m_tilt }
+    }.ToPtr();
+
+    m_tiltStage = frc2::FunctionalCommand{
+        [] () {},
+        [this] () {
+            m_tilt->GotoStagePosition();
+        },
+        [this] (bool isInterrupted) {
+            m_tilt->SetTiltSpeed(0.0);
+        },
+        [this] () -> bool {
+            double diff = m_tilt->GetStagePosition() - m_tilt->GetPosition();
+
+            return 0.001 > std::abs(diff);
+        },
+        { m_tilt }
+    }.ToPtr();
 
     m_climbUp = ClimbUp(m_climb, m_bling, m_operatorController).ToPtr();
 
@@ -248,6 +282,8 @@ void robot2::Robot::RobotPeriodic() {
     frc2::CommandScheduler::GetInstance().Run();
 
     frc::SmartDashboard::PutBoolean("Climb Locked?", m_climb->IsLockEngaged());
+
+    frc::SmartDashboard::PutNumber("Tilt Position (?)", m_tilt->GetPosition());
 
     if (m_driverController->GetBButtonPressed()) {
         m_drivetrain->ResetGyro();
@@ -376,6 +412,12 @@ void robot2::Robot::TeleopPeriodic() {
         m_preheatSpeaker.Cancel();
     }
 
+    if (std::abs(m_operatorController->GetRightY()) > 0.1) {
+        m_tilt->SetTiltSpeed(-m_operatorController->GetRightY());
+    } else {
+        m_tilt->SetTiltSpeed(0.0);
+    }
+
     if (0.1 < std::abs(m_operatorController->GetLeftY())) {
         m_climbUp.Schedule();
     } else {
@@ -384,11 +426,13 @@ void robot2::Robot::TeleopPeriodic() {
 
     switch (m_operatorController->GetPOV(0)) {
         case 0:
+            m_tiltSpeaker.Schedule();
             break;
         case 90:
             m_climb->Lock();
             break;
         case 180:
+            m_tiltStage.Schedule();
             break;
         case 270:
             m_climb->Unlock();
