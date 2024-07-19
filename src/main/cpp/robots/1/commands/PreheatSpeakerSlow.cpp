@@ -15,7 +15,11 @@ void robot1::PreheatSpeakerSlow::Execute() {
     m_speaker->Shoot();
 }
 
-void robot1::PreheatSpeakerSlow::End(bool interrupted) {}
+void robot1::PreheatSpeakerSlow::End(bool interrupted) {
+    if (interrupted) {
+        m_speaker->StopShooter();
+    }
+}
 
 bool robot1::PreheatSpeakerSlow::IsFinished() {
     return m_speaker->GetShooterSpeed() >= m_speaker->GetSlowSpeedThreshold();
