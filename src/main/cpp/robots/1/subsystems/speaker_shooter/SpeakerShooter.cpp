@@ -111,6 +111,10 @@ robot1::SpeakerShooterSubsystem::SpeakerShooterSubsystem(std::shared_ptr<cpptoml
     }
 
     m_shootPid1.SetFeedbackDevice(m_shootEncoder1);
+    m_shootPid1.SetP(0.00);
+    m_shootPid1.SetI(0.00);
+    m_shootPid1.SetD(0.00);
+
 
     // Shoot motor 2 shall follow motor 1 in reverse direction.
     m_shootMotor2.Follow(m_shootMotor1, true);
