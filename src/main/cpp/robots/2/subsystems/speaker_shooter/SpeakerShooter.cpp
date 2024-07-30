@@ -39,9 +39,7 @@ robot2::SpeakerShooterSubsystem::SpeakerShooterSubsystem(std::shared_ptr<cpptoml
             m_isNoteDetected = true;
             m_isDetectFlagViewed = false;
         }
-    ),
-    m_tiltLeft(interface::speaker::k_tiltLeft),
-    m_tiltRight(interface::speaker::k_tiltRight)
+    )
 {
     bool hasError = false;
 
@@ -71,18 +69,6 @@ robot2::SpeakerShooterSubsystem::SpeakerShooterSubsystem(std::shared_ptr<cpptoml
     }
 
     {
-        // amp.tilt
-        cpptoml::option<double> tilt = table->get_qualified_as<double>("amp.tilt");
-
-        if (tilt) {
-            m_config.amp.tilt = *tilt;
-        } else {
-            std::cerr << "Error: speaker shooter cannot find toml property speaker.amp.tilt" << std::endl;
-            hasError = true;
-        }
-    }
-
-    {
         // speaker.far.shoot.speed
         cpptoml::option<double> speed = table->get_qualified_as<double>("speaker.far.shoot.speed");
 
@@ -102,18 +88,6 @@ robot2::SpeakerShooterSubsystem::SpeakerShooterSubsystem(std::shared_ptr<cpptoml
             m_config.speaker.far.shoot.feedForward = units::volt_t(*feedForward);
         } else {
             std::cerr << "Error: speaker shooter cannot find toml property speaker.speaker.far.shoot.feedForward" << std::endl;
-            hasError = true;
-        }
-    }
-
-    {
-        // speaker.far.tilt
-        cpptoml::option<double> tilt = table->get_qualified_as<double>("speaker.far.tilt");
-
-        if (tilt) {
-            m_config.speaker.far.tilt = *tilt;
-        } else {
-            std::cerr << "Error: speaker shooter cannot find toml property speaker.speaker.far.tilt" << std::endl;
             hasError = true;
         }
     }
@@ -143,18 +117,6 @@ robot2::SpeakerShooterSubsystem::SpeakerShooterSubsystem(std::shared_ptr<cpptoml
     }
 
     {
-        // speaker.near.tilt
-        cpptoml::option<double> tilt = table->get_qualified_as<double>("speaker.near.tilt");
-
-        if (tilt) {
-            m_config.speaker.near.tilt = *tilt;
-        } else {
-            std::cerr << "Error: speaker shooter cannot find toml property speaker.speaker.near.tilt" << std::endl;
-            hasError = true;
-        }
-    }
-
-    {
         // trap.shoot.speed
         cpptoml::option<double> speed = table->get_qualified_as<double>("trap.shoot.speed");
 
@@ -174,18 +136,6 @@ robot2::SpeakerShooterSubsystem::SpeakerShooterSubsystem(std::shared_ptr<cpptoml
             m_config.trap.shoot.feedForward = units::volt_t(*feedForward);
         } else {
             std::cerr << "Error: speaker shooter cannot find toml property speaker.trap.shoot.feedForward" << std::endl;
-            hasError = true;
-        }
-    }
-
-    {
-        // trap.tilt
-        cpptoml::option<double> tilt = table->get_qualified_as<double>("trap.tilt");
-
-        if (tilt) {
-            m_config.trap.tilt = *tilt;
-        } else {
-            std::cerr << "Error: speaker shooter cannot find toml property speaker.trap.tilt" << std::endl;
             hasError = true;
         }
     }
@@ -333,27 +283,6 @@ void robot2::SpeakerShooterSubsystem::SetShooterSpeed(
         0,
         std::copysign(feedForward.value(), speed.value())
     );
-}
-
-void robot2::SpeakerShooterSubsystem::SetTilt(double ratio) {
-    m_tiltLeft.SetPulseTime(1.0_ms + 1_ms * std::clamp(ratio, 0.0, 1.0));
-    m_tiltRight.SetPulseTime(2.0_ms - 1_ms * std::clamp(ratio, 0.0, 1.0));
-}
-
-void robot2::SpeakerShooterSubsystem::TiltSpeakerFar() {
-    SetTilt(m_config.speaker.far.tilt);
-}
-
-void robot2::SpeakerShooterSubsystem::TiltSpeakerNear() {
-    SetTilt(m_config.speaker.near.tilt);
-}
-
-void robot2::SpeakerShooterSubsystem::TiltAmp() {
-    SetTilt(m_config.amp.tilt);
-}
-
-void robot2::SpeakerShooterSubsystem::TiltTrap() {
-    SetTilt(m_config.trap.tilt);
 }
 
 void robot2::SpeakerShooterSubsystem::IntakeNote() {

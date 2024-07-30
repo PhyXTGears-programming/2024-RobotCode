@@ -26,19 +26,15 @@ reverseSpeed = 0.20
 [speaker]
 amp.shoot.speed = 300
 amp.shoot.feedForward = 1.4
-amp.tilt = 0.6
 
 speaker.far.shoot.speed = 3600
 speaker.far.shoot.feedForward = 8.0
-speaker.far.tilt = 0.0
 
 speaker.near.shoot.speed = 3600
 speaker.near.shoot.feedForward = 8.0
-speaker.near.tilt = 0.8
 
 trap.shoot.speed = 1500
 trap.shoot.feedForward = 5.0
-trap.tilt = 0.8
 
 feed.intakeSpeed = 0.8
 feed.reverseSpeed = -0.40

@@ -15,8 +15,7 @@ namespace robot2 {
                 SpeakerShooterSubsystem * speaker,
                 rpm_t speed,
                 units::volt_t feedForward,
-                rpm_t threshold,
-                double tilt
+                rpm_t threshold
             );
 
             void Initialize() override;
@@ -30,7 +29,6 @@ namespace robot2 {
             rpm_t m_speed;
             units::volt_t m_feedForward;
             rpm_t m_threshold;
-            double m_tilt;
     };
 
 }
