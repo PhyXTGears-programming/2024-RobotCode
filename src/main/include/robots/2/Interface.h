@@ -62,4 +62,11 @@ namespace robot2::interface {
         const int k_tiltLeft = k_pwm2;
         const int k_tiltRight = k_pwm3;
     }
+
+    namespace tilt {
+        const int k_tiltLeft = k_can36;
+        const int k_tiltRight = k_can37;
+
+        const int k_tiltSensor = k_ai1;
+    }
 }

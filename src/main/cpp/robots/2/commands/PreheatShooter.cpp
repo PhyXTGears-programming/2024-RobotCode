@@ -8,14 +8,12 @@ robot2::PreheatShooter::PreheatShooter(
     SpeakerShooterSubsystem * speaker,
     rpm_t speed,
     units::volt_t feedForward,
-    rpm_t threshold,
-    double tilt
+    rpm_t threshold
 ) :
     m_speaker(speaker),
     m_speed(speed),
     m_feedForward(feedForward),
-    m_threshold(threshold),
-    m_tilt(std::clamp(tilt, 0.0, 0.8))
+    m_threshold(threshold)
 {
     AddRequirements(speaker);
 }
@@ -24,7 +22,6 @@ void robot2::PreheatShooter::Initialize() {}
 
 void robot2::PreheatShooter::Execute() {
     m_speaker->SetShooterSpeed(m_speed, m_feedForward);
-    m_speaker->SetTilt(m_tilt);
 }
 
 void robot2::PreheatShooter::End(bool interrupted) {

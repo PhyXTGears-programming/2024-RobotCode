@@ -41,11 +41,6 @@ namespace robot2 {
             bool IsNoteDetectedTop();
             bool IsSpeakerNear();
 
-            void TiltSpeakerFar();
-            void TiltSpeakerNear();
-            void TiltAmp();
-            void TiltTrap();
-
             rpm_t GetShooterSpeed();
 
             rpm_t GetAmpSpeedThreshold();
@@ -61,11 +56,6 @@ namespace robot2 {
             void FeedNote();
             void StopFeed();
             void ReverseFeed();
-
-            /**
-             * @param ratio Tilt of the shooter: 0.0 is lowest tilt, 1.0 is highest tilt.
-             */
-            void SetTilt(double ratio);
 
         private:
 
@@ -85,9 +75,6 @@ namespace robot2 {
             bool m_isNoteDetected = false;
             bool m_isDetectFlagViewed = false;
 
-            frc::Servo m_tiltLeft;
-            frc::Servo m_tiltRight;
-
             // Config settings loaded from TOML.
             struct {
                 struct {
@@ -95,7 +82,6 @@ namespace robot2 {
                         rpm_t speed;
                         units::volt_t feedForward;
                     } shoot;
-                    double tilt;
                 } amp;
 
                 struct {
@@ -104,7 +90,6 @@ namespace robot2 {
                             rpm_t speed;
                             units::volt_t feedForward;
                         } shoot;
-                        double tilt;
                     } far;
 
                     struct {
@@ -112,7 +97,6 @@ namespace robot2 {
                             rpm_t speed;
                             units::volt_t feedForward;
                         } shoot;
-                        double tilt;
                     } near;
                 } speaker;
 
@@ -121,7 +105,6 @@ namespace robot2 {
                         rpm_t speed;
                         units::volt_t feedForward;
                     } shoot;
-                    double tilt;
                 } trap;
 
                 struct {
