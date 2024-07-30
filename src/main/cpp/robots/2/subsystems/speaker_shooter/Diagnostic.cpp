@@ -2,10 +2,10 @@
 
 #include <iostream>
 
-#include <frc/smartdashboard/SmartDashboard.h>
 #include <frc/shuffleboard/Shuffleboard.h>
 #include <frc/shuffleboard/ShuffleboardLayout.h>
 #include <frc/shuffleboard/ShuffleboardTab.h>
+#include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/FunctionalCommand.h>
 

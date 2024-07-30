@@ -1,4 +1,4 @@
-#pragma once //makes it so that parent can only be used once
+#pragma once // makes it so that parent can only be used once
 
 /*******************************
  a parent always has a child a parent in coding also has a
@@ -62,8 +62,8 @@ namespace robot2 {
 
             // Config settings loaded from TOML.
             struct {
-                double bottomLimit = 0;
-                double topLimit = 0;
+                double bottomLimit = 0.0;
+                double topLimit = 0.0;
 
                 double maxSpeed = 0.0;
                 double minSpeed = 0.0;
@@ -71,8 +71,8 @@ namespace robot2 {
                 double minSpeedDistanceThreshold = 0.0;
 
                 struct {
-                    double speaker = 0;
-                    double stage = 0;
+                    double speaker = 0.0;
+                    double stage = 0.0;
                 } setpoint;
             } m_config;
     };
