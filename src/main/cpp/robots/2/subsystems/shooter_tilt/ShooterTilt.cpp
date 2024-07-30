@@ -77,6 +77,28 @@ robot2::ShooterTiltSubsystem::ShooterTiltSubsystem(
         }
     }
 
+    {
+        cpptoml::option<double> speed = table->get_qualified_as<double>("minSpeed");
+
+        if (speed) {
+            m_config.minSpeed = *speed;
+        } else {
+            std::cerr << "Error: tilt cannot find toml tilt.minSpeed" << std::endl;
+            hasError = true;
+        }
+    }
+
+    {
+        cpptoml::option<double> threshold = table->get_qualified_as<double>("minSpeedDistanceThreshold");
+
+        if (threshold) {
+            m_config.minSpeedDistanceThreshold = *threshold;
+        } else {
+            std::cerr << "Error: tilt cannot find toml tilt.minSpeedDistanceThreshold" << std::endl;
+            hasError = true;
+        }
+    }
+
     if (hasError) {
         abort();
     }
@@ -136,11 +158,19 @@ bool robot2::ShooterTiltSubsystem::IsBelowBottomLimit() const {
 }
 
 void robot2::ShooterTiltSubsystem::GotoSpeakerPosition() {
-    SetTilt(m_config.setpoint.speaker, m_config.maxSpeed);
+    double distance = DistanceTo(m_config.setpoint.speaker);
+    double speed = distance < m_config.minSpeedDistanceThreshold
+        ? m_config.minSpeed
+        : m_config.maxSpeed;
+    SetTilt(m_config.setpoint.speaker, speed);
 }
 
 void robot2::ShooterTiltSubsystem::GotoStagePosition() {
-    SetTilt(m_config.setpoint.stage, m_config.maxSpeed);
+    double distance = DistanceTo(m_config.setpoint.speaker);
+    double speed = distance < m_config.minSpeedDistanceThreshold
+        ? m_config.minSpeed
+        : m_config.maxSpeed;
+    SetTilt(m_config.setpoint.stage, speed);
 }
 
 double robot2::ShooterTiltSubsystem::GetSpeakerPosition() const {
@@ -149,4 +179,8 @@ double robot2::ShooterTiltSubsystem::GetSpeakerPosition() const {
 
 double robot2::ShooterTiltSubsystem::GetStagePosition() const {
     return m_config.setpoint.stage;
+}
+
+double robot2::ShooterTiltSubsystem::DistanceTo(double dest) const {
+   return dest - GetPosition();
 }

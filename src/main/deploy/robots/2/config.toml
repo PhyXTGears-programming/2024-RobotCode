@@ -50,3 +50,5 @@ bottomLimit = 0.630
 setpoint.speaker = 0.690
 setpoint.stage = 0.680
 maxSpeed = 1.0
+minSpeed = 0.3
+minSpeedDistanceThreshold = 0.01

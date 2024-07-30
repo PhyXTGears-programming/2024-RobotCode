@@ -51,6 +51,8 @@ namespace robot2 {
             double GetSpeakerPosition() const;
             double GetStagePosition() const;
 
+            double DistanceTo(double dest) const;
+
         private:
             rev::CANSparkMax m_tiltMotorLeft;
             rev::CANSparkMax m_tiltMotorRight;
@@ -63,7 +65,10 @@ namespace robot2 {
                 double bottomLimit = 0;
                 double topLimit = 0;
 
-                double maxSpeed = 0;
+                double maxSpeed = 0.0;
+                double minSpeed = 0.0;
+
+                double minSpeedDistanceThreshold = 0.0;
 
                 struct {
                     double speaker = 0;
