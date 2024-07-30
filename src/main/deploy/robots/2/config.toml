@@ -45,8 +45,8 @@ reverseSpeed = -500
 distanceThreshold = 0.100
 
 [tilt]
-topLimit = 0.700
-bottomLimit = 0.630
+topLimit = 0.698
+bottomLimit = 0.620
 setpoint.speaker = 0.690
 setpoint.stage = 0.680
 maxSpeed = 1.0
